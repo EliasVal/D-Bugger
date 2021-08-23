@@ -7,7 +7,7 @@
 	import { createEventDispatcher } from 'svelte';
 
 	import { bug } from '/src/ts/stores';
-	import { project as proj, isDisplayingBug as isDisplayingBug } from '/src/ts/stores';
+	import { project as proj, isDisplayingBug } from '/src/ts/stores';
 	import BugTable from './BugTable.svelte';
 	import { DisplayDialogue, CloseDialogue } from '/src/ts/utils';
 
@@ -37,7 +37,7 @@
 						bug: $bug
 					});
 					CloseDialogue();
-					isDisplayingBug = false;
+					$isDisplayingBug = false;
 				},
 				submitBtnText: 'Save Changes',
 				buttons: [
@@ -72,7 +72,7 @@
 			$isDisplayingBug = true;
 		}
 		// Check if the bug that is intended to display is already displayed, if so, close the display
-		else if (isDisplayingBug && bugIdToDisplay == id) $isDisplayingBug = false;
+		else if ($isDisplayingBug && bugIdToDisplay == id) $isDisplayingBug = false;
 		// If changing display between bugs
 		else {
 			$isDisplayingBug = false;
