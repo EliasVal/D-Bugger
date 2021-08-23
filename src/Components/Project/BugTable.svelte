@@ -1,0 +1,149 @@
+<script lang="ts">
+	import type { Bug } from 'src/global';
+
+	import { createEventDispatcher } from 'svelte';
+
+	import { SplitAndCapitalise } from '/src/ts/utils';
+
+	export let bugs: Bug[];
+
+	const dispatch = createEventDispatcher();
+
+	const severetyColors = {
+		severe: {
+			bg: '#B91C1C',
+			text: 'white'
+		},
+		high: {
+			bg: '#EF4444',
+			text: 'black'
+		},
+		medium: {
+			bg: '#E59E0B',
+			text: 'black'
+		},
+		low: {
+			bg: '#60A5FA',
+			text: 'black'
+		}
+	};
+
+	let lastSortMethod = 'id';
+	const sortBy = (val: string, elm: HTMLElement) => {
+		// Check if array has already been sorted for this property, if so reverse it, if not, sort it.
+		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+
+		if (lastSortMethod == val) {
+			bugs = bugs.reverse();
+		} else {
+			bugs = bugs.sort((a, b) => {
+				let sorting;
+				switch (val) {
+					case 'id':
+						// @ts-ignore
+						sorting = a.id - b.id;
+						break;
+					case 'title':
+						sorting = a.title < b.title ? -1 : a.title > b.title ? 1 : 0;
+						break;
+					case 'severity':
+						// Convertin Severity value to int using indexOf
+						const s = ['severe', 'high', 'medium', 'low'];
+						sorting = s.indexOf(a.details.severity) - s.indexOf(b.details.severity);
+						break;
+					case 'status':
+						// Convertin Severity value to int using indexOf
+						const st = ['beingFixed', 'onHold', 'fixed', 'abandoned'];
+						sorting = st.indexOf(a.details.severity) - st.indexOf(b.details.severity);
+						break;
+				}
+				return sorting;
+			});
+
+			document.getElementById(lastSortMethod).classList.remove('sortedDown', 'sortedUp');
+		}
+
+		if (elm.classList.contains('sortedUp')) {
+			elm.classList.remove('sortedUp');
+			elm.classList.add('sortedDown');
+		} else if (elm.classList.contains('sortedDown')) {
+			elm.classList.remove('sortedDown');
+			elm.classList.add('sortedUp');
+		} else {
+			elm.classList.add('sortedUp');
+		}
+
+		lastSortMethod = val;
+	};
+</script>
+
+<div>
+	<table>
+		<tr>
+			<th class="sortedDown select-none" id="id" on:click={(e) => sortBy('id', e.target)}>#</th>
+			<th class="select-none" id="title" on:click={(e) => sortBy('title', e.target)}>Title</th>
+			<th class="select-none" id="severity" on:click={(e) => sortBy('severity', e.target)}>
+				Severity
+			</th>
+			<th class="select-none" id="status" on:click={(e) => sortBy('status', e.target)}>Status</th>
+		</tr>
+		{#if bugs?.length > 0}
+			{#each bugs as bug}
+				{#if bug?.id != null}
+					<tr
+						on:click={() => dispatch('displayBug', { id: bugs.indexOf(bug) })}
+						class="hover:cursor-pointer"
+					>
+						<td>{bug.id}</td>
+						<td>{bug.title}</td>
+						<td
+							style="background-color: {severetyColors[bug.details.severity]
+								.bg}; color: {severetyColors[bug.details.severity].text}"
+						>
+							{SplitAndCapitalise(bug.details.severity)}
+						</td>
+						<td>{SplitAndCapitalise(bug.details.status)}</td>
+					</tr>
+				{/if}
+			{/each}
+		{/if}
+	</table>
+</div>
+
+<style>
+	/* Rounded borders for the table */
+	table {
+		border: 1px solid #000;
+		border-collapse: separate;
+		border-left: 0;
+		border-radius: 0.175rem;
+		border-spacing: 0px;
+		height: fit-content;
+	}
+	tr {
+		display: table-row;
+		vertical-align: inherit;
+		border-color: inherit;
+	}
+	th,
+	td {
+		padding: 5px 4px 6px 4px;
+		text-align: left;
+		vertical-align: top;
+		border-left: 1px solid #000;
+	}
+	td {
+		border-top: 1px solid #000;
+	}
+	th {
+		cursor: pointer;
+	}
+
+	:global(.sortedUp::after) {
+		content: '⯅';
+	}
+
+	:global(.sortedDown::after) {
+		content: '⯆';
+	}
+</style>
