@@ -32,6 +32,12 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"firebase": "^9.0.0-beta.7"
+		"@fortawesome/fontawesome-svg-core": "^1.2.36",
+		"@fortawesome/free-brands-svg-icons": "^5.15.4",
+		"@fortawesome/free-solid-svg-icons": "^5.15.4",
+		"firebase": "^9.0.0-beta.7",
+		"highlight.js": "^11.2.0",
+		"sanitize-html": "^2.4.0",
+		"showdown": "^1.9.1"
 	}
 }

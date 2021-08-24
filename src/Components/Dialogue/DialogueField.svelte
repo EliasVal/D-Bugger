@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { DialogueField } from 'src/global';
 
+	import TextEditor from './TextEditor.svelte';
+
 	export let field: DialogueField;
 </script>
 
@@ -15,6 +17,8 @@
 				<option value={option.value}>{option.text}</option>
 			{/each}
 		</select>
+	{:else if field.type == 'editor'}
+		<TextEditor {field} />
 	{:else}
 		<input
 			class="border border-black rounded-sm pl-1 outline-none font-mono w-full mt-1 mb-2"

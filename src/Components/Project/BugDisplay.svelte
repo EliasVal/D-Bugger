@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { bug } from '/src/ts/stores';
-	import { fade, fly, slide } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
+	import { DisplayDialogue, CloseDialogue } from '/src/ts/utils';
 
 	const dispatch = createEventDispatcher();
 
@@ -55,6 +56,12 @@
 	const removePlatform = (pName) => {
 		$bug.details.platforms = $bug.details.platforms.filter((n) => n != pName);
 	};
+
+	const updateDescription = (e) => {
+		console.log(e);
+		$bug.details.description = e.target.querySelector('textarea').value;
+		CloseDialogue();
+	};
 </script>
 
 <svelte:window bind:innerWidth={w} />
@@ -66,6 +73,7 @@
 			dispatch('saveBugChanges');
 		}}
 	>
+		<!--Bug Title-->
 		<div>
 			<label for="title">Title:</label><br />
 			<input
@@ -73,6 +81,36 @@
 				id="title"
 				type="text"
 				bind:value={$bug.title}
+			/>
+		</div>
+		<!--Bug Description-->
+		<div class="flex justify-between items-center">
+			<label for="title">Description:</label>
+			<input
+				class="border-2 border-black px-2 py-0.5 rounded-sm bg-transparent hover:bg-black hover:text-white transition-colors hover:cursor-pointer"
+				type="button"
+				value="View"
+				on:click={() =>
+					DisplayDialogue({
+						onSubmit: () => updateDescription,
+						submitBtnText: 'Confirm',
+						fields: [
+							{
+								type: 'editor',
+								id: 'editor',
+								name: 'Description',
+								placeholder: 'Enter Description...',
+								initialValue: $bug.details.description
+							}
+						],
+						buttons: [
+							{
+								title: 'Cancel',
+								onClick: () => CloseDialogue(),
+								stylingClasses: 'bg-transparent'
+							}
+						]
+					})}
 			/>
 		</div>
 		<!--Bug Severity-->

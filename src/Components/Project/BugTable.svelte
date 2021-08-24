@@ -78,7 +78,7 @@
 </script>
 
 <div>
-	<table>
+	<table class="w-full">
 		<tr>
 			<th class="sortedDown select-none" id="id" on:click={(e) => sortBy('id', e.target)}>#</th>
 			<th class="select-none" id="title" on:click={(e) => sortBy('title', e.target)}>Title</th>

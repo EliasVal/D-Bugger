@@ -93,8 +93,8 @@
 	};
 </script>
 
-<div class="projectMain flex gap-5 justify-between">
-	<div class="flex-grow">
+<div class="projectMain flex justify-between">
+	<div class="flex-grow mx-5 mt-5">
 		{#if bugs.length > 0}
 			{#key bugs}
 				<BugTable {bugs} on:displayBug={displayBug} />

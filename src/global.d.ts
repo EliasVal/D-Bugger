@@ -1,13 +1,14 @@
 /// <reference types="@sveltejs/kit" />
 
 export interface DialogueField {
-	type: 'number' | 'text' | 'choice';
+	type: 'number' | 'text' | 'choice' | 'editor';
 	options?: DialogueFieldSelectOption[];
 	placeholder: string;
 	name: string;
 	id: string;
 	maxlength?: number;
 	minlength?: number;
+	initialValue?: any;
 }
 
 export interface Project {
@@ -45,5 +46,6 @@ export interface Bug {
 		platforms?: string[];
 		assignedTo?: string[];
 		status: 'fixed' | 'onHold' | 'beingFixed' | 'abandoned';
+		description?: string;
 	};
 }
