@@ -11,7 +11,13 @@
 	import { fade } from 'svelte/transition';
 	import { project, user, isDisplayingBug } from '../../ts/stores';
 	import { getDatabase, onValue, ref, update, remove, set } from 'firebase/database';
-	import { CloseDialogue, CloseLoading, DisplayLoading, DisplayDialogue } from '/src/ts/utils';
+	import {
+		CloseDialogue,
+		CloseLoading,
+		DisplayLoading,
+		DisplayDialogue,
+		DisplayToast
+	} from '/src/ts/utils';
 	import Loading from '/src/Components/Loading.svelte';
 
 	export let slug;
@@ -114,6 +120,7 @@
 		);
 		$isDisplayingBug = false;
 		CloseLoading();
+		DisplayToast({ title: 'Bug Deleted Successfully!', duration: 5000 });
 	};
 
 	// Saving Changes
@@ -131,11 +138,7 @@
 			return;
 		});
 		CloseLoading();
-		DisplayDialogue({
-			header: 'Saved Successfully!',
-			submitBtnText: 'Okay!',
-			onSubmit: () => CloseDialogue
-		});
+		DisplayToast({ title: 'Saved Successfully!', duration: 5000 });
 	};
 
 	// Creating Bug
@@ -168,6 +171,7 @@
 		DisplayLoading();
 		await set(ref(db, `projects/${slug}/bugs/${bug.id}`), bug);
 		CloseLoading();
+		DisplayToast({ title: 'Bug Created Successfully!', duration: 5000 });
 	};
 </script>
 

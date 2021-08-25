@@ -1,5 +1,5 @@
 import type { DialogueValues } from 'src/global';
-import { dialogueValues, isDisplayingDialogue, isDisplayingLoading } from './stores';
+import { dialogueValues, isDisplayingDialogue, isDisplayingLoading, Toasts } from './stores';
 
 export const MakeId = (length) => {
 	var result = '';
@@ -34,6 +34,19 @@ export const DisplayLoading = () => {
 export const CloseLoading = () => {
 	isDisplayingLoading.set(false);
 	overflowYShow();
+};
+
+export const DisplayToast = (toastVals) => {
+	let toasts;
+
+	let unsubscribe = Toasts.subscribe((t) => {
+		toasts = t;
+	});
+	unsubscribe();
+
+	let temp = [{ ...toastVals, id: Date.now() }, ...toasts];
+	//if (temp.length > 5) temp.pop();
+	Toasts.update((t) => (t = temp));
 };
 
 const overflowYHide = () => (document.getElementsByTagName('html')[0].style.overflowY = 'hidden');

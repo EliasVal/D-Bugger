@@ -43,3 +43,4 @@ export const isDisplayingDialogue = writable(false);
 export const dialogueValues = writable(null);
 export const isDisplayingLoading = writable(false);
 export const isDisplayingBug = writable(false);
+export const Toasts = writable([]);

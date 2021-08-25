@@ -148,7 +148,7 @@
 	</button>
 </div>
 <div class:block={showingEditor} class:hidden={!showingEditor}>
-	<div class="editorToolbar w-full bg-gray-400 flex justify-start gap-1 py-0.5">
+	<div class="editorToolbar w-full bg-gray-400 flex justify-start py-0.5">
 		<button type="button" class="flex-1" title="Bold" on:click={() => StyleText('bold')}>
 			{@html icon(faBold).html}
 		</button>
