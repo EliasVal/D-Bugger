@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-
 	import Card from './Card.svelte';
 
 	const points = [
@@ -23,9 +21,9 @@
 
 <svelte:window bind:innerWidth={width} />
 
-<div>
-	<h1 class="text-4xl text-center">Roadmap</h1>
-	<div class="py-10">
+<div id="roadmap">
+	<h1 class="text-4xl text-center my-5">Roadmap</h1>
+	<div class="pt-5 pb-10">
 		{#if width >= 1024}
 			<!-- Dude is a king -->
 			<!-- https://tailwindcomponents.com/component/simple-vertical-timeline -->
@@ -98,3 +96,9 @@
 		{/if}
 	</div>
 </div>
+
+<style>
+	#roadmap {
+		scroll-margin-top: 4rem;
+	}
+</style>

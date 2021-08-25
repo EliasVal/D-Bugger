@@ -19,9 +19,9 @@
 				Welcome, <strong>{$user?.displayName ?? '...'}</strong>
 			</h3>
 			<div class="flex navList">
-				<a href="#projects">Projects</a>
-				<a href="#about">About Us</a>
-				<a href="">Roadmap</a>
+				<a class="px-2 sm:px-4" href="#projects">Projects</a>
+				<a class="px-2 sm:px-4" href="#about">About Us</a>
+				<a class="px-2 sm:px-4" href="#roadmap">Roadmap</a>
 			</div>
 			<button
 				on:click={SignOut}
@@ -47,8 +47,5 @@
 	.navList a:nth-child(odd) {
 		border-right: 1px solid white;
 		border-left: 1px solid white;
-	}
-	.navList a {
-		padding: 0 1rem;
 	}
 </style>
