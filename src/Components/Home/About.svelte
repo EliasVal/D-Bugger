@@ -1,7 +1,7 @@
 <script>
 	import IntersectionObserver from 'svelte-intersection-observer';
 
-	import AboutCard from './AboutCard.svelte';
+	import Card from './Card.svelte';
 
 	const cards = [
 		{
@@ -41,8 +41,7 @@
 	}
 </script>
 
-<div>
-	<hr class="w-full bg-black h-1" />
+<div id="about">
 	<div class="text-center my-5">
 		<h1 class="text-4xl">About us</h1>
 	</div>
@@ -55,10 +54,10 @@
 		</p>
 	</div>
 	<IntersectionObserver {element} bind:intersecting>
-		<div bind:this={element} class="flex flex-col my-24 mx-auto gap-10 aboutUs">
+		<div bind:this={element} class="flex flex-col mt-24 pb-24 mx-auto gap-10 aboutUs">
 			{#if intersecting || alreadyAnimated}
 				{#each cards as card}
-					<AboutCard
+					<Card
 						title={card.title}
 						description={card.description}
 						color={card.color}
@@ -89,5 +88,9 @@
 		:global(.aboutUs > div:nth-child(even)) {
 			align-self: flex-end;
 		}
+	}
+
+	#about {
+		scroll-margin-top: 4rem;
 	}
 </style>

@@ -16,6 +16,3 @@
 		{projectId ? `ID: ${projectId}` : ''}
 	</p>
 </div>
-
-<style>
-</style>

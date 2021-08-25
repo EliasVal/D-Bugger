@@ -26,7 +26,9 @@
 
 	// Components
 	import ProjectCard from '../Components/ProjectCard.svelte';
-	import About from '../Components/About/About.svelte';
+	import About from '../Components/Home/About.svelte';
+	import Thanks from '../Components/Home/Thanks.svelte';
+	import Roadmap from '../Components/Home/Roadmap.svelte';
 
 	let projects = writable([]);
 
@@ -35,11 +37,6 @@
 		auth = getAuth();
 	}
 	const db = getDatabase();
-	onMount(() => {
-		let projectsDiv = document.getElementById('projects');
-		let nav = document.getElementsByTagName('nav')[0];
-		projectsDiv.parentElement.style.minHeight = `calc(100vh - ${nav.offsetHeight}px - 8em)`;
-	});
 
 	const fields: DialogueField[] = [
 		{
@@ -52,9 +49,10 @@
 		}
 	];
 
+	let showProjects = true;
 	if (browser) {
 		user.subscribe((u) => {
-			if (u != 'unknown') {
+			if (u && u != 'unknown') {
 				// @ts-ignore
 				onValue(ref(db, `users/${$user.uid}`), async (snapshot) => {
 					let tmp = await snapshot.val().projects;
@@ -68,7 +66,7 @@
 						});
 					});
 				});
-			}
+			} else if (!u) showProjects = false;
 		});
 	}
 
@@ -105,26 +103,50 @@
 			});
 		});
 	};
+
+	onMount(() => {
+		if (!showProjects) return;
+		let projectsDiv = document.getElementById('projectsContainer');
+		let nav = document.getElementsByTagName('nav')[0];
+		projectsDiv.parentElement.style.minHeight = `calc(100vh - ${nav.offsetHeight}px - 8em)`;
+	});
 </script>
 
-<div class="m-16">
-	<div class="flex flex-wrap justify-around gap-x-6 gap-y-10" id="projects">
-		{#if $projects.length > 0}
-			{#each $projects as project}
-				<ProjectCard projectName={project.name} projectId={project.id} />
-			{/each}
-		{:else if $projects == ''}
-			<p>Loading...</p>
-		{/if}
-		{#if $projects != ''}
-			<div
-				class="projectCard border rounded-md border-gray-900 border-dotted w-48 h-28 p-2 flex flex-col justify-between hover:cursor-pointer"
-				on:click={() => displayCreateProjectDialogue()}
-			>
-				<h1>+ Create Project</h1>
-			</div>
-		{/if}
+{#if showProjects}
+	<div class="m-16" id="projects">
+		<div class="flex flex-wrap justify-around gap-x-6 gap-y-10" id="projectsContainer">
+			{#if $projects.length > 0}
+				{#each $projects as project}
+					<ProjectCard projectName={project.name} projectId={project.id} />
+				{/each}
+			{:else if $projects == ''}
+				<p>Loading...</p>
+			{/if}
+			{#if $projects != ''}
+				<div
+					class="projectCard border rounded-md border-gray-900 border-dotted w-48 h-28 p-2 flex flex-col justify-between hover:cursor-pointer"
+					on:click={() => displayCreateProjectDialogue()}
+				>
+					<h1>+ Create Project</h1>
+				</div>
+			{/if}
+		</div>
 	</div>
-</div>
+	<hr class="w-full bg-black h-1" />
+{/if}
 
 <About />
+
+<hr class="w-full bg-black h-1" />
+
+<Roadmap />
+
+<hr class="w-full bg-black h-1" />
+
+<Thanks />
+
+<style>
+	#projects {
+		scroll-margin-top: 12rem;
+	}
+</style>

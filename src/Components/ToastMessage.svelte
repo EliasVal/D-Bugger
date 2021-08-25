@@ -88,17 +88,4 @@
 	.toast {
 		box-shadow: 0 1px 5px 0 black;
 	}
-
-	/*.timeLine {
-		animation: to0 15s linear forwards;
-	}
-
-	@keyframes to0 {
-		0% {
-			transform: translateX(0) scaleX(1);
-		}
-		100% {
-			transform: translateX(-50%) scaleX(0);
-		}
-	}*/
 </style>

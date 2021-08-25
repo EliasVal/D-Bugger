@@ -8,7 +8,7 @@
 </script>
 
 <div
-	transition:fly={animationProperties}
+	in:fly={animationProperties}
 	class="w-fit p-4 text-white rounded-md max-w-full mx-10 sm:mx-0 sm:w-auto"
 	style="background-color: {color}"
 >
