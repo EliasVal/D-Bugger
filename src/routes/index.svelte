@@ -61,7 +61,7 @@
 						onValue(ref(db, `projects/${projId}`), async (projSnapshot) => {
 							let tmpProjectData = await projSnapshot.val();
 							if (tmpProjectData) {
-								projects.update((p) => (p = [...p, { name: tmpProjectData.name, id: projId }]));
+								projects.update((p) => (p = [...p, { ...tmpProjectData, id: projId }]));
 							}
 						});
 					});
@@ -90,8 +90,10 @@
 
 		DisplayLoading();
 		update(ref(db, `/projects/${genId}`), {
-			name: event.target[0].value,
-			owner: auth.currentUser.uid
+			details: {
+				name: event.target[0].value,
+				owner: auth.currentUser.uid
+			}
 		}).then((e) => {
 			get(ref(db, `/users/${auth.currentUser.uid}/projects`)).then(async (snapshot) => {
 				let userProjects: Array<string> = await snapshot.val();
@@ -117,7 +119,7 @@
 		<div class="flex flex-wrap justify-around gap-x-6 gap-y-10" id="projectsContainer">
 			{#if $projects.length > 0}
 				{#each $projects as project}
-					<ProjectCard projectName={project.name} projectId={project.id} />
+					<ProjectCard projectName={project.details.name} projectId={project.id} />
 				{/each}
 			{:else if $projects == ''}
 				<p>Loading...</p>

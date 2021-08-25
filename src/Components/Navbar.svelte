@@ -1,11 +1,12 @@
-<script context="module">
+<script>
+	// @ts-nocheck
+
 	import { user } from '../ts/stores';
 	import { signOut, getAuth } from 'firebase/auth';
 	import { goto } from '$app/navigation';
-</script>
 
-<script>
-	// @ts-nocheck
+	import { icon } from '@fortawesome/fontawesome-svg-core';
+	import { faSignInAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 	import { page } from '$app/stores';
 
@@ -26,8 +27,9 @@
 			<button
 				on:click={SignOut}
 				class="bg-red-600 rounded-sm px-2 py-1 text-white hover:bg-red-800 transition-colors"
+				title="Sign out"
 			>
-				Sign out
+				{@html icon(faSignOutAlt).html}
 			</button>
 		{:else}
 			<h3 class="inline">
@@ -36,8 +38,9 @@
 			<button
 				on:click={() => goto('/login')}
 				class="bg-green-500 rounded-sm px-2 py-1 text-white hover:bg-green-800 transition-colors"
+				title="Sign in"
 			>
-				Sign in
+				{@html icon(faSignInAlt).html}
 			</button>
 		{/if}
 	</nav>

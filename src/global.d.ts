@@ -13,8 +13,12 @@ export interface DialogueField {
 
 export interface Project {
 	bugs: Bug[];
-	users: string[];
-	owner: string;
+	details: {
+		users: string[];
+		owner: string;
+		name: string;
+		visiblity: 'private' | 'public';
+	};
 	[key: string]: any;
 }
 
