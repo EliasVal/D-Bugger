@@ -11,8 +11,8 @@
 		"build:only": "svelte-kit build",
 		"tailwind:watch": "cross-env TAILWIND_MODE=watch cross-env NODE_ENV=development postcss src/styles/tailwind.css -o src/styles/tailwind-output.css -w",
 		"tailwind:build": "cross-env TAILWIND_MODE=build cross-env NODE_ENV=production postcss src/styles/tailwind.css -o src/styles/tailwind-output.css",
-		"dev": "concurrently \"yarn run dev:only\" \"yarn run tailwind:watch\"",
-		"build": "yarn run tailwind:build && yarn run build:only"
+		"dev": "concurrently \"npm run dev:only\" \"npm run tailwind:watch\"",
+		"build": "npm run tailwind:build && npm run build:only"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-node": "^1.0.0-next.43",
@@ -44,7 +44,6 @@
 		"@fortawesome/free-solid-svg-icons": "^5.15.4",
 		"firebase": "^9.0.0",
 		"highlight.js": "^11.2.0",
-		"prismjs": "^1.24.1",
 		"sanitize-html": "^2.4.0",
 		"showdown": "^1.9.1"
 	}
