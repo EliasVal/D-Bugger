@@ -44,6 +44,7 @@
 		"@fortawesome/free-solid-svg-icons": "^5.15.4",
 		"firebase": "^9.0.0",
 		"highlight.js": "^11.2.0",
+		"prismjs": "^1.24.1",
 		"sanitize-html": "^2.4.0",
 		"showdown": "^1.9.1"
 	}

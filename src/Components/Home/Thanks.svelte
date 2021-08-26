@@ -32,6 +32,10 @@
 			help: 'Resolving Compilation Errors'
 		},
 		{
+			name: 'kursus75#2048',
+			help: 'Helped with website performance & loading times'
+		},
+		{
 			name: 'Svelte Discord Server',
 			help: 'Help With Other Problems & Such'
 		}

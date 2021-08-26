@@ -2,7 +2,7 @@
 	export const prerender = true;
 </script>
 
-<script lang="ts">
+<script>
 	import { Circle } from 'svelte-loading-spinners';
 	import {
 		browserLocalPersistence,
@@ -12,7 +12,7 @@
 	} from 'firebase/auth';
 
 	let isSigningIn = false;
-	const signIn = (e: Event) => {
+	const signIn = (e) => {
 		e.preventDefault();
 
 		isSigningIn = true;
@@ -23,7 +23,7 @@
 				.then((user) => {
 					window.location.pathname = '/';
 				})
-				.catch((e: Error) => {
+				.catch((e) => {
 					// @ts-ignore
 					switch (e.code) {
 						case 'auth/user-not-found':

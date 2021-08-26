@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { DialogueField } from 'src/global';
-	import Showdown from 'showdown';
 	import { icon } from '@fortawesome/fontawesome-svg-core';
 	import {
 		faBold,
@@ -11,13 +10,15 @@
 		faEye,
 		faKeyboard
 	} from '@fortawesome/free-solid-svg-icons';
-	import hljs from 'highlight.js/lib/common';
 	import 'highlight.js/styles/atom-one-dark.css';
-	import sanitizeHtml from 'sanitize-html/index.js';
 	import { onMount } from 'svelte';
+	import { DisplayLoading, CloseLoading } from '/src/ts/utils';
 	export let field: DialogueField;
 
-	let converter = new Showdown.Converter();
+	let hljs;
+	let sanitizeHtml;
+
+	let converter;
 	export let styling = null;
 	let text: string;
 
@@ -26,8 +27,15 @@
 	let showingEditor = true;
 	let wrapCodeBlocks = false;
 
-	onMount(() => {
+	onMount(async () => {
 		text = field?.initialValue ?? '';
+
+		DisplayLoading();
+		hljs = (await import('highlight.js/lib/common')).default;
+		sanitizeHtml = (await import('sanitize-html/index.js')).default;
+		let showdown = await import('showdown');
+		converter = new showdown.Converter();
+		CloseLoading();
 	});
 
 	const styles = {
@@ -172,24 +180,22 @@
 		bind:this={elm}
 	/>
 </div>
-<div
-	class:block={!showingEditor}
-	class:hidden={showingEditor}
-	class="preview bg-gray-400 rounded-b-md"
->
-	<div class="overflow-y-auto">
-		<p>
-			<span>
-				<label for="">Disable Code-Block wrapping</label>
-				<input type="checkbox" name="" id="" bind:checked={wrapCodeBlocks} />
-			</span>
-			<br />
-			{#key wrapCodeBlocks}
-				{@html highlightCode(converter.makeHtml(text))}
-			{/key}
-		</p>
+{#if !showingEditor}
+	<div class="preview bg-gray-400 rounded-b-md">
+		<div class="overflow-y-auto">
+			<p>
+				<span>
+					<label for="">Disable Code-Block wrapping</label>
+					<input type="checkbox" name="" id="" bind:checked={wrapCodeBlocks} />
+				</span>
+				<br />
+				{#key wrapCodeBlocks}
+					{@html highlightCode(converter.makeHtml(text))}
+				{/key}
+			</p>
+		</div>
 	</div>
-</div>
+{/if}
 
 <style global>
 	.editorToolbar button:nth-child(even) {
