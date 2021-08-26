@@ -9,8 +9,13 @@ const config = {
 	kit: {
 		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte',
-		adapter: node({ out: './build' }),
-		ssr: false
+		adapter: node({ out: './build', precompress: true }),
+		ssr: false,
+		vite: {
+			build: {
+				chunkSizeWarningLimit: 1000
+			}
+		}
 	}
 };
 

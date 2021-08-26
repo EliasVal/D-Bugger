@@ -1,3 +1,7 @@
+<script context="module">
+	export const prerender = true;
+</script>
+
 <script lang="ts">
 	import { Circle } from 'svelte-loading-spinners';
 	import {
@@ -5,8 +9,11 @@
 		setPersistence,
 		browserLocalPersistence,
 		createUserWithEmailAndPassword,
-		updateProfile
+		updateProfile,
+		sendEmailVerification
 	} from 'firebase/auth';
+
+	import { getDatabase, set, ref } from 'firebase/database';
 
 	let isSigningUp = false;
 	const signIn = (e: Event) => {
@@ -23,12 +30,20 @@
 		const auth = getAuth();
 		setPersistence(auth, browserLocalPersistence).then(() => {
 			createUserWithEmailAndPassword(auth, e.target[1].value, e.target[2].value)
-				.then((user) => {
-					updateProfile(auth.currentUser, {
+				.then(async (user) => {
+					// Set username in user's profile
+					await updateProfile(auth.currentUser, {
 						displayName: e.target[0].value
-					}).then(() => {
-						window.location.pathname = '/';
 					});
+					// Set username in user's DB
+					await set(ref(getDatabase(), `users/${auth.currentUser.uid}`), {
+						displayName: e.target[0].value
+					});
+
+					await sendEmailVerification(auth.currentUser);
+
+					// Redirect to index
+					window.location.pathname = '/';
 				})
 				.catch((e: Error) => {
 					// @ts-ignore
@@ -96,8 +111,8 @@
 </div>
 
 <style>
-	:global(#svelte > div) {
-		height: 100%;
+	:global(#svelte, html, body) {
+		height: 100vh;
 	}
 
 	.bg-main {

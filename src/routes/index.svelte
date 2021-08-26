@@ -1,3 +1,7 @@
+<script context="module">
+	export const prerender = true;
+</script>
+
 <script lang="ts">
 	// Types
 	import type { DialogueField } from 'src/global';
@@ -50,25 +54,6 @@
 	];
 
 	let showProjects = true;
-	if (browser) {
-		user.subscribe((u) => {
-			if (u && u != 'unknown') {
-				// @ts-ignore
-				onValue(ref(db, `users/${$user.uid}`), async (snapshot) => {
-					let tmp = await snapshot.val().projects;
-
-					await tmp.map((projId) => {
-						onValue(ref(db, `projects/${projId}`), async (projSnapshot) => {
-							let tmpProjectData = await projSnapshot.val();
-							if (tmpProjectData) {
-								projects.update((p) => (p = [...p, { ...tmpProjectData, id: projId }]));
-							}
-						});
-					});
-				});
-			} else if (!u) showProjects = false;
-		});
-	}
 
 	const displayCreateProjectDialogue = () => {
 		DisplayDialogue({
@@ -111,13 +96,33 @@
 		let projectsDiv = document.getElementById('projectsContainer');
 		let nav = document.getElementsByTagName('nav')[0];
 		projectsDiv.parentElement.style.minHeight = `calc(100vh - ${nav.offsetHeight}px - 8em)`;
+
+		user.subscribe((u) => {
+			if (u && u != 'unknown') {
+				// @ts-ignore
+				onValue(ref(db, `users/${$user.uid}`), async (snapshot) => {
+					let tmp = await snapshot.val().projects;
+
+					if (tmp) {
+						await tmp.map((projId) => {
+							onValue(ref(db, `projects/${projId}`), async (projSnapshot) => {
+								let tmpProjectData = await projSnapshot.val();
+								if (tmpProjectData) {
+									projects.update((p) => (p = [...p, { ...tmpProjectData, id: projId }]));
+								}
+							});
+						});
+					} else $projects = null;
+				});
+			} else if (!u) showProjects = false;
+		});
 	});
 </script>
 
 {#if showProjects}
 	<div class="m-16" id="projects">
 		<div class="flex flex-wrap justify-around gap-x-6 gap-y-10" id="projectsContainer">
-			{#if $projects.length > 0}
+			{#if $projects?.length > 0}
 				{#each $projects as project}
 					<ProjectCard projectName={project.details.name} projectId={project.id} />
 				{/each}

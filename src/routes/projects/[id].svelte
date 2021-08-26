@@ -8,8 +8,9 @@
 	import type { Bug, DialogueField } from 'src/global';
 
 	import ProjectMain from '/src/Components/Project/ProjectMain.svelte';
+	import ProjectSettings from '/src/Components/Project/ProjectSettings.svelte';
 	import { fade } from 'svelte/transition';
-	import { project, user, isDisplayingBug } from '../../ts/stores';
+	import { project, user, isDisplayingBug, isDisplayingProjectSettings } from '../../ts/stores';
 	import { getDatabase, onValue, ref, update, remove, set } from 'firebase/database';
 	import {
 		CloseDialogue,
@@ -19,6 +20,7 @@
 		DisplayToast
 	} from '/src/ts/utils';
 	import Loading from '/src/Components/Loading.svelte';
+	import { goto } from '$app/navigation';
 
 	export let slug;
 
@@ -83,7 +85,11 @@
 
 	let currUser = 'loading';
 	user.subscribe((u) => {
-		if (u != 'unknown') {
+		if (u != 'unknown' && u) {
+			// @ts-ignore
+			if (!u.emailVerified) {
+				goto('/');
+			}
 			onValue(ref(db, `projects/${slug}`), async (snapshot) => {
 				project.set(await snapshot.val());
 				currUser = u;
@@ -187,14 +193,18 @@
 	</style>
 </svelte:head>
 
-{#if currUser == 'loading'}
-	<div class="bg-gray-900 fixed w-full h-full" out:fade>
-		<Loading />
-	</div>
+{#if !$isDisplayingProjectSettings}
+	{#if currUser == 'loading'}
+		<div class="bg-gray-900 fixed w-full h-full" out:fade>
+			<Loading />
+		</div>
+	{:else}
+		<ProjectMain
+			on:deleteBug={displayDeleteBug}
+			on:createBug={displayCreateBug}
+			on:saveBugChanges={saveBugChanges}
+		/>
+	{/if}
 {:else}
-	<ProjectMain
-		on:deleteBug={displayDeleteBug}
-		on:createBug={displayCreateBug}
-		on:saveBugChanges={saveBugChanges}
-	/>
+	<ProjectSettings />
 {/if}

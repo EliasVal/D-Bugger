@@ -11,9 +11,9 @@
 		faEye,
 		faKeyboard
 	} from '@fortawesome/free-solid-svg-icons';
-	import hljs from 'highlight.js';
+	import hljs from 'highlight.js/lib/common';
 	import 'highlight.js/styles/atom-one-dark.css';
-	import sanitizeHtml from 'sanitize-html/index';
+	import sanitizeHtml from 'sanitize-html/index.js';
 	import { onMount } from 'svelte';
 	export let field: DialogueField;
 

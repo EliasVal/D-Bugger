@@ -8,6 +8,7 @@
 </script>
 
 <script>
+	import '../styles/tailwind-output.css';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/env';
 
@@ -33,6 +34,14 @@
 
 	user.subscribe((u) => {
 		if (browser && u != 'unknown') {
+			// @ts-ignore
+			if (u && !u.emailVerified) {
+				DisplayToast({
+					title: 'Please verify your account',
+					desc: "Check your E-Mail's inbox to verify your account.",
+					duration: 20000
+				});
+			}
 			if (!u && !pathIsLoginOrSignup) {
 				DisplayToast({ title: 'Log in to view your projects.', duration: 20000 });
 			} else if (u && pathIsLoginOrSignup) {
@@ -71,10 +80,6 @@
 </div>
 
 <style>
-	@tailwind base;
-	@tailwind components;
-	@tailwind utilities;
-
 	:global(html, body, #svelte) {
 		scroll-behavior: smooth;
 	}
