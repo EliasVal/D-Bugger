@@ -8,7 +8,7 @@
 </script>
 
 <script>
-	import '../styles/tailwind-output.css';
+	//import '../styles/tailwind-output.css';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/env';
 
@@ -83,4 +83,8 @@
 	:global(html, body, #svelte) {
 		scroll-behavior: smooth;
 	}
+
+	@tailwind base;
+	@tailwind components;
+	@tailwind utilities;
 </style>
