@@ -1,20 +1,16 @@
 {
 	"short_name": "D-Bugger",
-	"name": "Put smthn here",
+	"name": "D-Bugger",
 	"icons": [
 		{
-			"src": "ico192.png",
-			"type": "image/png",
-			"sizes": "192x192"
-		},
-		{
-			"src": "ico512.png",
-			"type": "image/png",
-			"sizes": "512x512"
+			"src": "icon-app.svg",
+			"sizes": "any",
+			"type": "image/svg+xml",
+			"purpose": "any"
 		}
 	],
 	"start_url": ".",
 	"display": "standalone",
-	"theme_color": "#000000",
+	"theme_color": "#D61204",
 	"background_color": "#ffffff"
 }

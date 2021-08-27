@@ -109,6 +109,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>D-Bugger</title>
+</svelte:head>
+
 {#if showProjects}
 	<div class="m-16" id="projects">
 		<div class="flex flex-wrap justify-around gap-x-6 gap-y-10" id="projectsContainer">
