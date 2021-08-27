@@ -52,11 +52,16 @@
 <div class="toast relative bg-blue-300 w-96 border border-black">
 	<div class="flex flex-row-reverse justify-between pb-2">
 		<div class="text-blue-400 mr-2 mt-1 whitespace-nowrap">
-			<button on:click={() => dispatch('removeToast', { id: toast.id })} class="mr-1">
+			<button
+				aria-label="Close"
+				title="Close"
+				on:click={() => dispatch('removeToast', { id: toast.id })}
+				class="mr-1"
+			>
 				{@html icon(faTimes).html}
 			</button>
 			{#if toast.desc?.length > 0}
-				<button on:click={() => (isOpen = !isOpen)}>
+				<button aria-label="Expand" title="Expand" on:click={() => (isOpen = !isOpen)}>
 					{@html icon(isOpen ? faChevronDown : faChevronUp).html}
 				</button>
 			{/if}

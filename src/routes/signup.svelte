@@ -63,6 +63,9 @@
 	};
 </script>
 
+<svelte:head>
+	<meta name="title" content="D-Bugger | Sign up" />
+</svelte:head>
 <div class="bg-main w-full h-full flex items-center justify-around">
 	<div class="bg-white px-4 py-10 w-max flex flex-col rounded-md shadow-2xl">
 		<h4 class="text-center mb-auto font-light text-4xl">D-Bugger | Sign-up</h4>

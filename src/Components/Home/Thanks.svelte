@@ -44,26 +44,26 @@
 	let peopleList: HTMLElement;
 	let helpList: HTMLElement;
 
-	onMount(() => {
+	/*onMount(() => {
 		// Parent has margin left/right of auto
 		// Resizing help list element to make it even with the people list
 		// So it could be centered correctly
 		helpList.style.width = `${peopleList.clientWidth}px`;
-	});
+	});*/
 </script>
 
-<div class="mt-5">
-	<h1 class="text-4xl mb-5 text-center">Special Thanks to:</h1>
-	<div class="flex gap-5 w-fit mx-auto">
-		<div bind:this={peopleList}>
-			{#each people as person}
-				<p class="text-right">{person.name}</p>
-			{/each}
-		</div>
-		<div class="whitespace-nowrap" bind:this={helpList}>
-			{#each people as person}
-				<p>{person.help}</p>
-			{/each}
-		</div>
+<div class="mt-5 pb-10">
+	<h1 class="text-4xl mb-10 text-center">Special Thanks to:</h1>
+	<div class="flex flex-col gap-5 w-fit mx-auto">
+		{#each people as person}
+			<div
+				class="flex gap-1 sm:gap-10 text-center justify-between flex-col sm:flex-row sm:border-b sm:border-black sm:border-opacity-40"
+			>
+				<p class="border-b border-black sm:border-b-0">{person.name}</p>
+				<div>
+					<p>{person.help}</p>
+				</div>
+			</div>
+		{/each}
 	</div>
 </div>

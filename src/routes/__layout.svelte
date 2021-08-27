@@ -61,7 +61,9 @@
 {#if !pathIsLoginOrSignup}
 	<Navbar />
 {/if}
-<slot />
+<div class={!pathIsLoginOrSignup && ' mt-28'}>
+	<slot />
+</div>
 {#if $isDisplayingDialogue}
 	<Dialogue {...$dialogueValues} />
 {/if}
@@ -69,7 +71,7 @@
 	<Loading />
 {/if}
 
-<div class="sticky inset-0">
+<div class="sticky inset-0 z-30">
 	<div class="absolute bottom-0 left-0 m-3 flex flex-col gap-3">
 		{#each $Toasts as toast (toast.id)}
 			<div in:slide out:fly={{ x: -500 }} animate:flip={{ duration: 500 }}>

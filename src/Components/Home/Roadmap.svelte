@@ -48,7 +48,7 @@
 									style="background-color: {colors[Math.floor(Math.random() * colors.length)]}"
 									class="order-1 rounded-lg shadow-xl w-5/12 px-6 py-4"
 								>
-									<h3 class="mb-3 font-bold text-white text-xl">{point.title}</h3>
+									<h2 class="mb-3 font-bold text-white text-xl">{point.title}</h2>
 									<p class="text-sm leading-snug tracking-wide text-white text-opacity-100">
 										{point.description}
 									</p>
@@ -70,7 +70,7 @@
 									style="background-color: {colors[Math.floor(Math.random() * colors.length)]}"
 									class="order-1 rounded-lg shadow-xl w-5/12 px-6 py-4"
 								>
-									<h3 class="mb-3 font-bold text-white text-xl">{point.title}</h3>
+									<h2 class="mb-3 font-bold text-white text-xl">{point.title}</h2>
 									<p
 										class="text-sm font-medium leading-snug tracking-wide text-white text-opacity-100"
 									>
