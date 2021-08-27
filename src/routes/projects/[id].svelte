@@ -11,16 +11,19 @@
 	import ProjectSettings from '/src/Components/Project/ProjectSettings.svelte';
 	import { fade } from 'svelte/transition';
 	import { project, user, isDisplayingBug, isDisplayingProjectSettings } from '../../ts/stores';
-	import { getDatabase, onValue, ref, update, remove, set } from 'firebase/database';
+	import { getDatabase, onValue, ref, remove, set } from '../../ts/FirebaseImports';
+
 	import {
 		CloseDialogue,
 		CloseLoading,
 		DisplayLoading,
 		DisplayDialogue,
 		DisplayToast
-	} from '/src/ts/utils';
+	} from '../../ts/utils';
+
 	import Loading from '/src/Components/Loading.svelte';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	export let slug;
 
@@ -84,17 +87,19 @@
 	];
 
 	let currUser = 'loading';
-	user.subscribe((u) => {
-		if (u != 'unknown' && u) {
-			// @ts-ignore
-			if (!u.emailVerified) {
-				goto('/');
+	onMount(() => {
+		user.subscribe((u) => {
+			if (u != 'unknown' && u) {
+				// @ts-ignore
+				if (!u.emailVerified) {
+					goto('/');
+				}
+				onValue(ref(db, `projects/${slug}`), async (snapshot) => {
+					project.set(await snapshot.val());
+					currUser = u;
+				});
 			}
-			onValue(ref(db, `projects/${slug}`), async (snapshot) => {
-				project.set(await snapshot.val());
-				currUser = u;
-			});
-		}
+		});
 	});
 
 	const displayDeleteBug = (e) => {
@@ -182,7 +187,7 @@
 </script>
 
 <svelte:head>
-	<title>D-Bugger | {$project?.name == null ? 'Loading' : $project.name}</title>
+	<title>D-Bugger | {$project?.details?.name == null ? 'Loading' : $project.details.name}</title>
 	<style>
 		body,
 		html,

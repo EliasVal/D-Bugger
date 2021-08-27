@@ -4,16 +4,18 @@
 
 <script lang="ts">
 	import { Circle } from 'svelte-loading-spinners';
+
 	import {
 		getAuth,
 		setPersistence,
 		browserLocalPersistence,
 		createUserWithEmailAndPassword,
 		updateProfile,
-		sendEmailVerification
-	} from 'firebase/auth';
-
-	import { getDatabase, set, ref } from 'firebase/database';
+		sendEmailVerification,
+		getDatabase,
+		set,
+		ref
+	} from '../ts/FirebaseImports';
 
 	let isSigningUp = false;
 	const signIn = (e: Event) => {

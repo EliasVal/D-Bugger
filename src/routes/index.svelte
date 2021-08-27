@@ -3,11 +3,8 @@
 	import type { DialogueField } from 'src/global';
 
 	// Packages & Libs
-	import { getDatabase, ref, onValue, update, get, set } from 'firebase/database';
-	import { getAuth } from 'firebase/auth';
+	import { getDatabase, getAuth, ref, onValue, update, get, set } from '../ts/FirebaseImports';
 
-	// $App
-	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
 
 	// Svelte
@@ -30,13 +27,10 @@
 	import Thanks from '../Components/Home/Thanks.svelte';
 	import Roadmap from '../Components/Home/Roadmap.svelte';
 
-	let projects = writable([]);
-
-	let auth;
-	if (browser) {
-		auth = getAuth();
-	}
+	const auth = getAuth();
 	const db = getDatabase();
+
+	let projects = writable([]);
 
 	const fields: DialogueField[] = [
 		{

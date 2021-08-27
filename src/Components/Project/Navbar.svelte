@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { faSignOutAlt, faHome, faCog } from '@fortawesome/free-solid-svg-icons';
 	import { icon } from '@fortawesome/fontawesome-svg-core';
-	import { signOut, getAuth } from 'firebase/auth';
+	import { signOut, getAuth } from '/src/ts/FirebaseImports';
 	import { goto } from '$app/navigation';
 	import { slide } from 'svelte/transition';
 	import { onMount } from 'svelte';

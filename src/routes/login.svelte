@@ -9,7 +9,7 @@
 		getAuth,
 		signInWithEmailAndPassword,
 		setPersistence
-	} from 'firebase/auth';
+	} from '../ts/FirebaseImports';
 
 	let isSigningIn = false;
 	const signIn = (e) => {

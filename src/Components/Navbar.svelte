@@ -2,7 +2,7 @@
 	// @ts-nocheck
 
 	import { user } from '../ts/stores';
-	import { signOut, getAuth } from 'firebase/auth';
+	import { signOut, getAuth } from '../ts/FirebaseImports';
 	import { goto } from '$app/navigation';
 
 	import { icon } from '@fortawesome/fontawesome-svg-core';
