@@ -18,6 +18,10 @@ module.exports = {
 		node: true
 	},
 	rules: {
-		'prefer-const': off
+		quotes: ['error', 'single'],
+		'@typescript-eslint/ban-ts-comment': 'off',
+		'@typescript-eslint/explicit-module-boundary-types': 'off',
+		'no-case-declarations': 'off',
+		'css-unused-selector': 'off'
 	}
 };

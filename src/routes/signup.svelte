@@ -32,7 +32,7 @@
 		const auth = getAuth();
 		setPersistence(auth, browserLocalPersistence).then(() => {
 			createUserWithEmailAndPassword(auth, e.target[1].value, e.target[2].value)
-				.then(async (user) => {
+				.then(async () => {
 					// Set username in user's profile
 					await updateProfile(auth.currentUser, {
 						displayName: e.target[0].value
@@ -47,14 +47,14 @@
 					// Redirect to index
 					window.location.pathname = '/';
 				})
-				.catch((e: Error) => {
+				.catch((err: Error) => {
 					// @ts-ignore
-					switch (e.code) {
+					switch (err.code) {
 						case 'auth/user-not-found':
-							alert("This user doesn't exist!");
+							alert('This user doesn\'t exist!');
 							break;
 						default:
-							alert(e.message);
+							alert(err.message);
 							break;
 					}
 					isSigningUp = false;

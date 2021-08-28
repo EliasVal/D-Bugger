@@ -20,14 +20,14 @@
 		const auth = getAuth();
 		setPersistence(auth, browserLocalPersistence).then(() => {
 			signInWithEmailAndPassword(auth, e.target[0].value, e.target[1].value)
-				.then((user) => {
+				.then(() => {
 					window.location.pathname = '/';
 				})
 				.catch((e) => {
 					// @ts-ignore
 					switch (e.code) {
 						case 'auth/user-not-found':
-							alert("This user doesn't exist!");
+							alert('This user doesn\'t exist!');
 							break;
 						default:
 							alert(e.message);

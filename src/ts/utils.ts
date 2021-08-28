@@ -1,52 +1,52 @@
 import type { DialogueValues } from 'src/global';
 import { dialogueValues, isDisplayingDialogue, isDisplayingLoading, Toasts } from './stores';
 
-export const MakeId = (length) => {
-	var result = '';
-	var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	var charactersLength = characters.length;
-	for (var i = 0; i < length; i++) {
+export const MakeId = (length: number): string => {
+	let result = '';
+	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	const charactersLength = characters.length;
+	for (let i = 0; i < length; i++) {
 		result += characters.charAt(Math.floor(Math.random() * charactersLength));
 	}
 	return result;
 };
 
-export const SplitAndCapitalise = (text: string) => {
-	let capitalised = text.replace(/([A-Z])/g, ' $1').trim();
+export const SplitAndCapitalise = (text: string): string => {
+	const capitalised = text.replace(/([A-Z])/g, ' $1').trim();
 	return capitalised.charAt(0).toUpperCase() + capitalised.substring(1);
 };
 
-export const DisplayDialogue = (values: DialogueValues) => {
+export const DisplayDialogue = (values: DialogueValues): void => {
 	overflowYHide();
 	isDisplayingDialogue.set(true);
 	dialogueValues.set(values);
 };
 
-export const CloseDialogue = () => {
+export const CloseDialogue = (): void => {
 	isDisplayingDialogue.set(false);
 	overflowYShow();
 };
 
-export const DisplayLoading = () => {
+export const DisplayLoading = (): void => {
 	overflowYHide();
 	isDisplayingLoading.set(true);
 };
-export const CloseLoading = () => {
+export const CloseLoading = (): void => {
 	isDisplayingLoading.set(false);
 	overflowYShow();
 };
 
-export const DisplayToast = (toastVals) => {
+export const DisplayToast = (params: Record<string, unknown>): void => {
 	let toasts;
 
-	let unsubscribe = Toasts.subscribe((t) => {
+	const unsubscribe = Toasts.subscribe((t) => {
 		toasts = t;
 	});
 	unsubscribe();
 
-	let temp = [{ ...toastVals, id: Date.now() }, ...toasts];
+	const temp = [{ ...params, id: Date.now() }, ...toasts];
 	//if (temp.length > 5) temp.pop();
-	Toasts.update((t) => (t = temp));
+	Toasts.set(temp);
 };
 
 const overflowYHide = () => (document.getElementsByTagName('html')[0].style.overflowY = 'hidden');

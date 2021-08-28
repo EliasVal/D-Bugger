@@ -22,7 +22,7 @@
 			help: 'Feedback'
 		},
 		{
-			name: "Simon's Cult Discord Server",
+			name: 'Simon\'s Cult Discord Server',
 			help: 'Feedback'
 		},
 		{

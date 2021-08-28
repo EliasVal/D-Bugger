@@ -7,7 +7,7 @@
 		{
 			title: 'Open Source',
 			description:
-				"We're an Open-Source Project with the entire code being available on our github page.",
+				'We\'re an Open-Source Project with the entire code being available on our github page.',
 			color: '#EF4444',
 			animDelay: 100
 		},

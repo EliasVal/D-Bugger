@@ -44,14 +44,14 @@
 			if (u && !u.emailVerified) {
 				DisplayToast({
 					title: 'Please verify your account',
-					desc: "Check your E-Mail's inbox to verify your account.",
+					desc: 'Check your E-Mail\'s inbox to verify your account.',
 					duration: 20000
 				});
 			}
 			if (!u && !pathIsLoginOrSignup) {
 				DisplayToast({ title: 'Log in to view your projects.', duration: 20000 });
 			} else if (u && pathIsLoginOrSignup) {
-				DisplayToast({ title: "You're already logged in.", duration: 5000 });
+				DisplayToast({ title: 'You\'re already logged in.', duration: 5000 });
 				goto('/');
 			}
 		}

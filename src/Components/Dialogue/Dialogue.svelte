@@ -8,8 +8,8 @@
 	export let fields: DialogueField[] = [];
 	export let buttons: DialogueButton[] = [];
 
-	export let onSubmit: Function;
-	export let submitBtnText: string = 'Submit';
+	export let onSubmit: () => void;
+	export let submitBtnText = 'Submit';
 
 	export let header: string | null = null;
 	export let headerStyles: string | null = null;
