@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-
 	const people = [
 		{
 			name: 'AngeI#9333',
@@ -40,16 +38,6 @@
 			help: 'Help With Other Problems & Such'
 		}
 	];
-
-	let peopleList: HTMLElement;
-	let helpList: HTMLElement;
-
-	/*onMount(() => {
-		// Parent has margin left/right of auto
-		// Resizing help list element to make it even with the people list
-		// So it could be centered correctly
-		helpList.style.width = `${peopleList.clientWidth}px`;
-	});*/
 </script>
 
 <div class="mt-5 pb-10">

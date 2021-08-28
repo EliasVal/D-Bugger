@@ -68,9 +68,11 @@
 						<a href="#roadmap" title="Roadmap">{@html icon(faRoute).html}</a>
 					</div>
 				{:else}
-					<div>
+					<div class="flex">
+						<!--The style tag is magic numbers that make the buttons even. No I don't know either.-->
 						<button
-							class="px-4 text-xl"
+							class="text-xl"
+							style="padding: 0 0.9375rem; max-width: 52px;"
 							title="Home"
 							on:click={() => goto('/')}
 							in:fly={{ x: 20, duration: 1000, delay: 750 }}
