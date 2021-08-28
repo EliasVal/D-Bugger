@@ -37,9 +37,7 @@
 						{#if points.indexOf(point) % 2 != 0}
 							<div class="mb-8 flex justify-between items-center w-full right-timeline">
 								<div class="order-1 w-5/12" />
-								<div
-									class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full"
-								>
+								<div class="point">
 									<h1 class="mx-auto font-semibold text-lg text-white">
 										{points.indexOf(point) + 1}
 									</h1>
@@ -59,9 +57,7 @@
 								class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline"
 							>
 								<div class="order-1 w-5/12" />
-								<div
-									class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full"
-								>
+								<div class="point">
 									<h1 class="mx-auto text-white font-semibold text-lg">
 										{points.indexOf(point) + 1}
 									</h1>
@@ -100,5 +96,10 @@
 <style>
 	#roadmap {
 		scroll-margin-top: 4rem;
+	}
+
+	.point {
+		z-index: 3;
+		@apply flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full;
 	}
 </style>

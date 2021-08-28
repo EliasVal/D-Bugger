@@ -4,6 +4,7 @@
 
 	// Packages & Libs
 	import { getDatabase, getAuth, ref, onValue, update, get, set } from '../ts/FirebaseImports';
+	import { Stretch } from 'svelte-loading-spinners';
 
 	import { goto } from '$app/navigation';
 
@@ -85,7 +86,7 @@
 		if (!showProjects) return;
 		let projectsDiv = document.getElementById('projectsContainer');
 		let nav = document.getElementsByTagName('nav')[0];
-		projectsDiv.parentElement.style.minHeight = `calc(100vh - ${nav.offsetHeight}px - 8em)`;
+		projectsDiv.parentElement.style.minHeight = `calc(100vh - ${nav.offsetHeight}px)`;
 
 		user.subscribe((u) => {
 			if (u && u != 'unknown') {
@@ -119,23 +120,33 @@
 </svelte:head>
 
 {#if showProjects}
-	<div class="m-16" id="projects">
-		<div class="flex flex-wrap justify-around gap-x-6 gap-y-10" id="projectsContainer">
-			{#if $projects?.length > 0}
-				{#each $projects as project}
-					<ProjectCard projectName={project.details.name} projectId={project.id} />
-				{/each}
-			{:else if $projects == ''}
-				<p>Loading...</p>
-			{/if}
-			{#if $projects != ''}
-				<div
-					class="projectCard border rounded-md border-gray-900 border-dotted w-48 h-28 p-2 flex flex-col justify-between hover:cursor-pointer"
-					on:click={() => displayCreateProjectDialogue()}
-				>
-					<h1>+ Create Project</h1>
-				</div>
-			{/if}
+	<div id="projects">
+		{#if $projects != ''}
+			<h1 class="text-center text-4xl my-5 mb-10">Projects</h1>
+		{/if}
+		<div class="flex flex-col">
+			<div
+				class="flex flex-grow self-stretch flex-wrap justify-around gap-x-6 gap-y-10"
+				id="projectsContainer"
+			>
+				{#if $projects?.length > 0}
+					{#each $projects as project}
+						<ProjectCard projectName={project.details.name} projectId={project.id} />
+					{/each}
+				{:else if $projects == ''}
+					<div class="justify-self-center self-center">
+						<Stretch color="#000" />
+					</div>
+				{/if}
+				{#if $projects != ''}
+					<div
+						class="projectCard border rounded-md border-gray-900 border-dotted w-48 h-28 p-2 flex flex-col justify-between hover:cursor-pointer"
+						on:click={() => displayCreateProjectDialogue()}
+					>
+						<h1>+ Create Project</h1>
+					</div>
+				{/if}
+			</div>
 		</div>
 	</div>
 	<hr class="w-full bg-black h-1" />

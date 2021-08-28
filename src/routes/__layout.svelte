@@ -67,7 +67,7 @@
 {#if !pathIsLoginOrSignup}
 	<Navbar />
 {/if}
-<div class="{pathIsIndex && ' mt-28'} {!pathIsIndex && !pathIsLoginOrSignup && 'pt-14'} h-full">
+<div class="{!pathIsLoginOrSignup && 'pt-14'} h-full">
 	<slot />
 </div>
 {#if $isDisplayingDialogue}

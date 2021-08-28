@@ -87,7 +87,7 @@
 	];
 
 	let currUser = 'loading';
-	onMount(() => {
+	onMount(async () => {
 		user.subscribe((u) => {
 			if (u != 'unknown' && u) {
 				// @ts-ignore
