@@ -19,7 +19,10 @@
 
 	import { page } from '$app/stores';
 
-	const SignOut = () => signOut(getAuth());
+	const SignOut = async () => {
+		await signOut(getAuth());
+		if ($page.path != '/') goto('/');
+	};
 
 	let bWidth;
 	let isDisplaying = true;

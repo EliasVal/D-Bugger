@@ -93,12 +93,14 @@
 	};
 </script>
 
-<div class="projectMain flex justify-between">
+<div class="h-full flex justify-between">
 	<div class="flex-grow mx-5 mt-5">
-		{#if bugs.length > 0}
+		{#if bugs?.length > 0}
 			{#key bugs}
 				<BugTable {bugs} on:displayBug={displayBug} />
 			{/key}
+		{:else}
+			<h2>There are no bugs! Great job!</h2>
 		{/if}
 		<button
 			class="border border-black rounded-sm px-1 py-0.5 hover:text-white hover:bg-black transition-colors mt-5"
@@ -123,7 +125,7 @@
 </div>
 
 <style>
-	.projectMain {
+	/*.projectMain {
 		height: calc(100% - 4rem);
 	}
 
@@ -131,5 +133,5 @@
 		.bugDisplay {
 			height: calc(100% - 4rem);
 		}
-	}
+	}*/
 </style>

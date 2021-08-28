@@ -71,7 +71,7 @@
 			}
 		}).then((e) => {
 			get(ref(db, `/users/${auth.currentUser.uid}/projects`)).then(async (snapshot) => {
-				let userProjects: Array<string> = await snapshot.val();
+				let userProjects: Array<string> = (await snapshot.val()) ?? [];
 				userProjects.push(genId);
 				set(ref(db, `/users/${auth.currentUser.uid}/projects`), userProjects).then((e) => {
 					goto(`/projects/${genId}`);

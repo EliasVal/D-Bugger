@@ -170,7 +170,7 @@
 	const createBug = async (e) => {
 		CloseDialogue();
 		const bug: Bug = {
-			id: $project.bugs.length,
+			id: $project.bugs?.length ?? 0,
 			title: e.target[0].value,
 			details: {
 				severity: e.target[1].value,
@@ -178,7 +178,7 @@
 			}
 		};
 
-		$project.bugs.push(bug);
+		$project.bugs ? $project.bugs.push(bug) : ($project.bugs = [bug]);
 		DisplayLoading();
 		await set(ref(db, `projects/${slug}/bugs/${bug.id}`), bug);
 		CloseLoading();

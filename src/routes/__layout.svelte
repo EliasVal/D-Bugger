@@ -1,12 +1,11 @@
-<script context="module">
+<!-- <script context="module">
 	export async function load({ page }) {
 		return {
 			props: { pathIsLoginOrSignup: page.path.includes('login') || page.path.includes('signup') },
 			status: 200
 		};
 	}
-</script>
-
+</script> -->
 <script>
 	//import '../styles/tailwind-output.css';
 	import { goto } from '$app/navigation';
@@ -29,8 +28,15 @@
 	import Dialogue from '/src/Components/Dialogue/Dialogue.svelte';
 	import Loading from '/src/Components/Loading.svelte';
 	import ToastMessage from '/src/Components/ToastMessage.svelte';
+	import { page } from '$app/stores';
 
-	export let pathIsLoginOrSignup;
+	let pathIsLoginOrSignup; // = $page.path.includes('login') || $page.path.includes('signup');
+	let pathIsIndex; // = $page.path == '/';
+
+	$: {
+		pathIsIndex = $page.path == '/';
+		pathIsLoginOrSignup = $page.path.includes('login') || $page.path.includes('signup');
+	}
 
 	user.subscribe((u) => {
 		if (browser && u != 'unknown') {
@@ -61,7 +67,7 @@
 {#if !pathIsLoginOrSignup}
 	<Navbar />
 {/if}
-<div class={!pathIsLoginOrSignup && ' mt-28'}>
+<div class="{pathIsIndex && ' mt-28'} {!pathIsIndex && !pathIsLoginOrSignup && 'pt-14'} h-full">
 	<slot />
 </div>
 {#if $isDisplayingDialogue}
