@@ -1,10 +1,10 @@
 <script>
 	// @ts-nocheck
 
-	import { user } from '../ts/stores';
+	import { user, isDisplayingProjectSettings } from '../ts/stores';
 	import { signOut, getAuth } from '../ts/FirebaseImports';
 	import { goto } from '$app/navigation';
-	import { fly } from 'svelte/transition';
+	import { fly, fade } from 'svelte/transition';
 
 	import { icon } from '@fortawesome/fontawesome-svg-core';
 	import {
@@ -14,7 +14,9 @@
 		faRoute,
 		faTasks,
 		faBook,
-		faUser
+		faUser,
+		faCog,
+		faHome
 	} from '@fortawesome/free-solid-svg-icons';
 
 	import { page } from '$app/stores';
@@ -55,7 +57,7 @@
 			height: calc(100% - {bWidth < 640 ? btnHeight + 10 : 0}px)"
 			>
 				{#if bWidth > 640 && $user}
-					<button class="px-2 py-1">{@html icon(faUser).html}</button>
+					<button title="User profile" class="px-2 py-1">{@html icon(faUser).html}</button>
 				{:else}
 					<span />
 				{/if}
@@ -65,7 +67,27 @@
 						<a href="#about" title="About">{@html icon(faBook).html}</a>
 						<a href="#roadmap" title="Roadmap">{@html icon(faRoute).html}</a>
 					</div>
-				{:else}{/if}
+				{:else}
+					<div>
+						<button
+							class="px-4 text-xl"
+							title="Home"
+							on:click={() => goto('/')}
+							in:fly={{ x: 20, duration: 1000, delay: 750 }}
+						>
+							{@html icon(faHome).html}
+						</button>
+						<span class="border border-white" in:fade={{ delay: 250 }} />
+						<button
+							class="px-4 text-xl"
+							title="Project Settings"
+							on:click={() => ($isDisplayingProjectSettings = !$isDisplayingProjectSettings)}
+							in:fly={{ x: -20, duration: 1000, delay: 750 }}
+						>
+							{@html icon(faCog).html}
+						</button>
+					</div>
+				{/if}
 				{#if $user}
 					<button
 						on:click={SignOut}
