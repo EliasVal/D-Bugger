@@ -70,11 +70,11 @@
 				name: event.target[0].value,
 				owner: auth.currentUser.uid
 			}
-		}).then((e) => {
+		}).then(() => {
 			get(ref(db, `/users/${auth.currentUser.uid}/projects`)).then(async (snapshot) => {
 				let userProjects: Array<string> = (await snapshot.val()) ?? [];
 				userProjects.push(genId);
-				set(ref(db, `/users/${auth.currentUser.uid}/projects`), userProjects).then((e) => {
+				set(ref(db, `/users/${auth.currentUser.uid}/projects`), userProjects).then(() => {
 					goto(`/projects/${genId}`);
 					CloseLoading();
 				});

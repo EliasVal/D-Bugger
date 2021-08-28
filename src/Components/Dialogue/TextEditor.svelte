@@ -153,7 +153,7 @@
 		<button type="button" class="flex-grow" on:click={() => (showingEditor = true)}>
 			{@html icon(faKeyboard).html} Editor
 		</button>
-		<span class="border-r border-gray-700" />
+		<span class="border-r border-gray-700"></span>
 		<button type="button" class="flex-grow" on:click={() => (showingEditor = false)}>
 			{@html icon(faEye).html} Preview
 		</button>
@@ -185,8 +185,7 @@
 			class={(styling ? styling : ' outline-none border border-black rounded-sm') +
 				' w-full resize-none p-1 h-80'}
 			bind:value={text}
-			bind:this={elm}
-		/>
+			bind:this={elm}></textarea>
 	</div>
 	{#if !showingEditor}
 		<div class="preview bg-gray-400 rounded-b-md">

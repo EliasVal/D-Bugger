@@ -47,12 +47,12 @@
 						sorting = a.title < b.title ? -1 : a.title > b.title ? 1 : 0;
 						break;
 					case 'severity':
-						// Convertin Severity value to int using indexOf
+						// Converting Severity value to int using indexOf
 						const s = ['severe', 'high', 'medium', 'low'];
 						sorting = s.indexOf(a.details.severity) - s.indexOf(b.details.severity);
 						break;
 					case 'status':
-						// Convertin Severity value to int using indexOf
+						// Converting Severity value to int using indexOf
 						const st = ['beingFixed', 'onHold', 'fixed', 'abandoned'];
 						sorting = st.indexOf(a.details.severity) - st.indexOf(b.details.severity);
 						break;

@@ -153,7 +153,7 @@
 	};
 
 	// Creating Bug
-	const displayCreateBug = (e) => {
+	const displayCreateBug = () => {
 		DisplayDialogue({
 			onSubmit: () => createBug,
 			submitBtnText: 'Create',

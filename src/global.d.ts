@@ -8,7 +8,7 @@ export interface DialogueField {
 	id: string;
 	maxlength?: number;
 	minlength?: number;
-	initialValue?: any;
+	initialValue?: unknown;
 }
 
 export interface Project {
@@ -17,13 +17,13 @@ export interface Project {
 		users: string[];
 		owner: string;
 		name: string;
-		visiblity: 'private' | 'public';
+		visibility: 'private' | 'public';
 	};
-	[key: string]: any;
+	[key: string]: unknown;
 }
 
 export interface DialogueButton {
-	onClick: Function;
+	onClick: () => void;
 	title: string;
 	stylingClasses?: string;
 }
@@ -36,7 +36,7 @@ export interface DialogueFieldSelectOption {
 export interface DialogueValues {
 	fields?: DialogueField[];
 	buttons?: DialogueButton[];
-	onSubmit: Function;
+	onSubmit: () => void;
 	submitBtnText: string;
 	header?: string;
 	headerStyles?: string;
