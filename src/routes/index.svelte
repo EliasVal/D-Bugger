@@ -131,7 +131,8 @@
     {/if}
     <div class="flex flex-col">
       <div
-        class="flex flex-grow self-stretch flex-wrap justify-around gap-x-6 gap-y-10"
+        class="flex {$projects == '' &&
+          'flex-grow'} self-stretch flex-wrap justify-around gap-x-6 gap-y-10"
         id="projectsContainer"
       >
         {#if $projects?.length > 0}

@@ -106,7 +106,7 @@
           goto('/');
         }
         onValue(ref(db, `projects/${slug}`), async (snapshot) => {
-          project.set(await snapshot.val());
+          project.set({ ...(await snapshot.val()), id: slug });
           currUser = u;
         });
       }

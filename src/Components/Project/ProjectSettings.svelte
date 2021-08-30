@@ -2,10 +2,15 @@
   import { project } from '/src/ts/stores';
   import { flip } from 'svelte/animate';
   import { slide } from 'svelte/transition';
-  import { DisplayToast, DisplayDialogue, CloseDialogue } from '/src/ts/utils';
-  import { getAuth } from '/src/ts/FirebaseImports';
+  import {
+    DisplayToast,
+    DisplayDialogue,
+    CloseDialogue,
+    DisplayLoading,
+    CloseLoading,
+  } from '/src/ts/utils';
   import { createEventDispatcher } from 'svelte';
-  import { get, getDatabase, ref, push } from '/src/ts/FirebaseImports';
+  import { get, getDatabase, ref, set, remove, getAuth } from '/src/ts/FirebaseImports';
 
   const dispatch = createEventDispatcher();
 
@@ -15,25 +20,63 @@
     $project.details.members = $project.details?.members.filter((m) => m != member);
   };
 
-  let sendInvite = () => {
+  let sendInvite = async () => {
+    DisplayLoading();
     if ($project.details?.members?.includes(addMemberID)) {
       DisplayToast({ title: 'This user is already part of the project!', duration: 3000 });
       addMemberID = '';
+      CloseLoading();
       return;
     } else if ($project.details?.pending?.includes(addMemberID)) {
       DisplayToast({ title: 'This user has already received an invite!', duration: 3000 });
       addMemberID = '';
+      CloseLoading();
       return;
     } else if (addMemberID == undefined || !addMemberID.replace(/\s/g, '').length) {
       DisplayToast({ title: 'This field cannot be empty!', duration: 3000 });
       addMemberID = '';
+      CloseLoading();
+      return;
+    }
+
+    const tempUser = await (
+      await get(ref(getDatabase(), `users/${addMemberID}/displayName`))
+    ).val();
+
+    if (!tempUser) {
+      DisplayToast({ title: 'This user does not exist!', duration: 3000 });
+      addMemberID = '';
+      CloseLoading();
       return;
     }
 
     $project.details.pending = $project.details?.pending
       ? [...$project.details?.pending, addMemberID]
       : [addMemberID];
+
+    await set(ref(getDatabase(), `users/${addMemberID}/inbox/invites/${$project.id}`), {
+      sender: getAuth().currentUser.uid,
+      read: false,
+    });
+
+    await set(
+      ref(getDatabase(), `projects/${$project.id}/details/pending`),
+      $project.details.pending,
+    );
+
     addMemberID = '';
+    CloseLoading();
+  };
+
+  let cancelInvite = async (member) => {
+    DisplayLoading();
+    $project.details.pending = $project.details.pending.filter((m) => m != member);
+    await remove(ref(getDatabase(), `users/${member}/inbox/invites/${$project.id}`));
+    await set(
+      ref(getDatabase(), `projects/${$project.id}/details/pending`),
+      $project.details.pending,
+    );
+    CloseLoading();
   };
 
   let deleteProject = (e) => {
