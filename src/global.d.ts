@@ -12,7 +12,7 @@ export interface DialogueField {
 }
 
 export interface Project {
-  bugs: Bug[];
+  bugs: Bugs;
   details: {
     users: string[];
     owner: string;
@@ -44,7 +44,7 @@ export interface DialogueValues {
 }
 
 export interface Bug {
-  id: number | string;
+  id: string;
   title: string;
   details: {
     severity: 'low' | 'medium' | 'high' | 'severe';
@@ -53,4 +53,8 @@ export interface Bug {
     status: 'fixed' | 'onHold' | 'beingFixed' | 'abandoned';
     description?: string;
   };
+}
+
+export interface Bugs {
+  [key: string]: Bug;
 }

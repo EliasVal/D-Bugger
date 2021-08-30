@@ -11,7 +11,16 @@
   import ProjectSettings from '/src/Components/Project/ProjectSettings.svelte';
   import { fade } from 'svelte/transition';
   import { project, user, isDisplayingBug, isDisplayingProjectSettings } from '../../ts/stores';
-  import { getDatabase, onValue, ref, remove, set } from '../../ts/FirebaseImports';
+  import {
+    getDatabase,
+    onValue,
+    ref,
+    remove,
+    set,
+    push,
+    update,
+    get,
+  } from '../../ts/FirebaseImports';
 
   import {
     CloseDialogue,
@@ -123,14 +132,7 @@
     const id = e.detail.id;
 
     DisplayLoading();
-    await remove(
-      ref(
-        db,
-        `projects/${slug}/bugs/${$project.bugs.indexOf(
-          $project.bugs.filter((bug) => bug.id == id)[0],
-        )}`,
-      ),
-    );
+    await remove(ref(db, `projects/${slug}/bugs/${id}`));
     $isDisplayingBug = false;
     CloseLoading();
     DisplayToast({ title: 'Bug Deleted Successfully!', duration: 5000 });
@@ -172,7 +174,7 @@
   const createBug = async (e) => {
     CloseDialogue();
     const bug: Bug = {
-      id: $project.bugs?.length ?? 0,
+      id: '...',
       title: e.target[0].value,
       details: {
         severity: e.target[1].value,
@@ -180,25 +182,37 @@
       },
     };
 
-    $project.bugs ? $project.bugs.push(bug) : ($project.bugs = [bug]);
     DisplayLoading();
-    await set(ref(db, `projects/${slug}/bugs/${bug.id}`), bug);
+    let res = await push(ref(db, `projects/${slug}/bugs`), { ...bug });
+    await update(res.ref, { id: res.key });
     CloseLoading();
     DisplayToast({ title: 'Bug Created Successfully!', duration: 5000 });
   };
 
-  const deleteProject = () => {
+  const deleteProject = async () => {
     CloseDialogue();
     DisplayLoading();
-    remove(ref(db, `projects/${slug}`))
-      .then(() => {
-        CloseLoading();
-        DisplayToast({ title: 'Project Deleted Successfully.', duration: 5000 });
-        goto('/');
-      })
-      .catch(() => {
-        DisplayToast({ title: 'Something went wrong!', duration: 5000 });
-      });
+
+    // Delete project from DB
+    await remove(ref(db, `projects/${slug}`));
+
+    // @ts-ignore
+    // Get user's projects
+    let userProjects = await get(ref(db, `users/${currUser.uid}/projects`));
+
+    // Await value
+    userProjects = await userProjects.val();
+
+    // @ts-ignore
+    // Remove deleted project's ID
+    userProjects = userProjects.filter((proj) => proj != slug);
+
+    // @ts-ignore
+    // Push changes
+    await set(ref(db, `users/${currUser.uid}/projects`), userProjects);
+    CloseLoading();
+    DisplayToast({ title: 'Project Deleted Successfully.', duration: 5000 });
+    goto('/');
   };
 </script>
 

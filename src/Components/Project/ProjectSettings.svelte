@@ -5,7 +5,7 @@
   import { DisplayToast, DisplayDialogue, CloseDialogue } from '/src/ts/utils';
   import { getAuth } from '/src/ts/FirebaseImports';
   import { createEventDispatcher } from 'svelte';
-  import { get, getDatabase, ref } from '/src/ts/FirebaseImports';
+  import { get, getDatabase, ref, push } from '/src/ts/FirebaseImports';
 
   const dispatch = createEventDispatcher();
 
@@ -15,9 +15,13 @@
     $project.details.members = $project.details?.members.filter((m) => m != member);
   };
 
-  let addMember = () => {
+  let sendInvite = () => {
     if ($project.details?.members?.includes(addMemberID)) {
       DisplayToast({ title: 'This user is already part of the project!', duration: 3000 });
+      addMemberID = '';
+      return;
+    } else if ($project.details?.pending?.includes(addMemberID)) {
+      DisplayToast({ title: 'This user has already received an invite!', duration: 3000 });
       addMemberID = '';
       return;
     } else if (addMemberID == undefined || !addMemberID.replace(/\s/g, '').length) {
@@ -26,8 +30,8 @@
       return;
     }
 
-    $project.details.members = $project.details?.members
-      ? [...$project.details?.members, addMemberID]
+    $project.details.pending = $project.details?.pending
+      ? [...$project.details?.pending, addMemberID]
       : [addMemberID];
     addMemberID = '';
   };
@@ -53,10 +57,10 @@
     </div>
 
     <div>
-      <label for="assignedTo">Members:</label><br />
+      <label for="members">Members:</label><br />
       <div class="flex flex-col">
-        <ul class="mt-2 mb-1" style="min-height: 40px">
-          {#if $project.details?.members?.length > 0}
+        {#if $project.details?.members?.length > 0}
+          <ul class="mt-2 mb-1" style="min-height: 40px">
             {#each $project.details?.members as member (member)}
               <li
                 class="bg-black text-white px-2 py-1 rounded-md my-1"
@@ -82,23 +86,57 @@
                 >
               </li>
             {/each}
-          {/if}
-        </ul>
-        <form on:submit|preventDefault={() => addMember()}>
-          <input
-            class="border rounded-sm border-black px-1 py-0.5 font-mono outline-none"
-            type="text"
-            placeholder="Enter name..."
-            id="assignedTo"
-            bind:value={addMemberID}
-          />
-          <input
-            type="submit"
-            value="Add"
-            class="border-2 border-black px-2 py-0.5 rounded-sm bg-transparent hover:bg-black hover:text-white transition-colors hover:cursor-pointer w-full mt-1"
-          />
-        </form>
+          </ul>
+        {/if}
       </div>
+    </div>
+    <div>
+      <label for="pending">Pending Invites:</label><br />
+      <div class="flex flex-col">
+        {#if $project.details?.pending?.length > 0}
+          <ul class="mt-2 mb-1" style="min-height: 40px">
+            {#each $project.details?.pending as member (member)}
+              <li
+                class="bg-black text-white px-2 py-1 rounded-md my-1"
+                transition:slide
+                animate:flip
+              >
+                <p class="text-left inline">
+                  {member}
+                  {#await get(ref(getDatabase(), `users/${member}/displayName`))}
+                    (...)
+                  {:then snapshot}
+                    {#await snapshot.val()}
+                      (...)
+                    {:then name}
+                      ({name})
+                    {/await}
+                  {/await}
+                </p>
+                <button
+                  type="button"
+                  on:click={() => cancelInvite(member)}
+                  class="float-right font-mono text-gray-400 hover:text-red-500">x</button
+                >
+              </li>
+            {/each}
+          </ul>
+        {/if}
+      </div>
+      <form on:submit|preventDefault={() => sendInvite()}>
+        <input
+          class="border rounded-sm border-black px-1 py-0.5 font-mono outline-none"
+          type="text"
+          placeholder="Enter name..."
+          id="assignedTo"
+          bind:value={addMemberID}
+        />
+        <input
+          type="submit"
+          value="Add"
+          class="border-2 border-black px-2 py-0.5 rounded-sm bg-transparent hover:bg-black hover:text-white transition-colors hover:cursor-pointer w-full mt-1"
+        />
+      </form>
     </div>
     <div class="flex btns justify-center gap-3">
       <input

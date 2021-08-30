@@ -3,7 +3,7 @@
   import type { DialogueField } from 'src/global';
 
   // Packages & Libs
-  import { getDatabase, getAuth, ref, onValue, update, get, set } from '../ts/FirebaseImports';
+  import { getDatabase, getAuth, ref, onValue, get, set, push } from '../ts/FirebaseImports';
   import { Stretch } from 'svelte-loading-spinners';
 
   import { goto } from '$app/navigation';
@@ -19,6 +19,7 @@
     CloseDialogue,
     DisplayLoading,
     CloseLoading,
+    DisplayToast,
   } from '../ts/utils';
   import { user } from '../ts/stores';
 
@@ -60,26 +61,30 @@
       ],
     });
   };
-  const createProject = (event: Event) => {
+  const createProject = async (event: Event) => {
+    if (event.target[0].value?.length < 3) {
+      DisplayToast({ title: 'This field cannot be empty!', duration: 4000 });
+      return;
+    }
+
     CloseDialogue();
-    const genId = MakeId(16);
 
     DisplayLoading();
-    update(ref(db, `/projects/${genId}`), {
+    const proj = await push(ref(db, `/projects`), {
       details: {
         name: event.target[0].value,
         owner: auth.currentUser.uid,
       },
-    }).then(() => {
-      get(ref(db, `/users/${auth.currentUser.uid}/projects`)).then(async (snapshot) => {
-        let userProjects: Array<string> = (await snapshot.val()) ?? [];
-        userProjects.push(genId);
-        set(ref(db, `/users/${auth.currentUser.uid}/projects`), userProjects).then(() => {
-          goto(`/project/${genId}`);
-          CloseLoading();
-        });
-      });
     });
+
+    let userProjects = await get(ref(db, `/users/${auth.currentUser.uid}/projects`));
+    userProjects = (await userProjects.val()) ?? [];
+
+    // @ts-ignore
+    userProjects.push(proj.key);
+    await set(ref(db, `/users/${auth.currentUser.uid}/projects`), userProjects);
+    goto(`/project/${proj.key}`);
+    CloseLoading();
   };
 
   onMount(() => {
