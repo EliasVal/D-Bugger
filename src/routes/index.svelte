@@ -1,155 +1,155 @@
 <script lang="ts">
-	// Types
-	import type { DialogueField } from 'src/global';
+  // Types
+  import type { DialogueField } from 'src/global';
 
-	// Packages & Libs
-	import { getDatabase, getAuth, ref, onValue, update, get, set } from '../ts/FirebaseImports';
-	import { Stretch } from 'svelte-loading-spinners';
+  // Packages & Libs
+  import { getDatabase, getAuth, ref, onValue, update, get, set } from '../ts/FirebaseImports';
+  import { Stretch } from 'svelte-loading-spinners';
 
-	import { goto } from '$app/navigation';
+  import { goto } from '$app/navigation';
 
-	// Svelte
-	import { writable } from 'svelte/store';
-	import { onMount } from 'svelte';
+  // Svelte
+  import { writable } from 'svelte/store';
+  import { onMount } from 'svelte';
 
-	// Stores & Utils
-	import {
-		MakeId,
-		DisplayDialogue,
-		CloseDialogue,
-		DisplayLoading,
-		CloseLoading
-	} from '../ts/utils';
-	import { user } from '../ts/stores';
+  // Stores & Utils
+  import {
+    MakeId,
+    DisplayDialogue,
+    CloseDialogue,
+    DisplayLoading,
+    CloseLoading,
+  } from '../ts/utils';
+  import { user } from '../ts/stores';
 
-	// Components
-	import ProjectCard from '../Components/ProjectCard.svelte';
-	import About from '../Components/Home/About.svelte';
-	import Thanks from '../Components/Home/Thanks.svelte';
-	import Roadmap from '../Components/Home/Roadmap.svelte';
+  // Components
+  import ProjectCard from '../Components/ProjectCard.svelte';
+  import About from '../Components/Home/About.svelte';
+  import Thanks from '../Components/Home/Thanks.svelte';
+  import Roadmap from '../Components/Home/Roadmap.svelte';
 
-	const auth = getAuth();
-	const db = getDatabase();
+  const auth = getAuth();
+  const db = getDatabase();
 
-	let projects = writable([]);
+  let projects = writable([]);
 
-	const fields: DialogueField[] = [
-		{
-			name: 'Project Name',
-			id: 'projName',
-			placeholder: 'Enter project name...',
-			type: 'text',
-			minlength: 3,
-			maxlength: 20
-		}
-	];
+  const fields: DialogueField[] = [
+    {
+      name: 'Project Name',
+      id: 'projName',
+      placeholder: 'Enter project name...',
+      type: 'text',
+      minlength: 3,
+      maxlength: 20,
+    },
+  ];
 
-	let showProjects = true;
+  let showProjects = true;
 
-	const displayCreateProjectDialogue = () => {
-		DisplayDialogue({
-			fields,
-			onSubmit: () => createProject,
-			submitBtnText: 'Create',
-			buttons: [
-				{
-					title: 'Cancel',
-					onClick: CloseDialogue,
-					stylingClasses: 'bg-transparent'
-				}
-			]
-		});
-	};
-	const createProject = (event: Event) => {
-		CloseDialogue();
-		const genId = MakeId(16);
+  const displayCreateProjectDialogue = () => {
+    DisplayDialogue({
+      fields,
+      onSubmit: () => createProject,
+      submitBtnText: 'Create',
+      buttons: [
+        {
+          title: 'Cancel',
+          onClick: CloseDialogue,
+          stylingClasses: 'bg-transparent',
+        },
+      ],
+    });
+  };
+  const createProject = (event: Event) => {
+    CloseDialogue();
+    const genId = MakeId(16);
 
-		DisplayLoading();
-		update(ref(db, `/projects/${genId}`), {
-			details: {
-				name: event.target[0].value,
-				owner: auth.currentUser.uid
-			}
-		}).then(() => {
-			get(ref(db, `/users/${auth.currentUser.uid}/projects`)).then(async (snapshot) => {
-				let userProjects: Array<string> = (await snapshot.val()) ?? [];
-				userProjects.push(genId);
-				set(ref(db, `/users/${auth.currentUser.uid}/projects`), userProjects).then(() => {
-					goto(`/projects/${genId}`);
-					CloseLoading();
-				});
-			});
-		});
-	};
+    DisplayLoading();
+    update(ref(db, `/projects/${genId}`), {
+      details: {
+        name: event.target[0].value,
+        owner: auth.currentUser.uid,
+      },
+    }).then(() => {
+      get(ref(db, `/users/${auth.currentUser.uid}/projects`)).then(async (snapshot) => {
+        let userProjects: Array<string> = (await snapshot.val()) ?? [];
+        userProjects.push(genId);
+        set(ref(db, `/users/${auth.currentUser.uid}/projects`), userProjects).then(() => {
+          goto(`/project/${genId}`);
+          CloseLoading();
+        });
+      });
+    });
+  };
 
-	onMount(() => {
-		if (!showProjects) return;
-		let projectsDiv = document.getElementById('projectsContainer');
-		let nav = document.getElementsByTagName('nav')[0];
-		projectsDiv.parentElement.style.minHeight = `calc(100vh - ${nav.offsetHeight}px)`;
+  onMount(() => {
+    if (!showProjects) return;
+    let projectsDiv = document.getElementById('projectsContainer');
+    let nav = document.getElementsByTagName('nav')[0];
+    projectsDiv.parentElement.style.minHeight = `calc(100vh - ${nav.offsetHeight}px)`;
 
-		user.subscribe((u) => {
-			if (u && u != 'unknown') {
-				// @ts-ignore
-				onValue(ref(db, `users/${$user.uid}`), async (snapshot) => {
-					let tmp = await snapshot.val().projects;
+    user.subscribe((u) => {
+      if (u && u != 'unknown') {
+        // @ts-ignore
+        onValue(ref(db, `users/${$user.uid}/projects`), async (snapshot) => {
+          const projectArr = await snapshot.val();
 
-					if (tmp) {
-						await tmp.map((projId) => {
-							onValue(ref(db, `projects/${projId}`), async (projSnapshot) => {
-								let tmpProjectData = await projSnapshot.val();
-								if (tmpProjectData) {
-									projects.update((p) => (p = [...p, { ...tmpProjectData, id: projId }]));
-								}
-							});
-						});
-					} else $projects = null;
-				});
-			} else if (!u) showProjects = false;
-		});
-	});
+          if (projectArr) {
+            $projects = [];
+            await projectArr.map(async (projId) => {
+              const projSnapshot = await get(ref(db, `projects/${projId}`));
+              const projectData = await projSnapshot.val();
+              if (projectData) {
+                projects.update((p) => (p = [...p, { ...projectData, id: projId }]));
+              }
+            });
+          } else $projects = null;
+        });
+      } else if (!u) showProjects = false;
+    });
+  });
 </script>
 
 <svelte:head>
-	<title>D-Bugger</title>
-	<meta name="title" content="D-Bugger" />
-	<meta
-		name="Description"
-		content="Log the bugs in your apps, coordiante with your team to give the end user the best experience."
-	/>
+  <title>D-Bugger</title>
+  <meta name="title" content="D-Bugger" />
+  <meta
+    name="Description"
+    content="Log the bugs in your apps, coordiante with your team to give the end user the best experience."
+  />
 </svelte:head>
 
 {#if showProjects}
-	<div id="projects">
-		{#if $projects != ''}
-			<h1 class="text-center text-4xl my-5 mb-10">Projects</h1>
-		{/if}
-		<div class="flex flex-col">
-			<div
-				class="flex flex-grow self-stretch flex-wrap justify-around gap-x-6 gap-y-10"
-				id="projectsContainer"
-			>
-				{#if $projects?.length > 0}
-					{#each $projects as project}
-						<ProjectCard projectName={project.details.name} projectId={project.id} />
-					{/each}
-				{:else if $projects == ''}
-					<div class="justify-self-center self-center">
-						<Stretch color="#000" />
-					</div>
-				{/if}
-				{#if $projects != ''}
-					<div
-						class="projectCard border rounded-md border-gray-900 border-dotted w-48 h-28 p-2 flex flex-col justify-between hover:cursor-pointer"
-						on:click={() => displayCreateProjectDialogue()}
-					>
-						<h1>+ Create Project</h1>
-					</div>
-				{/if}
-			</div>
-		</div>
-	</div>
-	<hr class="w-full bg-black h-1" />
+  <div id="projects">
+    {#if $projects != ''}
+      <h1 class="text-center text-4xl my-5 mb-10">Projects</h1>
+    {/if}
+    <div class="flex flex-col">
+      <div
+        class="flex flex-grow self-stretch flex-wrap justify-around gap-x-6 gap-y-10"
+        id="projectsContainer"
+      >
+        {#if $projects?.length > 0}
+          {#each $projects as project}
+            <ProjectCard projectName={project.details.name} projectId={project.id} />
+          {/each}
+        {:else if $projects == ''}
+          <div class="justify-self-center self-center">
+            <Stretch color="#000" />
+          </div>
+        {/if}
+        {#if $projects != ''}
+          <div
+            class="projectCard border rounded-md border-gray-900 border-dotted w-48 h-28 p-2 flex flex-col justify-between hover:cursor-pointer"
+            on:click={() => displayCreateProjectDialogue()}
+          >
+            <h1>+ Create Project</h1>
+          </div>
+        {/if}
+      </div>
+    </div>
+  </div>
+  <hr class="w-full bg-black h-1" />
 {/if}
 
 <About />
@@ -163,7 +163,7 @@
 <Thanks />
 
 <style>
-	#projects {
-		scroll-margin-top: 12rem;
-	}
+  #projects {
+    scroll-margin-top: 12rem;
+  }
 </style>
