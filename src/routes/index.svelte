@@ -87,11 +87,12 @@
     CloseLoading();
   };
 
+  let loading = true;
   onMount(() => {
     if (!showProjects) return;
-    let projectsDiv = document.getElementById('projectsContainer');
+    let projectsDiv = document.getElementById('projects');
     let nav = document.getElementsByTagName('nav')[0];
-    projectsDiv.parentElement.style.minHeight = `calc(100vh - ${nav.offsetHeight}px)`;
+    projectsDiv.style.minHeight = `calc(100vh - ${nav.offsetHeight}px)`;
 
     user.subscribe((u) => {
       if (u && u != 'unknown') {
@@ -109,6 +110,8 @@
               }
             });
           } else $projects = null;
+          if ($projects == []) $projects = null;
+          loading = false;
         });
       } else if (!u) showProjects = false;
     });
@@ -125,35 +128,29 @@
 </svelte:head>
 
 {#if showProjects}
-  <div id="projects">
-    {#if $projects != ''}
-      <h1 class="text-center text-4xl my-5 mb-10">Projects</h1>
-    {/if}
-    <div class="flex flex-col">
-      <div
-        class="flex {$projects == '' &&
-          'flex-grow'} self-stretch flex-wrap justify-around gap-x-6 gap-y-10"
-        id="projectsContainer"
-      >
+  <div id="projects" class=" my-10">
+    {#if !loading}
+      {#if $projects?.length > 0}
+        <h1 class="text-center text-4xl mb-10">Projects</h1>
+      {/if}
+      <div class="projectsContainer mx-12">
         {#if $projects?.length > 0}
           {#each $projects as project}
             <ProjectCard projectName={project.details.name} projectId={project.id} />
           {/each}
-        {:else if $projects == ''}
-          <div class="justify-self-center self-center">
-            <Stretch color="#000" />
-          </div>
         {/if}
-        {#if $projects != ''}
-          <div
-            class="projectCard border rounded-md border-gray-900 border-dotted w-48 h-28 p-2 flex flex-col justify-between hover:cursor-pointer"
-            on:click={() => displayCreateProjectDialogue()}
-          >
-            <h1>+ Create Project</h1>
-          </div>
-        {/if}
+        <div
+          class="projectCard border rounded-md border-gray-900 border-dotted w-48 h-28 p-2 flex flex-col justify-between hover:cursor-pointer"
+          on:click={() => displayCreateProjectDialogue()}
+        >
+          <h1>+ Create Project</h1>
+        </div>
       </div>
-    </div>
+    {:else}
+      <div class="flex justify-center items-center h-screen">
+        <Stretch color="#000" />
+      </div>
+    {/if}
   </div>
   <hr class="w-full bg-black h-1" />
 {/if}
@@ -171,5 +168,14 @@
 <style>
   #projects {
     scroll-margin-top: 12rem;
+  }
+
+  .projectsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 12rem);
+    justify-content: center;
+    align-items: flex-start;
+    row-gap: 1.5rem;
+    column-gap: 2.5rem;
   }
 </style>

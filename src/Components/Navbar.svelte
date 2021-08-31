@@ -2,7 +2,7 @@
   // @ts-nocheck
 
   import { user, isDisplayingProjectSettings, project } from '../ts/stores';
-  import { signOut, getAuth } from '../ts/FirebaseImports';
+  import { signOut, getAuth, getDatabase, get, update, set, remove } from '../ts/FirebaseImports';
   import { goto } from '$app/navigation';
   import { fly, fade } from 'svelte/transition';
 
@@ -17,6 +17,7 @@
     faUser,
     faCog,
     faHome,
+    faEnvelope,
   } from '@fortawesome/free-solid-svg-icons';
 
   import { page } from '$app/stores';
@@ -57,7 +58,20 @@
 			height: calc(100% - {bWidth < 640 ? btnHeight + 10 : 0}px)"
       >
         {#if bWidth > 640 && $user}
-          <button title="User profile" class="px-2 py-1">{@html icon(faUser).html}</button>
+          <div>
+            <button title="User profile" class="px-2 py-1">{@html icon(faUser).html}</button>
+            <div class="relative inline-block">
+              <button title="User profile" class="px-2 py-1">{@html icon(faEnvelope).html}</button>
+              <div class="inbox w-80 absolute">
+                <div class="py-8 text-black bg-gray-200 border-t-4 border-gray-400">
+                  <div>
+                    <h1>Test</h1>
+                    <p>This is a test message</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         {:else}
           <span />
         {/if}
@@ -113,3 +127,24 @@
     </nav>
   {/if}
 {/if}
+
+<style global>
+  .unreadMessages {
+    position: relative;
+  }
+  .unreadMessages::before {
+    content: '';
+    position: absolute;
+    background-color: red;
+    padding: 0.215rem;
+    border-radius: 50%;
+    right: 15%;
+    top: 20%;
+  }
+  .inbox::before {
+    content: '⯅';
+    display: block;
+    @apply text-4xl text-gray-400;
+    line-height: 0.4;
+  }
+</style>
