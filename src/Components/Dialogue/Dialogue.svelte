@@ -29,9 +29,11 @@
         <h1 class={headerStyles ?? ''}>{header}</h1>
       {/if}
       <form on:submit|preventDefault={onSubmit()}>
-        {#each fields as field}
-          <DialogueFieldComponent {field} />
-        {/each}
+        {#if fields}
+          {#each fields as field}
+            <DialogueFieldComponent {field} />
+          {/each}
+        {/if}
         <div class="mt-5 mx-auto block w-max">
           <input
             type="submit"

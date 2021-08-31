@@ -10,7 +10,7 @@
     CloseLoading,
   } from '/src/ts/utils';
   import { createEventDispatcher } from 'svelte';
-  import { get, getDatabase, ref, set, remove, getAuth } from '/src/ts/FirebaseImports';
+  import { get, getDatabase, ref, set, remove, getAuth, push } from '/src/ts/FirebaseImports';
 
   const dispatch = createEventDispatcher();
 
@@ -54,15 +54,20 @@
       ? [...$project.details?.pending, addMemberID]
       : [addMemberID];
 
-    await set(ref(getDatabase(), `users/${addMemberID}/inbox/invites/${$project.id}`), {
+    console.log({
       sender: getAuth().currentUser.uid,
+      projectId: $project.id,
       read: false,
+      type: 'invite',
+    });
+    await push(ref(getDatabase(), `users/${addMemberID}/inbox`), {
+      sender: getAuth().currentUser.displayName,
+      projectId: $project.id,
+      read: false,
+      type: 'invite',
     });
 
-    await set(
-      ref(getDatabase(), `projects/${$project.id}/details/pending`),
-      $project.details.pending,
-    );
+    await set(ref(getDatabase(), `projects/${$project.id}/details/pending/${addMemberID}`), true);
 
     addMemberID = '';
     CloseLoading();

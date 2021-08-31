@@ -71,7 +71,7 @@
         }
       }
       if (!found) hasUnread = false;
-    }
+    } else hasUnread = false;
   }
 
   const readMessage = async (e) => {
@@ -96,24 +96,39 @@
   };
 
   const markAsRead = async (e) => {
-    DisplayLoading();
     await update(ref(db, `users/${getAuth().currentUser.uid}/inbox/${e.detail.key}`), {
       '/read': true,
     });
-    CloseLoading();
   };
 
   const markAsUnread = async (e) => {
-    DisplayLoading();
     await update(ref(db, `users/${getAuth().currentUser.uid}/inbox/${e.detail.key}`), {
       '/read': false,
     });
-    CloseLoading();
   };
 
-  const deleteMessage = async (e) => {
+  const deleteMessageDialogue = (e) => {
+    DisplayDialogue({
+      header: 'Are you sure you want to delete this message?',
+      headerStyles: 'text-xl text-center mb-1',
+      onSubmit: () => {
+        CloseDialogue();
+        deleteMessage(e.detail.key);
+      },
+      submitBtnText: 'Confirm',
+      buttons: [
+        {
+          title: 'Cancel',
+          onClick: () => CloseDialogue(),
+          stylingClasses: 'bg-transparent',
+        },
+      ],
+    });
+  };
+
+  const deleteMessage = async (id) => {
     DisplayLoading();
-    await remove(ref(db, `users/${getAuth().currentUser.uid}/inbox/${e.detail.key}`));
+    await remove(ref(db, `users/${getAuth().currentUser.uid}/inbox/${id}`));
     CloseLoading();
   };
 </script>
@@ -153,7 +168,7 @@
                 {@html icon(faEnvelope).html}
               </button>
               {#if isDisplayingMessages}
-                <div class="inbox w-80 absolute top-6" transition:slide>
+                <div class="inbox w-80 absolute top-6" transition:fly={{ y: 20, duration: 750 }}>
                   <div class="text-black bg-gray-200 border-t-4 border-b-4 border-gray-400">
                     {#if $messages}
                       {#each Object.entries($messages) as [key, val]}
@@ -164,9 +179,13 @@
                           on:readMessage={readMessage}
                           on:markAsRead={markAsRead}
                           on:markAsUnread={markAsUnread}
-                          on:deleteMessage={deleteMessage}
+                          on:deleteMessage={deleteMessageDialogue}
                         />
                       {/each}
+                    {:else}
+                      <div>
+                        <h2 class="py-4 text-center">Your inbox is empty!</h2>
+                      </div>
                     {/if}
                   </div>
                 </div>
@@ -252,7 +271,7 @@
   }
 
   .message {
-    @apply border-t-2 border-b-2 border-gray-300 p-2;
+    @apply border-t-2 border-b-2 border-gray-300 p-2 py-5;
   }
 
   .message-moreContent::after {

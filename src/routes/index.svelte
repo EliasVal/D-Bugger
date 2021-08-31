@@ -3,7 +3,16 @@
   import type { DialogueField } from 'src/global';
 
   // Packages & Libs
-  import { getDatabase, getAuth, ref, onValue, get, set, push } from '../ts/FirebaseImports';
+  import {
+    getDatabase,
+    getAuth,
+    ref,
+    onValue,
+    get,
+    set,
+    push,
+    remove,
+  } from '../ts/FirebaseImports';
   import { Stretch } from 'svelte-loading-spinners';
 
   import { goto } from '$app/navigation';
@@ -102,9 +111,14 @@
 
           if (projectArr) {
             $projects = [];
-            await projectArr.map(async (projId) => {
-              const projSnapshot = await get(ref(db, `projects/${projId}`));
-              const projectData = await projSnapshot.val();
+            Object.entries(projectArr).map(async ([key, projId]) => {
+              const projSnapshot = await get(ref(db, `projects/${projId}`)).catch(async (e) => {
+                if (e.message == 'Permission denied') {
+                  // @ts-ignore
+                  await remove(ref(db, `users/${$user.uid}/projects/${key}`));
+                }
+              });
+              const projectData = await projSnapshot?.val();
               if (projectData) {
                 projects.update((p) => (p = [...p, { ...projectData, id: projId }]));
               }

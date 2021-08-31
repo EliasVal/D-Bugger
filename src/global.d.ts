@@ -10,6 +10,7 @@ export interface DialogueField {
   maxlength?: number;
   minlength?: number;
   initialValue?: unknown;
+  stylingClasses?: string;
 }
 
 export interface Project {
