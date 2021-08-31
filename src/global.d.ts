@@ -1,9 +1,10 @@
 /// <reference types="@sveltejs/kit" />
 
 export interface DialogueField {
-  type: 'number' | 'text' | 'choice' | 'editor';
+  type: 'number' | 'text' | 'choice' | 'editor' | 'paragraph';
+  body?: string;
   options?: DialogueFieldSelectOption[];
-  placeholder: string;
+  placeholder?: string;
   name: string;
   id: string;
   maxlength?: number;
