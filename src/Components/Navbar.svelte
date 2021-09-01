@@ -17,7 +17,7 @@
 
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import { fade, fly, slide } from 'svelte/transition';
+  import { fade, fly } from 'svelte/transition';
 
   import {
     getAuth,
@@ -30,12 +30,12 @@
   } from '../ts/FirebaseImports';
   import { isDisplayingProjectSettings, project, user } from '../ts/stores';
   import { DisplayDialogue, CloseDialogue, DisplayLoading, CloseLoading } from '../ts/utils';
-  import About from './Home/About.svelte';
 
   import Message from './Message.svelte';
 
+  const auth = getAuth();
   const SignOut = async () => {
-    await signOut(getAuth());
+    await signOut(auth);
     if ($page.path != '/') goto('/');
   };
 
@@ -78,7 +78,7 @@
     const key = e.detail.key;
 
     DisplayLoading();
-    await update(ref(db, `users/${getAuth().currentUser.uid}/inbox/${key}`), { '/read': true });
+    await update(ref(db, `users/${auth.currentUser.uid}/inbox/${key}`), { '/read': true });
     CloseLoading();
     DisplayDialogue({
       header: $messages[key].title,
@@ -96,13 +96,13 @@
   };
 
   const markAsRead = async (e) => {
-    await update(ref(db, `users/${getAuth().currentUser.uid}/inbox/${e.detail.key}`), {
+    await update(ref(db, `users/${auth.currentUser.uid}/inbox/${e.detail.key}`), {
       '/read': true,
     });
   };
 
   const markAsUnread = async (e) => {
-    await update(ref(db, `users/${getAuth().currentUser.uid}/inbox/${e.detail.key}`), {
+    await update(ref(db, `users/${auth.currentUser.uid}/inbox/${e.detail.key}`), {
       '/read': false,
     });
   };
@@ -128,7 +128,7 @@
 
   const deleteMessage = async (id) => {
     DisplayLoading();
-    await remove(ref(db, `users/${getAuth().currentUser.uid}/inbox/${id}`));
+    await remove(ref(db, `users/${auth.currentUser.uid}/inbox/${id}`));
     CloseLoading();
   };
 </script>
@@ -144,6 +144,15 @@
     {@html icon(faBars).html}
   </button>
 {/if}
+<svelte:head>
+  {#if bWidth < 640}
+    <style>
+      .inbox::before {
+        margin: 3px 0 0 2px;
+      }
+    </style>
+  {/if}
+</svelte:head>
 
 {#if !$page.path.match(/(login)|(signup)/gim)}
   {#if bWidth > 640 || isDisplayingNavbar}
@@ -156,8 +165,8 @@
         style="margin-top: {bWidth < 640 ? btnHeight + 10 : 0}px;
 			height: calc(100% - {bWidth < 640 ? btnHeight + 10 : 0}px)"
       >
-        {#if bWidth > 640 && $user}
-          <div>
+        {#if $user}
+          <div class={bWidth < 640 && 'flex flex-col items-center justify-center'}>
             <button title="User profile" class="px-2 py-1">{@html icon(faUser).html}</button>
             <div class="relative inline-block">
               <button
@@ -169,7 +178,10 @@
               </button>
               {#if isDisplayingMessages}
                 <div class="inbox w-80 absolute top-6" transition:fly={{ y: 20, duration: 750 }}>
-                  <div class="text-black bg-gray-200 border-t-4 border-b-4 border-gray-400">
+                  <div
+                    class="text-black bg-gray-200 border-t-4 border-b-4
+                    {bWidth < 640 && 'border-r-4 border-l-4'} border-gray-400"
+                  >
                     {#if $messages}
                       {#each Object.entries($messages) as [key, val]}
                         <Message
@@ -195,37 +207,42 @@
         {:else}
           <span />
         {/if}
-        {#if $page.path == '/'}
-          <div class="flex flex-col sm:flex-row gap-5 sm:gap-10 items-center">
+        <div
+          class="flex flex-col sm:flex-row items-center gap-5
+          {$page.path == '/' && 'sm:gap-10'}
+          absolute top-1/2 -translate-y-1/2 sm:left-1/2 sm:-translate-x-1/2 "
+        >
+          {#if $page.path == '/'}
             <a href="#projects" title="Projects">{@html icon(faTasks).html}</a>
             <a href="#about" title="About">{@html icon(faBook).html}</a>
             <a href="#roadmap" title="Roadmap">{@html icon(faRoute).html}</a>
-          </div>
-        {:else}
-          <div class="flex">
+          {:else}
             <!--The style tag is magic numbers that make the buttons even. No I don't know either.-->
             <button
               class="text-xl"
               style="padding: 0 0.9375rem; max-width: 52px;"
               title="Home"
               on:click={() => goto('/')}
-              in:fly={{ x: 20, duration: 1000, delay: 750 }}
+              in:fly={{ x: bWidth > 640 && 20, duration: bWidth > 640 && 1000, delay: 750 }}
             >
               {@html icon(faHome).html}
             </button>
-            {#if getAuth().currentUser?.uid == $project?.details.owner && getAuth().currentUser?.uid != null}
-              <span class="border border-white" in:fade={{ delay: 250 }} />
+            {#if auth.currentUser?.uid == $project?.details.owner && auth.currentUser?.uid != null}
+              <span
+                class="border border-white absolute left-1/2 top-0 bottom-0 hidden sm:block"
+                in:fade={{ delay: 250 }}
+              />
               <button
                 class="px-4 text-xl"
                 title="Project Settings"
                 on:click={() => ($isDisplayingProjectSettings = !$isDisplayingProjectSettings)}
-                in:fly={{ x: -20, duration: 1000, delay: 750 }}
+                in:fly={{ x: bWidth > 640 && -20, duration: bWidth > 640 && 1000, delay: 750 }}
               >
                 {@html icon(faCog).html}
               </button>
             {/if}
-          </div>
-        {/if}
+          {/if}
+        </div>
         {#if $user}
           <button
             on:click={SignOut}

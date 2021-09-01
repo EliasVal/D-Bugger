@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { faShieldAlt } from '@fortawesome/free-solid-svg-icons';
   import type { DialogueField } from 'src/global';
 
   import TextEditor from './TextEditor.svelte';

@@ -1,6 +1,6 @@
 <script lang="ts">
   // @ts-nocheck
-  import type { Bugs, Bug } from 'src/global';
+  import type { Bugs } from 'src/global';
   import BugDisplay from './BugDisplay.svelte';
   import { fly } from 'svelte/transition';
 
