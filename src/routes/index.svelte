@@ -122,8 +122,34 @@
   <title>D-Bugger</title>
   <meta name="title" content="D-Bugger" />
   <meta
-    name="Description"
-    content="Log the bugs in your apps, coordiante with your team to give the end user the best experience."
+    name="description"
+    content="Keep track of bugs while keeping costs to a low. Made for teams small and big, lone developers, etc."
+  />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://eliasval.github.io/D-Bugger/" />
+  <meta property="og:title" content="D-Bugger" />
+  <meta
+    property="og:description"
+    content="Keep track of bugs while keeping costs to a low. Made for teams small and big, lone developers, etc."
+  />
+  <meta
+    property="og:image"
+    content="https://cdn.discordapp.com/attachments/687275796917911601/883093131665485844/D-Bugger_Copy_3.png"
+  />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://eliasval.github.io/D-Bugger/" />
+  <meta property="twitter:title" content="D-Bugger" />
+  <meta
+    property="twitter:description"
+    content="Keep track of bugs while keeping costs to a low. Made for teams small and big, lone developers, etc."
+  />
+  <meta
+    property="twitter:image"
+    content="https://cdn.discordapp.com/attachments/687275796917911601/883093131665485844/D-Bugger_Copy_3.png"
   />
   
 </svelte:head> -->
