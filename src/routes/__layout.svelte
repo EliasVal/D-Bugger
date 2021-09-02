@@ -40,7 +40,7 @@
         DisplayToast({ title: 'Log in to view your projects.', duration: 20000 });
       } else if (u && pathIsLoginOrSignup) {
         DisplayToast({ title: "You're already logged in.", duration: 5000 });
-        goto('/');
+        goto('/D-Bugger');
       }
     }
   });

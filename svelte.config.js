@@ -14,6 +14,7 @@ const config = {
     adapter: adapter({}),
     paths: {
       base: '/D-Bugger',
+      assets: '/D-Bugger',
     },
     ssr: false,
     vite: {

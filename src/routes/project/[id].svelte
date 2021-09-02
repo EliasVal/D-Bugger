@@ -90,7 +90,7 @@
       if (u != 'unknown' && u) {
         // @ts-ignore
         if (!u.emailVerified) {
-          goto('/');
+          goto('/D-Bugger');
         }
         onValue(ref(db, `projects/${slug}`), async (snapshot) => {
           project.set({ ...(await snapshot.val()), id: slug });
@@ -199,7 +199,7 @@
     await set(ref(db, `users/${currUser.uid}/projects`), userProjects);
     CloseLoading();
     DisplayToast({ title: 'Project Deleted Successfully.', duration: 5000 });
-    goto('/');
+    goto('/D-Bugger');
   };
 </script>
 

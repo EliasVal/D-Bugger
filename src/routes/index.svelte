@@ -77,7 +77,7 @@
     // @ts-ignore
     userProjects.push(proj.key);
     await set(ref(db, `/users/${auth.currentUser.uid}/projects`), userProjects);
-    goto(`/project/${proj.key}`);
+    goto(`/D-Bugger/project/${proj.key}`);
     CloseLoading();
   };
 

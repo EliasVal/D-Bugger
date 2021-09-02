@@ -34,7 +34,7 @@
   const auth = getAuth();
   const SignOut = async () => {
     await signOut(auth);
-    if ($page.path != '/') goto('/');
+    if ($page.path != '/D-Bugger') goto('/D-Bugger');
   };
 
   let bWidth;
@@ -232,7 +232,7 @@
               class="text-xl"
               style="padding: 0 0.9375rem; max-width: 52px;"
               title="Home"
-              on:click={() => goto('/')}
+              on:click={() => goto('/D-Bugger')}
               in:fly={{ x: bWidth > 640 && 20, duration: bWidth > 640 && 1000, delay: 750 }}
             >
               {@html icon(faHome).html}
@@ -263,7 +263,7 @@
           </button>
         {:else}
           <button
-            on:click={() => goto('/login')}
+            on:click={() => goto('/D-Bugger/login')}
             class="bg-green-500 rounded-sm px-2 py-1 text-white hover:bg-green-800 transition-colors"
             title="Sign in"
           >
