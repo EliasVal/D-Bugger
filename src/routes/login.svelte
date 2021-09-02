@@ -10,6 +10,7 @@
     signInWithEmailAndPassword,
   } from '@ts/FirebaseImports';
   import { Circle } from 'svelte-loading-spinners';
+  import { base } from '$app/paths';
 
   let isSigningIn = false;
   const signIn = (e) => {
@@ -21,7 +22,7 @@
     setPersistence(auth, browserLocalPersistence).then(() => {
       signInWithEmailAndPassword(auth, e.target[0].value, e.target[1].value)
         .then(() => {
-          window.location.pathname = '/';
+          window.location.pathname = base;
         })
         .catch((e) => {
           // @ts-ignore

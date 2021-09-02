@@ -15,6 +15,7 @@
     updateProfile,
   } from '@ts/FirebaseImports';
   import { Circle } from 'svelte-loading-spinners';
+  import { base } from '$app/paths';
 
   let isSigningUp = false;
   const signIn = (e: Event) => {
@@ -44,7 +45,7 @@
           await sendEmailVerification(auth.currentUser);
 
           // Redirect to index
-          window.location.pathname = '/';
+          window.location.pathname = base;
         })
         .catch((err: Error) => {
           // @ts-ignore
