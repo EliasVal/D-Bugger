@@ -16,7 +16,9 @@ const config = {
       base: '/D-Bugger',
       assets: '/D-Bugger',
     },
-    // appDir: 'internal',
+    files: {
+      serviceWorker: './service-worker.js'
+    },
     ssr: false,
     vite: {
       build: {
