@@ -15,7 +15,6 @@ const config = {
     paths: {
       base: '/D-Bugger',
     },
-    appDir: 'internal',
     ssr: false,
     vite: {
       build: {
