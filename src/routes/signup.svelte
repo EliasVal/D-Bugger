@@ -102,9 +102,9 @@
           value="Submit"
         />
         <h4 class="self-center">
-          Already have an account? <a href="/login" class="wavy-underline"
-            ><strong>Log-in</strong></a
-          >
+          Already have an account? <a href="{base}/login" class="wavy-underline">
+            <strong>Log-in</strong>
+          </a>
         </h4>
       {:else}
         <div class="self-center">

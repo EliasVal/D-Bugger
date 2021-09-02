@@ -1,6 +1,7 @@
 <script lang="ts">
   // Types
   import { goto } from '$app/navigation';
+  import { base } from '$app/paths';
 
   import { get, getAuth, getDatabase, onValue, push, ref, remove, set } from '@ts/FirebaseImports';
   import { user } from '@ts/stores';
@@ -77,7 +78,7 @@
     // @ts-ignore
     userProjects.push(proj.key);
     await set(ref(db, `/users/${auth.currentUser.uid}/projects`), userProjects);
-    goto(`/D-Bugger/project/${proj.key}`);
+    goto(`${base}/project/${proj.key}`);
     CloseLoading();
   };
 

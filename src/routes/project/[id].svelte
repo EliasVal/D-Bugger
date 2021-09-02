@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
+  import { base } from '$app/paths';
 
   import { get, getDatabase, onValue, push, ref, remove, set, update } from '@ts/FirebaseImports';
   import { isDisplayingBug, isDisplayingProjectSettings, project, user } from '@ts/stores';
@@ -90,7 +91,7 @@
       if (u != 'unknown' && u) {
         // @ts-ignore
         if (!u.emailVerified) {
-          goto('/D-Bugger');
+          goto(base);
         }
         onValue(ref(db, `projects/${slug}`), async (snapshot) => {
           project.set({ ...(await snapshot.val()), id: slug });
@@ -199,7 +200,7 @@
     await set(ref(db, `users/${currUser.uid}/projects`), userProjects);
     CloseLoading();
     DisplayToast({ title: 'Project Deleted Successfully.', duration: 5000 });
-    goto('/D-Bugger');
+    goto(base);
   };
 </script>
 

@@ -72,9 +72,9 @@
           value="Submit"
         />
         <h4 class="self-center">
-          Don't have an account? <a href="/signup" class="wavy-underline"
-            ><strong>Sign up</strong></a
-          >
+          Don't have an account? <a href="{base}/signup" class="wavy-underline">
+            <strong>Sign up</strong>
+          </a>
         </h4>
       {:else}
         <div class="self-center">

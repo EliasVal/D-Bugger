@@ -1,6 +1,8 @@
 <script>
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
+  import { base } from '$app/paths';
+
   import { icon } from '@fortawesome/fontawesome-svg-core';
   import {
     faBars,
@@ -34,7 +36,7 @@
   const auth = getAuth();
   const SignOut = async () => {
     await signOut(auth);
-    if ($page.path != '/D-Bugger') goto('/D-Bugger');
+    if ($page.path != base) goto(base);
   };
 
   let bWidth;
@@ -219,10 +221,10 @@
         {/if}
         <div
           class="flex flex-col sm:flex-row items-center gap-5
-          {$page.path == '/' && 'sm:gap-10'}
+          {$page.path == base && 'sm:gap-10'}
           absolute top-1/2 -translate-y-1/2 sm:left-1/2 sm:-translate-x-1/2 "
         >
-          {#if $page.path == '/'}
+          {#if $page.path == base}
             <a href="#projects" title="Projects">{@html icon(faTasks).html}</a>
             <a href="#about" title="About">{@html icon(faBook).html}</a>
             <a href="#roadmap" title="Roadmap">{@html icon(faRoute).html}</a>
@@ -232,7 +234,7 @@
               class="text-xl"
               style="padding: 0 0.9375rem; max-width: 52px;"
               title="Home"
-              on:click={() => goto('/D-Bugger')}
+              on:click={() => goto(base)}
               in:fly={{ x: bWidth > 640 && 20, duration: bWidth > 640 && 1000, delay: 750 }}
             >
               {@html icon(faHome).html}
@@ -263,7 +265,7 @@
           </button>
         {:else}
           <button
-            on:click={() => goto('/D-Bugger/login')}
+            on:click={() => goto(`${base}/login`)}
             class="bg-green-500 rounded-sm px-2 py-1 text-white hover:bg-green-800 transition-colors"
             title="Sign in"
           >
