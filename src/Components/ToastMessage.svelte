@@ -75,7 +75,7 @@
         {#if isOpen}
           <div transition:slide>
             <p>
-              {toast.desc}
+              {@html toast.desc}
             </p>
           </div>
         {/if}

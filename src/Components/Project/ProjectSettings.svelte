@@ -84,8 +84,9 @@
   let tempProjName = $project.details.name;
 </script>
 
-<div>
-  <div>
+<div class="h-full flex flex-col items-center">
+  <h2 class="text-3xl my-10">Project Settings</h2>
+  <div class="w-1/2 h-fit">
     <form
       on:submit|preventDefault={async () => {
         DisplayLoading();
@@ -107,9 +108,12 @@
           bind:value={tempProjName}
         />
         {#if tempProjName != $project.details.name}
-          <div class="inline" transition:fade|local={{ duration: 100 }}>
+          <div
+            class="inline-block sm:float-right w-fit mx-auto sm:mx-0"
+            transition:fade|local={{ duration: 100 }}
+          >
             <input
-              class="text-black text-sm border border-red-600 px-2 py-1 rounded-sm hover:cursor-pointer hover:bg-red-600 hover:text-white transition-colors"
+              class="text-black text-sm border border-black px-2 py-1 rounded-sm hover:cursor-pointer hover:bg-black hover:text-white transition-colors"
               type="submit"
               value="Save"
             />
@@ -126,11 +130,11 @@
       </div>
     </form>
 
-    <div>
+    <div class="my-5">
       <label for="members">Members:</label><br />
       <div class="flex flex-col">
-        {#if $project.details?.members}
-          <ul class="mt-2 mb-1" style="min-height: 40px">
+        <ul class="mt-2 mb-1" style="min-height: 40px">
+          {#if $project.details?.members}
             {#each Object.keys($project.details?.members) as member (member)}
               <li
                 class="bg-black text-white px-2 py-1 rounded-md my-1"
@@ -138,13 +142,9 @@
                 animate:flip
               >
                 <p class="text-left inline">
-                  {#await get(ref(getDatabase(), `users/${member}/displayName`))}
-                    (...) &bullet; {member}
-                  {:then snapshot}
-                    {#await snapshot.val()}
-                      (...) &bullet; {member}
-                    {:then name}
-                      {name} &bullet; {member}
+                  {#await get(ref(getDatabase(), `users/${member}/displayName`)) then snapshot}
+                    {#await snapshot.val() then name}
+                      {name}
                     {/await}
                   {/await}
                 </p>
@@ -155,8 +155,12 @@
                 >
               </li>
             {/each}
-          </ul>
-        {/if}
+          {:else}
+            <li class="bg-black text-white px-2 py-1 rounded-md my-1" transition:slide|local>
+              <p class="text-left inline">No Members</p>
+            </li>
+          {/if}
+        </ul>
       </div>
     </div>
     <div>
@@ -171,13 +175,9 @@
                 animate:flip
               >
                 <p class="text-left inline">
-                  {#await get(ref(getDatabase(), `users/${member}/displayName`))}
-                    (...) &bullet; {member}
-                  {:then snapshot}
-                    {#await snapshot.val()}
-                      (...) &bullet; {member}
-                    {:then name}
-                      {name} &bullet; {member}
+                  {#await get(ref(getDatabase(), `users/${member}/displayName`)) then snapshot}
+                    {#await snapshot.val() then name}
+                      {name}
                     {/await}
                   {/await}
                 </p>
@@ -193,7 +193,7 @@
       </div>
       <form on:submit|preventDefault={() => sendInvite()}>
         <input
-          class="border rounded-sm border-black px-1 py-0.5 font-mono outline-none"
+          class="border rounded-sm border-black px-1 py-0.5 font-mono outline-none w-full"
           type="text"
           placeholder="Enter user ID..."
           id="assignedTo"
@@ -239,6 +239,7 @@
                 {
                   type: 'text',
                   name: "Type 'CONFIRM' to confirm deletion",
+                  id: 'confirm',
                   placeholder: '...',
                 },
               ],
@@ -253,6 +254,6 @@
 
 <style>
   .projNameInput {
-    width: 35ch;
+    max-width: 35ch;
   }
 </style>

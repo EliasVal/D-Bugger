@@ -21,7 +21,13 @@
 
   import { getAuth, getDatabase, onValue, ref, signOut, update, remove } from '@ts/FirebaseImports';
   import { isDisplayingProjectSettings, project, user } from '@ts/stores';
-  import { DisplayDialogue, CloseDialogue, DisplayLoading, CloseLoading } from '@ts/utils';
+  import {
+    DisplayDialogue,
+    CloseDialogue,
+    DisplayLoading,
+    CloseLoading,
+    DisplayToast,
+  } from '@ts/utils';
 
   import Message from './Message.svelte';
 
@@ -159,7 +165,19 @@
       >
         {#if $user}
           <div class={bWidth < 640 && 'flex flex-col items-center justify-center'}>
-            <button title="User profile" class="px-2 py-1">{@html icon(faUser).html}</button>
+            <button
+              title="User profile"
+              class="px-2 py-1"
+              on:click={() => {
+                DisplayToast({
+                  title: 'Expand this message to see your ID.',
+                  desc: `User Profiles are currently unavailable.<br />Your ID: <u>${auth.currentUser.uid}</u>`,
+                  duration: 10000,
+                });
+              }}
+            >
+              {@html icon(faUser).html}
+            </button>
             <div class="relative inline-block">
               <button
                 title="Inbox {hasUnread ? '• Unread Messages' : ''}"

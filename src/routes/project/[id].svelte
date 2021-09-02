@@ -1,11 +1,6 @@
-<script context="module">
-  export async function load({ page }) {
-    return { props: { slug: page.params.id }, status: 200 };
-  }
-</script>
-
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
 
   import { get, getDatabase, onValue, push, ref, remove, set, update } from '@ts/FirebaseImports';
   import { isDisplayingBug, isDisplayingProjectSettings, project, user } from '@ts/stores';
@@ -26,7 +21,7 @@
   import ProjectMain from '/src/Components/Project/ProjectMain.svelte';
   import ProjectSettings from '/src/Components/Project/ProjectSettings.svelte';
 
-  export let slug;
+  const slug = $page.params.id;
 
   const db = getDatabase();
 
