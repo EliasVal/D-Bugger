@@ -2,6 +2,7 @@ import preprocess from 'svelte-preprocess';
 import adapter from '@sveltejs/adapter-static';
 import { resolve } from 'path';
 
+/** @type {import('@sveltejs/kit').Config} */
 const config = {
   // Consult https://github.com/sveltejs/svelte-preprocess
   // for more information about preprocessors
@@ -10,9 +11,9 @@ const config = {
   kit: {
     // hydrate the <div id="svelte"> element in src/app.html
     target: '#svelte',
-    adapter: adapter({ pages: './build', assets: './build', fallback: null }),
+    adapter: adapter({}),
     paths: {
-      base: '/D-Bugger',
+      base: '/test',
     },
     appDir: 'internal',
     ssr: false,
@@ -23,6 +24,7 @@ const config = {
       resolve: {
         alias: {
           '@ts': resolve('./src/ts'),
+          '@base': resolve('/test'),
         },
       },
     },
