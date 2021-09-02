@@ -1,40 +1,28 @@
-<!-- <script context="module">
-	export async function load({ page }) {
-		return {
-			props: { pathIsLoginOrSignup: page.path.includes('login') || page.path.includes('signup') },
-			status: 200
-		};
-	}
-</script> -->
 <script>
-  //import '../styles/tailwind-output.css';
-  import { goto } from '$app/navigation';
   import { browser } from '$app/env';
-
-  import { fly, slide } from 'svelte/transition';
-  import { flip } from 'svelte/animate';
-
-  import {
-    user,
-    isDisplayingDialogue,
-    dialogueValues,
-    isDisplayingLoading,
-    Toasts,
-  } from '../ts/stores';
-
-  import { DisplayToast } from '../ts/utils';
-
-  import Navbar from '/src/Components/Navbar.svelte';
-  import Dialogue from '/src/Components/Dialogue/Dialogue.svelte';
-  import Loading from '/src/Components/Loading.svelte';
-  import ToastMessage from '/src/Components/ToastMessage.svelte';
+  import { goto } from '$app/navigation';
   import { page } from '$app/stores';
 
-  let pathIsLoginOrSignup; // = $page.path.includes('login') || $page.path.includes('signup');
-  let pathIsIndex; // = $page.path == '/';
+  import {
+    dialogueValues,
+    isDisplayingDialogue,
+    isDisplayingLoading,
+    Toasts,
+    user,
+  } from '@ts/stores';
+  import { DisplayToast } from '@ts/utils';
+
+  import { flip } from 'svelte/animate';
+  import { fly, slide } from 'svelte/transition';
+
+  import Dialogue from '/src/Components/Dialogue/Dialogue.svelte';
+  import Loading from '/src/Components/Loading.svelte';
+  import Navbar from '/src/Components/Navbar.svelte';
+  import ToastMessage from '/src/Components/ToastMessage.svelte';
+
+  let pathIsLoginOrSignup;
 
   $: {
-    pathIsIndex = $page.path == '/';
     pathIsLoginOrSignup = $page.path.includes('login') || $page.path.includes('signup');
   }
 

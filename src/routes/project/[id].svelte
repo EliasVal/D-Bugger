@@ -5,34 +5,26 @@
 </script>
 
 <script lang="ts">
-  import type { Bug, DialogueField } from 'src/global';
+  import { goto } from '$app/navigation';
 
-  import ProjectMain from '/src/Components/Project/ProjectMain.svelte';
-  import ProjectSettings from '/src/Components/Project/ProjectSettings.svelte';
-  import { fade } from 'svelte/transition';
-  import { project, user, isDisplayingBug, isDisplayingProjectSettings } from '../../ts/stores';
-  import {
-    getDatabase,
-    onValue,
-    ref,
-    remove,
-    set,
-    push,
-    update,
-    get,
-  } from '../../ts/FirebaseImports';
-
+  import { get, getDatabase, onValue, push, ref, remove, set, update } from '@ts/FirebaseImports';
+  import { isDisplayingBug, isDisplayingProjectSettings, project, user } from '@ts/stores';
   import {
     CloseDialogue,
     CloseLoading,
-    DisplayLoading,
     DisplayDialogue,
+    DisplayLoading,
     DisplayToast,
-  } from '../../ts/utils';
+  } from '@ts/utils';
+
+  import type { Bug, DialogueField } from 'src/global';
+
+  import { onMount } from 'svelte';
+  import { fade } from 'svelte/transition';
 
   import Loading from '/src/Components/Loading.svelte';
-  import { goto } from '$app/navigation';
-  import { onMount } from 'svelte';
+  import ProjectMain from '/src/Components/Project/ProjectMain.svelte';
+  import ProjectSettings from '/src/Components/Project/ProjectSettings.svelte';
 
   export let slug;
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Circle } from 'svelte-loading-spinners';
-  import { isDisplayingDialogue } from '/src/ts/stores';
+  import { isDisplayingDialogue } from '@ts/stores';
 </script>
 
 <div

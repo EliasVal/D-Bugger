@@ -1,41 +1,27 @@
 <script lang="ts">
   // Types
-  import type { DialogueField } from 'src/global';
-
-  // Packages & Libs
-  import {
-    getDatabase,
-    getAuth,
-    ref,
-    onValue,
-    get,
-    set,
-    push,
-    remove,
-  } from '../ts/FirebaseImports';
-  import { Stretch } from 'svelte-loading-spinners';
-
   import { goto } from '$app/navigation';
 
-  // Svelte
-  import { writable } from 'svelte/store';
-  import { onMount } from 'svelte';
-
-  // Stores & Utils
+  import { get, getAuth, getDatabase, onValue, push, ref, remove, set } from '@ts/FirebaseImports';
+  import { user } from '@ts/stores';
   import {
-    DisplayDialogue,
     CloseDialogue,
-    DisplayLoading,
     CloseLoading,
+    DisplayDialogue,
+    DisplayLoading,
     DisplayToast,
-  } from '../ts/utils';
-  import { user } from '../ts/stores';
+  } from '@ts/utils';
 
-  // Components
-  import ProjectCard from '../Components/ProjectCard.svelte';
+  import type { DialogueField } from 'src/global';
+
+  import { onMount } from 'svelte';
+  import { Stretch } from 'svelte-loading-spinners';
+  import { writable } from 'svelte/store';
+
   import About from '../Components/Home/About.svelte';
-  import Thanks from '../Components/Home/Thanks.svelte';
   import Roadmap from '../Components/Home/Roadmap.svelte';
+  import Thanks from '../Components/Home/Thanks.svelte';
+  import ProjectCard from '../Components/ProjectCard.svelte';
 
   const auth = getAuth();
   const db = getDatabase();

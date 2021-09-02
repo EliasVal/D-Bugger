@@ -1,15 +1,15 @@
 <script lang="ts">
   // @ts-nocheck
+  import { bug, isDisplayingBug, project } from '@ts/stores';
+  import { CloseDialogue, DisplayDialogue } from '@ts/utils';
+
   import type { Bugs } from 'src/global';
-  import BugDisplay from './BugDisplay.svelte';
-  import { fly } from 'svelte/transition';
 
   import { createEventDispatcher } from 'svelte';
+  import { fly } from 'svelte/transition';
 
-  import { bug } from '/src/ts/stores';
-  import { project, isDisplayingBug } from '/src/ts/stores';
+  import BugDisplay from './BugDisplay.svelte';
   import BugTable from './BugTable.svelte';
-  import { DisplayDialogue, CloseDialogue } from '/src/ts/utils';
 
   let bugIdToDisplay;
 
@@ -110,7 +110,7 @@
   {#if $isDisplayingBug}
     <div
       class="bugDisplay absolute bg-opacity-90 flex-grow bg-white w-full h-full py-5 sm:bg-transparent sm:relative sm:w-fit transition-all border-l-4 border-gray-200"
-      transition:fly={{ x: 200, duration: 500 }}
+      transition:fly|local={{ x: 200, duration: 500 }}
     >
       <BugDisplay
         on:deleteBug

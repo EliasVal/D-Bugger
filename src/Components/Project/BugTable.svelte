@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { DisplayToast, SplitAndCapitalise } from '@ts/utils';
+
   import type { Bugs } from 'src/global';
 
   import { createEventDispatcher } from 'svelte';
-
-  import { SplitAndCapitalise, DisplayToast } from '/src/ts/utils';
 
   export let bugs: Bugs;
 

@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { DialogueButton, DialogueField } from 'src/global';
 
-  import DialogueFieldComponent from './DialogueField.svelte';
-
   import { fly } from 'svelte/transition';
+
+  import DialogueFieldComponent from './DialogueField.svelte';
 
   export let fields: DialogueField[] = [];
   export let buttons: DialogueButton[] = [];
@@ -47,7 +47,7 @@
                 type="button"
                 value={button.title}
                 class="hover:cursor-pointer p-1.5 mr-2 rounded-sm {button.stylingClasses ?? ''}"
-                on:click={button.onClick()}
+                on:click={() => button.onClick()}
               />
             {/each}
           {/if}

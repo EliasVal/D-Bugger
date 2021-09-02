@@ -1,5 +1,6 @@
 import preprocess from 'svelte-preprocess';
 import node from '@sveltejs/adapter-node';
+import { resolve } from 'path';
 
 const config = {
   // Consult https://github.com/sveltejs/svelte-preprocess
@@ -14,6 +15,11 @@ const config = {
     vite: {
       build: {
         chunkSizeWarningLimit: 1000,
+      },
+      resolve: {
+        alias: {
+          '@ts': resolve('./src/ts'),
+        },
       },
     },
   },

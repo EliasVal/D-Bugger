@@ -19,17 +19,9 @@
   import { writable } from 'svelte/store';
   import { fade, fly } from 'svelte/transition';
 
-  import {
-    getAuth,
-    getDatabase,
-    onValue,
-    ref,
-    signOut,
-    update,
-    remove,
-  } from '../ts/FirebaseImports';
-  import { isDisplayingProjectSettings, project, user } from '../ts/stores';
-  import { DisplayDialogue, CloseDialogue, DisplayLoading, CloseLoading } from '../ts/utils';
+  import { getAuth, getDatabase, onValue, ref, signOut, update, remove } from '@ts/FirebaseImports';
+  import { isDisplayingProjectSettings, project, user } from '@ts/stores';
+  import { DisplayDialogue, CloseDialogue, DisplayLoading, CloseLoading } from '@ts/utils';
 
   import Message from './Message.svelte';
 
@@ -170,7 +162,7 @@
             <button title="User profile" class="px-2 py-1">{@html icon(faUser).html}</button>
             <div class="relative inline-block">
               <button
-                title="User profile"
+                title="Inbox {hasUnread ? '• Unread Messages' : ''}"
                 class="px-2 py-1 {hasUnread ? 'unreadMessages' : ''}"
                 on:click={() => (isDisplayingMessages = !isDisplayingMessages)}
               >

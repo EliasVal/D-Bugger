@@ -20,6 +20,9 @@ import {
   get as gt,
   remove as rm,
   push as psh,
+  orderByChild as oBC,
+  equalTo as eT,
+  query as q,
 } from 'firebase/database';
 
 // Code
@@ -58,3 +61,6 @@ export const getDatabase = gDB;
 export const get = gt;
 export const remove = rm;
 export const push = psh;
+export const orderByChild = oBC;
+export const equalTo = eT;
+export const query = q;

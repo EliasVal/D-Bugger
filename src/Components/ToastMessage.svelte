@@ -1,96 +1,97 @@
 <script>
-	import { icon } from '@fortawesome/fontawesome-svg-core';
-	import { faTimes, faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
-	import { slide } from 'svelte/transition';
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { tweened } from 'svelte/motion';
+  import { icon } from '@fortawesome/fontawesome-svg-core';
+  import { faChevronDown, faChevronUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-	export let toast = {};
+  import { createEventDispatcher, onMount } from 'svelte';
+  import { tweened } from 'svelte/motion';
+  import { slide } from 'svelte/transition';
 
-	const progressScale = tweened(1, {
-		duration: toast.duration
-	});
+  export let toast = {};
 
-	const progressTransform = tweened(0, {
-		duration: toast.duration
-	});
+  const progressScale = tweened(1, {
+    duration: toast.duration,
+  });
 
-	const dispatch = createEventDispatcher();
+  const progressTransform = tweened(0, {
+    duration: toast.duration,
+  });
 
-	onMount(() => {
-		progressScale.set(0);
-		progressTransform.set(-50);
-	});
+  const dispatch = createEventDispatcher();
 
-	progressScale.subscribe((p) => {
-		if (p == 0) dispatch('removeToast', { id: toast.id });
-	});
+  onMount(() => {
+    progressScale.set(0);
+    progressTransform.set(-50);
+  });
 
-	const pause = () => {
-		progressTransform.set(0, { duration: 100 });
-		progressScale.set(1, { duration: 100 });
-	};
+  progressScale.subscribe((p) => {
+    if (p == 0) dispatch('removeToast', { id: toast.id });
+  });
 
-	const resume = () => {
-		progressTransform.set(-50);
-		progressScale.set(0);
-	};
+  const pause = () => {
+    progressTransform.set(0, { duration: 100 });
+    progressScale.set(1, { duration: 100 });
+  };
 
-	let isOpen;
+  const resume = () => {
+    progressTransform.set(-50);
+    progressScale.set(0);
+  };
 
-	$: {
-		if (isOpen) {
-			pause();
-			isOpen = true;
-		} else {
-			resume();
-			isOpen = false;
-		}
-	}
+  let isOpen;
+
+  $: {
+    if (isOpen) {
+      pause();
+      isOpen = true;
+    } else {
+      resume();
+      isOpen = false;
+    }
+  }
 </script>
 
 <div class="toast relative bg-blue-300 w-96 border border-black">
-	<div class="flex flex-row-reverse justify-between pb-2">
-		<div class="text-blue-400 mr-2 mt-1 whitespace-nowrap">
-			<button
-				aria-label="Close"
-				title="Close"
-				on:click={() => dispatch('removeToast', { id: toast.id })}
-				class="mr-1"
-			>
-				{@html icon(faTimes).html}
-			</button>
-			{#if toast.desc?.length > 0}
-				<button aria-label="Expand" title="Expand" on:click={() => (isOpen = !isOpen)}>
-					{@html icon(isOpen ? faChevronDown : faChevronUp).html}
-				</button>
-			{/if}
-		</div>
-		<div class="ml-2 mt-2">
-			<div>
-				<h1 class="font-semibold text-xl">{toast.title}</h1>
-			</div>
-			{#if toast.desc?.length > 0}
-				{#if isOpen}
-					<div transition:slide>
-						<p>
-							{toast.desc}
-						</p>
-					</div>
-				{/if}
-			{/if}
-		</div>
-	</div>
-	{#if !isOpen}
-		<div
-			class="absolute bottom-0 left-0 w-full bg-blue-900 h-1 timeLine"
-			style="transform: translateX({$progressTransform}%) scaleX({$progressScale});"
-		/>
-	{/if}
+  <div class="flex flex-row-reverse justify-between pb-2">
+    <div class="text-blue-400 mr-2 mt-1 whitespace-nowrap">
+      <button
+        aria-label="Close"
+        title="Close"
+        on:click={() => dispatch('removeToast', { id: toast.id })}
+        class="mr-1"
+      >
+        {@html icon(faTimes).html}
+      </button>
+      {#if toast.desc?.length > 0}
+        <button aria-label="Expand" title="Expand" on:click={() => (isOpen = !isOpen)}>
+          {@html icon(isOpen ? faChevronDown : faChevronUp).html}
+        </button>
+      {/if}
+    </div>
+    <div class="ml-2 mt-2">
+      <div>
+        <h1 class="font-semibold text-xl">{toast.title}</h1>
+      </div>
+      {#if toast.desc?.length > 0}
+        {#if isOpen}
+          <div transition:slide>
+            <p>
+              {toast.desc}
+            </p>
+          </div>
+        {/if}
+      {/if}
+    </div>
+  </div>
+  {#if !isOpen}
+    <div
+      class="absolute bottom-0 left-0 w-full bg-blue-900 h-1 timeLine"
+      style="transform: translateX({$progressTransform}%) scaleX({$progressScale});"
+    />
+  {/if}
 </div>
 
 <style>
-	.toast {
-		box-shadow: 0 1px 5px 0 black;
-	}
+  .toast {
+    box-shadow: 0 1px 5px 0 black;
+  }
 </style>

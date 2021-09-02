@@ -2,8 +2,8 @@
   import { icon } from '@fortawesome/fontawesome-svg-core';
   import { faEnvelope, faEnvelopeOpen, faTimes } from '@fortawesome/free-solid-svg-icons';
   import { createEventDispatcher } from 'svelte';
-  import { push, set, ref, getDatabase, getAuth, remove } from '../ts/FirebaseImports';
-  import { CloseDialogue, DisplayDialogue, DisplayLoading, CloseLoading } from '../ts/utils';
+  import { push, update, ref, getDatabase, getAuth, remove } from '@ts/FirebaseImports';
+  import { CloseDialogue, DisplayDialogue, DisplayLoading, CloseLoading } from '@ts/utils';
 
   export let key: string;
   export let title: string;
@@ -21,10 +21,15 @@
   const acceptInvite = async () => {
     CloseDialogue();
     DisplayLoading();
-    await set(ref(db, `projects/${projectId}/details/members/${auth.currentUser.uid}`), true);
+
+    // Update these at the same time so it wont look weird for the owner
+    let newDt = {};
+    newDt[`members/${auth.currentUser.uid}`] = true;
+    newDt[`pending/${auth.currentUser.uid}`] = null;
+    await update(ref(db, `projects/${projectId}/details/`), newDt);
+
     await push(ref(db, `users/${auth.currentUser.uid}/projects`), projectId);
     await remove(ref(db, `users/${auth.currentUser.uid}/inbox/${key}`));
-    await remove(ref(db, `projects/${projectId}/details/pending/${auth.currentUser.uid}`));
     CloseLoading();
   };
 </script>
@@ -72,7 +77,15 @@
               title: 'Decline',
               stylingClasses:
                 'hover:bg-red-600 hover:text-white border border-red-600 transition-colors',
-              onClick: () => dispatch('deleteMessage', { key }),
+              onClick: async () => {
+                CloseDialogue();
+                DisplayLoading();
+                await remove(ref(db, `users/${auth.currentUser.uid}/inbox/${key}`));
+                await remove(
+                  ref(db, `projects/${projectId}/details/pending/${auth.currentUser.uid}`),
+                );
+                CloseLoading();
+              },
             },
           ],
         });
