@@ -36,7 +36,7 @@
   const auth = getAuth();
   const SignOut = async () => {
     await signOut(auth);
-    if ($page.path != base) goto(base);
+    if ($page.path == '/') goto(base);
   };
 
   let bWidth;
@@ -220,35 +220,22 @@
           <span />
         {/if}
         <div
-          class="flex flex-col sm:flex-row items-center gap-5
-          {$page.path == base && 'sm:gap-10'}
-          absolute top-1/2 -translate-y-1/2 sm:left-1/2 sm:-translate-x-1/2 "
+          class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 absolute top-1/2 -translate-y-1/2 sm:left-1/2 sm:-translate-x-1/2 "
         >
-          {#if $page.path == base}
+          {#if $page.path == '/'}
             <a href="#projects" title="Projects">{@html icon(faTasks).html}</a>
             <a href="#about" title="About">{@html icon(faBook).html}</a>
             <a href="#roadmap" title="Roadmap">{@html icon(faRoute).html}</a>
           {:else}
             <!--The style tag is magic numbers that make the buttons even. No I don't know either.-->
-            <button
-              class="text-xl"
-              style="padding: 0 0.9375rem; max-width: 52px;"
-              title="Home"
-              on:click={() => goto(base)}
-              in:fly={{ x: bWidth > 640 && 20, duration: bWidth > 640 && 1000, delay: 750 }}
-            >
+            <button class="text-xl" title="Home" on:click={() => goto(base)}>
               {@html icon(faHome).html}
             </button>
             {#if auth.currentUser?.uid == $project?.details.owner && auth.currentUser?.uid != null}
-              <span
-                class="border border-white absolute left-1/2 top-0 bottom-0 hidden sm:block"
-                in:fade={{ delay: 250 }}
-              />
               <button
-                class="px-4 text-xl"
+                class="text-xl"
                 title="Project Settings"
                 on:click={() => ($isDisplayingProjectSettings = !$isDisplayingProjectSettings)}
-                in:fly={{ x: bWidth > 640 && -20, duration: bWidth > 640 && 1000, delay: 750 }}
               >
                 {@html icon(faCog).html}
               </button>
