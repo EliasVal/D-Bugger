@@ -17,7 +17,7 @@ const config = {
       assets: '/D-Bugger',
     },
     files: {
-      serviceWorker: './service-worker.js'
+      serviceWorker: './'
     },
     ssr: false,
     vite: {
