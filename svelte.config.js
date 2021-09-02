@@ -11,9 +11,9 @@ const config = {
   kit: {
     // hydrate the <div id="svelte"> element in src/app.html
     target: '#svelte',
-    adapter: adapter({}),
+    adapter: adapter({ assets: 'build/D-Bugger' }),
     // paths: {
-    //   base: '/D-Bugger',
+    //   base: '/./D-Bugger',
     // },
     // appDir: 'internal',
     ssr: false,
