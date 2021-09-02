@@ -13,7 +13,7 @@ const config = {
     target: '#svelte',
     adapter: adapter({}),
     paths: {
-      base: '/test',
+      base: '/D-Bugger',
     },
     appDir: 'internal',
     ssr: false,
@@ -24,7 +24,6 @@ const config = {
       resolve: {
         alias: {
           '@ts': resolve('./src/ts'),
-          '@base': resolve('/test'),
         },
       },
     },
