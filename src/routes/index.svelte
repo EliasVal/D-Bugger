@@ -118,14 +118,15 @@
   });
 </script>
 
-<svelte:head>
+<!-- <svelte:head>
   <title>D-Bugger</title>
   <meta name="title" content="D-Bugger" />
   <meta
     name="Description"
     content="Log the bugs in your apps, coordiante with your team to give the end user the best experience."
   />
-</svelte:head>
+  
+</svelte:head> -->
 
 {#if showProjects}
   <div id="projects" class=" my-10">
