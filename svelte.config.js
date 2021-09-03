@@ -21,7 +21,7 @@ const config = {
     },
     ssr: false,
     prerender: {
-      pages: ['*', '/D-Bugger/user/[id]'],
+      pages: ['*', '/user/[id]'],
     },
     vite: {
       build: {
