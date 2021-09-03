@@ -12,6 +12,7 @@
     user,
   } from '@ts/stores';
   import { DisplayToast } from '@ts/utils';
+  import { sendEmailVerification, getAuth } from '@ts/FirebaseImports';
 
   import { flip } from 'svelte/animate';
   import { fly, slide } from 'svelte/transition';
@@ -33,7 +34,7 @@
       if (u && !u.emailVerified) {
         DisplayToast({
           title: 'Please verify your account',
-          desc: "Check your E-Mail's inbox to verify your account.",
+          desc: `Check your E-Mail's inbox to verify your account.<br>Haven't received an E-Mail? <button onclick="window.location.pathname = '${base}/sendEmail'"><u>Click Here</u></button>`,
           duration: 20000,
         });
       }
@@ -66,7 +67,7 @@
   <Loading />
 {/if}
 
-<div class="sticky inset-0 z-30">
+<div class="fixed bottom-0 z-30">
   <div class="absolute bottom-0 left-0 m-3 flex flex-col gap-3">
     {#each $Toasts as toast (toast.id)}
       <div in:slide out:fly={{ x: -500 }} animate:flip={{ duration: 500 }}>
@@ -79,6 +80,7 @@
 <style>
   :global(html, body, #svelte) {
     scroll-behavior: smooth;
+    min-height: 100vh;
   }
 
   @tailwind base;

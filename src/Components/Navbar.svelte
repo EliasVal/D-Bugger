@@ -19,7 +19,7 @@
 
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import { fade, fly } from 'svelte/transition';
+  import { fly } from 'svelte/transition';
 
   import { getAuth, getDatabase, onValue, ref, signOut, update, remove } from '@ts/FirebaseImports';
   import { isDisplayingProjectSettings, project, user } from '@ts/stores';
@@ -170,13 +170,7 @@
             <button
               title="User profile"
               class="px-2 py-1"
-              on:click={() => {
-                DisplayToast({
-                  title: 'Expand this message to see your ID.',
-                  desc: `User Profiles are currently unavailable.<br />Your ID: <u>${auth.currentUser.uid}</u>`,
-                  duration: 10000,
-                });
-              }}
+              on:click={() => goto(`${base}/user/${auth.currentUser.uid}`)}
             >
               {@html icon(faUser).html}
             </button>
