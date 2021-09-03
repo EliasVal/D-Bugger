@@ -1,5 +1,5 @@
 import { getAuth, onAuthStateChanged } from './FirebaseImports';
-
+import { browser } from '$app/env';
 import { writable } from 'svelte/store';
 import { DisplayToast } from './utils';
 
@@ -14,7 +14,7 @@ const uUpdate = () => {
   });
 };
 
-uUpdate();
+if (browser) uUpdate();
 
 export const user = writable();
 export const bug = writable(null);
