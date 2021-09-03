@@ -11,7 +11,7 @@ const config = {
   kit: {
     // hydrate the <div id="svelte"> element in src/app.html
     target: '#svelte',
-    adapter: adapter(),
+    adapter: adapter({ fallback: 'index.html' }),
     paths: {
       base: '/D-Bugger',
       assets: '/D-Bugger',
@@ -20,9 +20,6 @@ const config = {
       serviceWorker: 'src/service-worker.ts',
     },
     ssr: false,
-    prerender: {
-      pages: ['*', '/user/[id]'],
-    },
     vite: {
       build: {
         chunkSizeWarningLimit: 1000,
