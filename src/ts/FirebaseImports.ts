@@ -12,6 +12,13 @@ import {
 } from 'firebase/auth';
 
 import {
+  getDownloadURL as gDU,
+  getStorage as gS,
+  ref as sRef,
+  uploadBytes as uB,
+} from 'firebase/storage';
+
+import {
   ref as rf,
   set as st,
   update as upd,
@@ -64,3 +71,9 @@ export const push = psh;
 export const orderByChild = oBC;
 export const equalTo = eT;
 export const query = q;
+
+// Export storage singletons
+export const storageRef = sRef;
+export const getDownloadURL = gDU;
+export const getStorage = gS;
+export const uploadBytes = uB;

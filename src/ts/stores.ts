@@ -4,14 +4,14 @@ import { writable } from 'svelte/store';
 import { browser } from '$app/env';
 
 const uUpdate = () => {
-	onAuthStateChanged(getAuth(), (u) => {
-		if (u) {
-			// @ts-ignore
-			user.update(() => getAuth().currentUser.toJSON());
-		} else {
-			user.update(() => null);
-		}
-	});
+  onAuthStateChanged(getAuth(), (u) => {
+    if (u) {
+      // @ts-ignore
+      user.update(() => getAuth().currentUser.toJSON());
+    } else {
+      user.update(() => null);
+    }
+  });
 };
 
 if (browser) uUpdate();

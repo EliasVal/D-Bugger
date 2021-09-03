@@ -12,7 +12,6 @@
     faHome,
     faRoute,
     faSignInAlt,
-    faSignOutAlt,
     faTasks,
     faUser,
   } from '@fortawesome/free-solid-svg-icons';
@@ -21,23 +20,24 @@
   import { writable } from 'svelte/store';
   import { fly } from 'svelte/transition';
 
-  import { getAuth, getDatabase, onValue, ref, signOut, update, remove } from '@ts/FirebaseImports';
-  import { isDisplayingProjectSettings, project, user } from '@ts/stores';
   import {
-    DisplayDialogue,
-    CloseDialogue,
-    DisplayLoading,
-    CloseLoading,
-    DisplayToast,
-  } from '@ts/utils';
+    getAuth,
+    getDatabase,
+    onValue,
+    ref,
+    signOut,
+    update,
+    remove,
+    storageRef,
+    getDownloadURL,
+    getStorage,
+  } from '@ts/FirebaseImports';
+  import { isDisplayingProjectSettings, project, user } from '@ts/stores';
+  import { DisplayDialogue, CloseDialogue, DisplayLoading, CloseLoading } from '@ts/utils';
 
   import Message from './Message.svelte';
 
   const auth = getAuth();
-  const SignOut = async () => {
-    await signOut(auth);
-    if ($page.path == '/') goto(base);
-  };
 
   let bWidth;
   let isDisplayingNavbar = true;
@@ -49,15 +49,21 @@
 
   const db = getDatabase();
   const messages = writable();
+  let img;
+
   onMount(() => {
-    user.subscribe((u) => {
+    user.subscribe(async (u) => {
       if (u && u != 'unknown') {
         // @ts-ignore
         onValue(ref(db, `users/${u.uid}/inbox`), async (snapshot) => {
           messages.set(await snapshot.val());
         });
+
+        // @ts-ignore
+        img = await getDownloadURL(storageRef(getStorage(), `${u.uid}/profilePicture`)).catch();
       }
     });
+    bWidth = window.innerWidth;
   });
 
   $: {
@@ -133,7 +139,7 @@
   };
 </script>
 
-<svelte:window bind:innerWidth={bWidth} />
+<svelte:window on:resize={() => (bWidth = window.innerWidth)} />
 
 {#if bWidth < 640}
   <button
@@ -146,11 +152,7 @@
 {/if}
 <svelte:head>
   {#if bWidth < 640}
-    <style>
-      .inbox::before {
-        margin: 3px 0 0 2px;
-      }
-    </style>
+    <style></style>
   {/if}
 </svelte:head>
 
@@ -166,13 +168,33 @@
 			height: calc(100% - {bWidth < 640 ? btnHeight + 10 : 0}px)"
       >
         {#if $user}
-          <div class={bWidth < 640 && 'flex flex-col items-center justify-center'}>
+          <div class="flex items-center {bWidth < 640 && 'flex flex-col justify-center'}">
             <button
               title="User profile"
               class="px-2 py-1"
               on:click={() => goto(`${base}/user/${auth.currentUser.uid}`)}
             >
-              {@html icon(faUser).html}
+              {#if img}
+                <img
+                  style="height: 20px;"
+                  class="profileImg rounded-full"
+                  src={img ?? '/user.svg'}
+                  alt=""
+                />
+              {:else}
+                {@html icon(faUser).html}
+              {/if}
+              <!-- {#await getDownloadURL(storageRef(getStorage(), `${$user.uid}/profilePicture`))}
+              {:then url}
+                <img
+                  style="height: 20px;"
+                  class="profileImg rounded-full"
+                  src={url ?? '/user.svg'}
+                  alt=""
+                />
+              {:catch}
+                {@html icon(faUser).html}
+              {/await} -->
             </button>
             <div class="relative inline-block">
               <button
@@ -236,15 +258,7 @@
             {/if}
           {/if}
         </div>
-        {#if $user}
-          <button
-            on:click={SignOut}
-            class="bg-red-600 rounded-sm px-2 py-1 text-white hover:bg-red-800 transition-colors"
-            title="Sign out"
-          >
-            {@html icon(faSignOutAlt).html}
-          </button>
-        {:else}
+        {#if !$user}
           <button
             on:click={() => goto(`${base}/login`)}
             class="bg-green-500 rounded-sm px-2 py-1 text-white hover:bg-green-800 transition-colors"
@@ -258,45 +272,4 @@
   {/if}
 {/if}
 
-<style global>
-  .unreadMessages {
-    position: relative;
-  }
-  .unreadMessages::before {
-    content: '';
-    position: absolute;
-    background-color: red;
-    padding: 0.215rem;
-    border-radius: 50%;
-    right: 15%;
-    top: 20%;
-  }
-  .inbox::before {
-    content: '⯅';
-    display: block;
-    line-height: 0.6 !important;
-    transform: translateY(3px);
-    @apply text-4xl text-gray-400;
-    pointer-events: none;
-  }
-
-  .message {
-    @apply border-t-2 border-b-2 border-gray-300 p-2 py-5;
-  }
-
-  .message-moreContent::after {
-    content: 'Read more';
-    position: absolute;
-    @apply text-xs text-gray-400 right-2 bottom-1;
-  }
-
-  .message-unread h2::after {
-    content: '';
-    background-color: red;
-    padding: 0.215rem;
-    border-radius: 50%;
-    display: inline-block;
-    margin-bottom: 0.125rem;
-    margin-left: 0.275rem;
-  }
-</style>
+<style global></style>

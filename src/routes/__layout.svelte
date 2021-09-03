@@ -12,7 +12,6 @@
     user,
   } from '@ts/stores';
   import { DisplayToast } from '@ts/utils';
-  import { sendEmailVerification, getAuth } from '@ts/FirebaseImports';
 
   import { flip } from 'svelte/animate';
   import { fly, slide } from 'svelte/transition';
