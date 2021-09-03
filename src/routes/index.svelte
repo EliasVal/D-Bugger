@@ -3,7 +3,7 @@
   import { goto } from '$app/navigation';
   import { base } from '$app/paths';
 
-  import { get, getAuth, getDatabase, onValue, push, ref, remove, set } from '@ts/FirebaseImports';
+  import { get, getDatabase, onValue, push, ref, remove, set } from '@ts/FirebaseImports';
   import { user } from '@ts/stores';
   import {
     CloseDialogue,
@@ -24,7 +24,6 @@
   import Thanks from '../Components/Home/Thanks.svelte';
   import ProjectCard from '../Components/ProjectCard.svelte';
 
-  const auth = getAuth();
   const db = getDatabase();
 
   let projects = writable([]);
@@ -68,58 +67,56 @@
     const proj = await push(ref(db, `/projects`), {
       details: {
         name: event.target[0].value,
-        owner: auth.currentUser.uid,
+        owner: $user.uid,
       },
     });
 
-    let userProjects = await get(ref(db, `/users/${auth.currentUser.uid}/projects`));
+    let userProjects = await get(ref(db, `/users/${$user.uid}/projects`));
     userProjects = (await userProjects.val()) ?? [];
 
     // @ts-ignore
     userProjects.push(proj.key);
-    await set(ref(db, `/users/${auth.currentUser.uid}/projects`), userProjects);
+    await set(ref(db, `/users/${$user.uid}/projects`), userProjects);
     goto(`${base}/project/${proj.key}`);
     CloseLoading();
   };
 
   let loading = true;
+  let navHeight = 0;
+
   onMount(() => {
-    if (!showProjects) return;
-    let projectsDiv = document.getElementById('projects');
-    let nav = document.getElementsByTagName('nav')[0];
-    projectsDiv.style.minHeight = `calc(100vh - ${nav.offsetHeight}px)`;
+    navHeight = document.getElementsByTagName('nav')[0].offsetHeight;
+  });
 
-    user.subscribe((u) => {
-      if (u && u != 'unknown') {
-        // @ts-ignore
-        onValue(ref(db, `users/${$user.uid}/projects`), async (snapshot) => {
-          const projectArr = await snapshot.val();
+  user.subscribe((u) => {
+    if (u) {
+      showProjects = true;
+      onValue(ref(db, `users/${$user.uid}/projects`), async (snapshot) => {
+        const projectArr = await snapshot.val();
 
-          if (projectArr) {
-            $projects = [];
-            Object.entries(projectArr).map(async ([key, projId]) => {
-              const projSnapshot = await get(ref(db, `projects/${projId}`)).catch(async (e) => {
-                if (e.message == 'Permission denied') {
-                  // @ts-ignore
-                  await remove(ref(db, `users/${$user.uid}/projects/${key}`));
-                }
-              });
-              const projectData = await projSnapshot?.val();
-              if (projectData) {
-                projects.update((p) => (p = [...p, { ...projectData, id: projId }]));
+        if (projectArr) {
+          $projects = [];
+          Object.entries(projectArr).map(async ([key, projId]) => {
+            const projSnapshot = await get(ref(db, `projects/${projId}`)).catch(async (e) => {
+              if (e.message == 'Permission denied') {
+                await remove(ref(db, `users/${$user.uid}/projects/${key}`));
               }
             });
-          } else $projects = null;
-          if ($projects == []) $projects = null;
-          loading = false;
-        });
-      } else if (!u) showProjects = false;
-    });
+            const projectData = await projSnapshot?.val();
+            if (projectData) {
+              projects.update((p) => (p = [...p, { ...projectData, id: projId }]));
+            }
+          });
+        } else $projects = null;
+        if ($projects == []) $projects = null;
+        loading = false;
+      });
+    } else if (!u) showProjects = false;
   });
 </script>
 
 {#if showProjects}
-  <div id="projects" class=" my-10">
+  <div style="min-height: calc(100vh - {navHeight}px" id="projects" class="my-10">
     {#if !loading}
       {#if $projects?.length > 0}
         <h1 class="text-center text-4xl mb-10">Projects</h1>

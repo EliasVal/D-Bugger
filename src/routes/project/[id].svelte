@@ -87,22 +87,19 @@
     },
   ];
 
-  let currUser = 'loading';
   onMount(async () => {
     $isDisplayingProjectSettings = false;
     $isDisplayingBug = false;
-    user.subscribe((u) => {
-      if (u != 'unknown' && u) {
-        // @ts-ignore
-        if (!u.emailVerified) {
-          goto(base);
-        }
-        onValue(ref(db, `projects/${slug}`), async (snapshot) => {
-          project.set({ ...(await snapshot.val()), id: slug });
-          currUser = u;
-        });
+  });
+  user.subscribe((u) => {
+    if (u) {
+      if (!u.emailVerified) {
+        goto(base);
       }
-    });
+      onValue(ref(db, `projects/${slug}`), async (snapshot) => {
+        project.set({ ...(await snapshot.val()), id: slug });
+      });
+    }
   });
 
   const displayDeleteBug = (e) => {
@@ -133,7 +130,6 @@
   // Saving Changes
   const saveBugChanges = async (e) => {
     const bug: Bug = e.detail.bug;
-    console.log(bug);
     DisplayLoading();
     await set(ref(db, `projects/${slug}/bugs/${bug.id}`), bug).catch(() => {
       CloseLoading();
@@ -190,7 +186,7 @@
 
     // @ts-ignore
     // Get user's projects
-    let userProjects = await get(ref(db, `users/${currUser.uid}/projects`));
+    let userProjects = await get(ref(db, `users/${$user.uid}/projects`));
 
     // Await value
     userProjects = await userProjects.val();
@@ -201,7 +197,7 @@
 
     // @ts-ignore
     // Push changes
-    await set(ref(db, `users/${currUser.uid}/projects`), userProjects);
+    await set(ref(db, `users/${$user.uid}/projects`), userProjects);
     CloseLoading();
     DisplayToast({ title: 'Project Deleted Successfully.', duration: 5000 });
     goto(base);
@@ -222,7 +218,7 @@
 
 {#if $project}
   {#if !$isDisplayingProjectSettings}
-    {#if currUser == 'loading'}
+    {#if $user == 'loading'}
       <div class="bg-gray-900 fixed w-full h-full" out:fade>
         <Loading />
       </div>

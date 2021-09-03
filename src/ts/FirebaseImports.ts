@@ -1,39 +1,34 @@
-import { getApps as GApps, initializeApp } from 'firebase/app';
-import {
-  getAuth as GAuth,
-  onAuthStateChanged as oASC,
-  browserLocalPersistence as BRL,
-  signInWithEmailAndPassword as SIWEP,
-  setPersistence as SP,
-  createUserWithEmailAndPassword as CUWEP,
-  updateProfile as UP,
-  sendEmailVerification as SEV,
-  signOut as SO,
+import { getApps, initializeApp } from 'firebase/app';
+export {
+  getAuth,
+  onAuthStateChanged,
+  browserLocalPersistence,
+  signInWithEmailAndPassword,
+  setPersistence,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  sendEmailVerification,
+  signOut,
 } from 'firebase/auth';
 
-import {
-  getDownloadURL as gDU,
-  getStorage as gS,
-  ref as sRef,
-  uploadBytes as uB,
-} from 'firebase/storage';
+export { getDownloadURL, getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';
 
-import {
-  ref as rf,
-  set as st,
-  update as upd,
-  onValue as onV,
-  getDatabase as gDB,
-  get as gt,
-  remove as rm,
-  push as psh,
-  orderByChild as oBC,
-  equalTo as eT,
-  query as q,
+export {
+  ref,
+  set,
+  update,
+  onValue,
+  getDatabase,
+  get,
+  remove,
+  push,
+  orderByChild,
+  equalTo,
+  query,
 } from 'firebase/database';
 
 // Code
-if (GApps()?.length == 0) {
+if (getApps()?.length == 0) {
   initializeApp({
     apiKey: 'AIzaSyDEsY9qk16a2U9mCbl2g_397-rRIFs7WQs',
     authDomain: 'debugger-33265.firebaseapp.com',
@@ -45,35 +40,3 @@ if (GApps()?.length == 0) {
     measurementId: 'G-SPZSDNP61E',
   });
 }
-
-export const getApp = GApps;
-
-// Export Auth singletons
-export const getAuth = GAuth;
-export const onAuthStateChanged = oASC;
-export const browserLocalPersistence = BRL;
-export const signInWithEmailAndPassword = SIWEP;
-export const setPersistence = SP;
-export const createUserWithEmailAndPassword = CUWEP;
-export const updateProfile = UP;
-export const sendEmailVerification = SEV;
-export const signOut = SO;
-
-// Export DB Singletons
-export const ref = rf;
-export const set = st;
-export const update = upd;
-export const onValue = onV;
-export const getDatabase = gDB;
-export const get = gt;
-export const remove = rm;
-export const push = psh;
-export const orderByChild = oBC;
-export const equalTo = eT;
-export const query = q;
-
-// Export storage singletons
-export const storageRef = sRef;
-export const getDownloadURL = gDU;
-export const getStorage = gS;
-export const uploadBytes = uB;

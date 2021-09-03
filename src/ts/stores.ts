@@ -1,22 +1,22 @@
 import { getAuth, onAuthStateChanged } from './FirebaseImports';
 
 import { writable } from 'svelte/store';
-import { browser } from '$app/env';
+import { DisplayToast } from './utils';
 
 const uUpdate = () => {
   onAuthStateChanged(getAuth(), (u) => {
     if (u) {
-      // @ts-ignore
-      user.update(() => getAuth().currentUser.toJSON());
+      user.update(() => getAuth().currentUser);
     } else {
       user.update(() => null);
+      DisplayToast({ title: 'Log in to view your projects.', duration: 15000 });
     }
   });
 };
 
-if (browser) uUpdate();
+uUpdate();
 
-export const user = writable('unknown');
+export const user = writable(getAuth().currentUser);
 export const bug = writable(null);
 export const project = writable(null);
 export const isDisplayingDialogue = writable(false);

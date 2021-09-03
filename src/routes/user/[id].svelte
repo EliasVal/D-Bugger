@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { user as userWritable } from '@ts/stores';
+  import { user } from '@ts/stores';
   import { page } from '$app/stores';
   import {
     getAuth,
@@ -18,12 +18,9 @@
 
   let section: 'general' | 'settings' = 'general';
 
-  let user;
-  $: if ($userWritable != 'unknown' && $userWritable) user = getAuth().currentUser;
-
   const uploadProfilePic = (e) => {
     uploadBytes(
-      storageRef(getStorage(), `${user.uid}/profilePicture`),
+      storageRef(getStorage(), `${$user.uid}/profilePicture`),
       e.target.files[0],
     ).then(() => console.log('DONE'));
   };
@@ -32,7 +29,7 @@
 </script>
 
 <div class="flex ml-10 mt-10 flex-col items-center gap-20 sm:flex-row">
-  {#if user?.uid == $page.params.id}
+  {#if $user?.uid == $page.params.id}
     <div class="menu w-fit pr-5">
       <ul>
         <li class="text-xl pr-10">User Account</li>
@@ -55,13 +52,13 @@
       </ul>
     </div>
   {/if}
-  {#if section == 'general' || user?.uid != $page.params.id}
+  {#if section == 'general' || $user?.uid != $page.params.id}
     <div class="flex gap-5 flex-col md:flex-row">
       <div
         on:click={() => {
-          if (user?.uid == $page.params.id) imageInput.click();
+          if ($user?.uid == $page.params.id) imageInput.click();
         }}
-        class="{user?.uid == $page.params.id && 'hover:cursor-pointer imageTooltip'} w-fit"
+        class="{$user?.uid == $page.params.id && 'hover:cursor-pointer imageTooltip'} w-fit"
       >
         {#await getDownloadURL(storageRef(getStorage(), `${$page.params.id}/profilePicture`))}
           <img class="w-48 rounded-full" src="/D-Bugger/user.svg" alt="" />
@@ -86,8 +83,8 @@
         />
       </div>
       <div>
-        {#if user?.uid == $page.params.id}
-          <h3 class="text-xl">{user.displayName}</h3>
+        {#if $user?.uid == $page.params.id}
+          <h3 class="text-xl">{$user.displayName}</h3>
           <h4
             on:click={() => {
               navigator.clipboard
@@ -97,7 +94,7 @@
             }}
             class="text-gray-400 hover:cursor-pointer copyToClipboard"
           >
-            {user.uid}
+            {$user.uid}
           </h4>
         {:else}
           {#await get(ref(getDatabase(), `users/${$page.params.id}/displayName`)) then snapshot}

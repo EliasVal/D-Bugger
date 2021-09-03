@@ -21,11 +21,9 @@
   import { fly } from 'svelte/transition';
 
   import {
-    getAuth,
     getDatabase,
     onValue,
     ref,
-    signOut,
     update,
     remove,
     storageRef,
@@ -36,8 +34,6 @@
   import { DisplayDialogue, CloseDialogue, DisplayLoading, CloseLoading } from '@ts/utils';
 
   import Message from './Message.svelte';
-
-  const auth = getAuth();
 
   let bWidth;
   let isDisplayingNavbar = true;
@@ -52,18 +48,18 @@
   let img;
 
   onMount(() => {
-    user.subscribe(async (u) => {
-      if (u && u != 'unknown') {
-        // @ts-ignore
-        onValue(ref(db, `users/${u.uid}/inbox`), async (snapshot) => {
-          messages.set(await snapshot.val());
-        });
-
-        // @ts-ignore
-        img = await getDownloadURL(storageRef(getStorage(), `${u.uid}/profilePicture`)).catch();
-      }
-    });
     bWidth = window.innerWidth;
+  });
+  user.subscribe(async (u) => {
+    if (u) {
+      // @ts-ignore
+      onValue(ref(db, `users/${u.uid}/inbox`), async (snapshot) => {
+        messages.set(await snapshot.val());
+      });
+
+      // @ts-ignore
+      img = await getDownloadURL(storageRef(getStorage(), `${u.uid}/profilePicture`)).catch();
+    }
   });
 
   $: {
@@ -84,7 +80,7 @@
     const key = e.detail.key;
 
     DisplayLoading();
-    await update(ref(db, `users/${auth.currentUser.uid}/inbox/${key}`), { '/read': true });
+    await update(ref(db, `users/${$user.uid}/inbox/${key}`), { '/read': true });
     CloseLoading();
     DisplayDialogue({
       header: $messages[key].title,
@@ -102,13 +98,13 @@
   };
 
   const markAsRead = async (e) => {
-    await update(ref(db, `users/${auth.currentUser.uid}/inbox/${e.detail.key}`), {
+    await update(ref(db, `users/${$user.uid}/inbox/${e.detail.key}`), {
       '/read': true,
     });
   };
 
   const markAsUnread = async (e) => {
-    await update(ref(db, `users/${auth.currentUser.uid}/inbox/${e.detail.key}`), {
+    await update(ref(db, `users/${$user.uid}/inbox/${e.detail.key}`), {
       '/read': false,
     });
   };
@@ -134,7 +130,7 @@
 
   const deleteMessage = async (id) => {
     DisplayLoading();
-    await remove(ref(db, `users/${auth.currentUser.uid}/inbox/${id}`));
+    await remove(ref(db, `users/${$user.uid}/inbox/${id}`));
     CloseLoading();
   };
 </script>
@@ -172,7 +168,7 @@
             <button
               title="User profile"
               class="px-2 py-1"
-              on:click={() => goto(`${base}/user/${auth.currentUser.uid}`)}
+              on:click={() => goto(`${base}/user/${$user.uid}`)}
             >
               {#if img}
                 <img
@@ -247,7 +243,7 @@
             <button class="text-xl" title="Home" on:click={() => goto(base)}>
               {@html icon(faHome).html}
             </button>
-            {#if auth.currentUser?.uid == $project?.details.owner && auth.currentUser?.uid != null}
+            {#if $user?.uid == $project?.details.owner && $user?.uid != null}
               <button
                 class="text-xl"
                 title="Project Settings"

@@ -1,5 +1,4 @@
 <script>
-  import { browser } from '$app/env';
   import { goto } from '$app/navigation';
   import { base } from '$app/paths';
   import { page } from '$app/stores';
@@ -28,21 +27,16 @@
   }
 
   user.subscribe((u) => {
-    if (browser && u != 'unknown') {
-      // @ts-ignore
-      if (u && !u.emailVerified) {
-        DisplayToast({
-          title: 'Please verify your account',
-          desc: `Check your E-Mail's inbox to verify your account.<br>Haven't received an E-Mail? <button onclick="window.location.pathname = '${base}/sendEmail'"><u>Click Here</u></button>`,
-          duration: 20000,
-        });
-      }
-      if (!u && !pathIsLoginOrSignup) {
-        DisplayToast({ title: 'Log in to view your projects.', duration: 20000 });
-      } else if (u && pathIsLoginOrSignup) {
-        DisplayToast({ title: "You're already logged in.", duration: 5000 });
-        goto(base);
-      }
+    if (u && !u.emailVerified) {
+      DisplayToast({
+        title: 'Please verify your account',
+        desc: `Check your E-Mail's inbox to verify your account.<br>Haven't received an E-Mail? <button onclick="window.location.pathname = '${base}/sendEmail'"><u>Click Here</u></button>`,
+        duration: 20000,
+      });
+    }
+    if (u && pathIsLoginOrSignup) {
+      DisplayToast({ title: "You're already logged in.", duration: 5000 });
+      goto(base);
     }
   });
 
