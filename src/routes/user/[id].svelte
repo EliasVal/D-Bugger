@@ -64,11 +64,16 @@
         class="{user?.uid == $page.params.id && 'hover:cursor-pointer imageTooltip'} w-fit"
       >
         {#await getDownloadURL(storageRef(getStorage(), `${$page.params.id}/profilePicture`))}
-          <img class="w-48 rounded-full" src="/user.svg" alt="" />
+          <img class="w-48 rounded-full" src="/D-Bugger/user.svg" alt="" />
         {:then url}
-          <img class="profileImg w-48 rounded-full" src={url ?? '/user.svg'} alt="" />
+          <img
+            style="background-image: url(/D-Bugger/user.svg), url({url});"
+            class="w-48 h-48 rounded-full bg-no-repeat bg-contain border border-black bg-bottom"
+            src="http://upload.wikimedia.org/wikipedia/commons/c/ce/Transparent.gif"
+            alt=""
+          />
         {:catch}
-          <img class="w-48 rounded-full" src="/user.svg" alt="" />
+          <img class="w-48 rounded-full" src="/D-Bugger/user.svg" alt="" />
         {/await}
         <input
           type="file"
@@ -135,10 +140,6 @@
   .menu ul li button {
     width: 100%;
     text-align: left;
-  }
-
-  .profileImg {
-    background: url(/user.svg) no-repeat scroll 0 0;
   }
 
   .copyToClipboard {
