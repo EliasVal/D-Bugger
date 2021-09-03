@@ -1,3 +1,9 @@
+<script context="module">
+  async function load({ page }) {
+    return { status: 200 };
+  }
+</script>
+
 <script lang="ts">
   import { user } from '@ts/stores';
   import { page } from '$app/stores';

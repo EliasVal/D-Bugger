@@ -1,7 +1,8 @@
 import { getAuth, onAuthStateChanged } from './FirebaseImports';
 import { browser } from '$app/env';
-import { writable } from 'svelte/store';
+import { Writable, writable } from 'svelte/store';
 import { DisplayToast } from './utils';
+import type { User } from '@firebase/auth';
 
 const uUpdate = () => {
   onAuthStateChanged(getAuth(), (u) => {
@@ -16,7 +17,7 @@ const uUpdate = () => {
 
 if (browser) uUpdate();
 
-export const user = writable();
+export const user: Writable<User> = writable();
 export const bug = writable(null);
 export const project = writable(null);
 export const isDisplayingDialogue = writable(false);
