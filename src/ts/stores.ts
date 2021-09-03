@@ -16,7 +16,7 @@ const uUpdate = () => {
 
 uUpdate();
 
-export const user = writable(getAuth().currentUser);
+export const user = writable();
 export const bug = writable(null);
 export const project = writable(null);
 export const isDisplayingDialogue = writable(false);
