@@ -67,7 +67,7 @@
           <img class="w-48 rounded-full" src="/D-Bugger/user.svg" alt="" />
         {:then url}
           <img
-            style="background-image: url(/D-Bugger/user.svg), url({url});"
+            style="background-image: url({url ?? '/D-Bugger/user.svg'});"
             class="w-48 h-48 rounded-full bg-no-repeat bg-contain border border-black bg-bottom"
             src="http://upload.wikimedia.org/wikipedia/commons/c/ce/Transparent.gif"
             alt=""

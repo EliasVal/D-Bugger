@@ -20,6 +20,9 @@ const config = {
       serviceWorker: 'src/service-worker.ts',
     },
     ssr: false,
+    prerender: {
+      pages: ['*', '/D-Bugger/user/[id]'],
+    },
     vite: {
       build: {
         chunkSizeWarningLimit: 1000,
