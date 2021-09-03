@@ -20,7 +20,7 @@ jobs:
         run: npm run build # The build command of your project
 
       - run: touch build/.nojekyll
-      - run: echo '<h1>Hello, catch all</h1>' > 200.html
+      - run: echo '<h1>Hello, catch all</h1>' > build/200.html
 
       - name: Push
         uses: s0/git-publish-subdir-action@develop
