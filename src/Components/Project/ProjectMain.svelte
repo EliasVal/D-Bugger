@@ -20,10 +20,11 @@
 
   const displayBug = (e) => {
     const id = e.detail.id;
+    console.log(id);
     // Check if data about the bug was modified and not saved.
     if (
       $bug &&
-      $project.bugs[bugIdToDisplay] &&
+      bugIdToDisplay in $project.bugs &&
       JSON.stringify($bug) != JSON.stringify($project.bugs[bugIdToDisplay])
     ) {
       DisplayDialogue({

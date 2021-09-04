@@ -99,7 +99,7 @@
   const displayDeleteBug = (e) => {
     DisplayDialogue({
       header: 'Are you sure you want to delete this bug?',
-      onSubmit: deleteBug,
+      onSubmit: () => deleteBug(e),
       submitBtnText: 'Confirm',
       buttons: [
         {
@@ -112,6 +112,7 @@
 
   const deleteBug = async (e) => {
     CloseDialogue();
+    console.log(e.detail);
     const id = e.detail.id;
 
     DisplayLoading();

@@ -4,6 +4,7 @@ import { writable } from 'svelte/store';
 import { DisplayToast } from './utils';
 import type { User } from '@firebase/auth';
 import type { Writable } from 'svelte/store';
+import type { Bug } from 'src/global';
 import { base as tmpBase } from '$app/paths';
 
 const uUpdate = () => {
@@ -20,7 +21,7 @@ const uUpdate = () => {
 if (browser) uUpdate();
 
 export const user: Writable<User> = writable();
-export const bug = writable(null);
+export const bug: Writable<Bug> = writable(null);
 export const project = writable(null);
 export const isDisplayingDialogue = writable(false);
 export const dialogueValues = writable(null);
