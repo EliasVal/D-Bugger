@@ -88,14 +88,12 @@
     $isDisplayingBug = false;
   });
   user.subscribe((u) => {
-    if (u) {
-      if (!u.emailVerified) {
+    onValue(ref(db, `projects/${slug}`), async (snapshot) => {
+      const val = await snapshot.val();
+      if (u && !u.emailVerified && (val.details.owner == u.uid || u.uid in val.details.members))
         goto(base);
-      }
-      onValue(ref(db, `projects/${slug}`), async (snapshot) => {
-        project.set({ ...(await snapshot.val()), id: slug });
-      });
-    }
+      project.set({ ...val, id: slug });
+    });
   });
 
   const displayDeleteBug = (e) => {

@@ -46,7 +46,8 @@
               <input
                 type="button"
                 value={button.title}
-                class="hover:cursor-pointer p-1.5 mr-2 rounded-sm {button.stylingClasses ?? ''}"
+                class="hover:cursor-pointer p-1.5 mr-2 rounded-sm bg-transparent {button.stylingClasses ??
+                  ''}"
                 on:click={() => button.onClick()}
               />
             {/each}

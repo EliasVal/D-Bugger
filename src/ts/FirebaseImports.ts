@@ -9,6 +9,7 @@ export {
   updateProfile,
   sendEmailVerification,
   signOut,
+  updateEmail,
 } from 'firebase/auth';
 
 export { getDownloadURL, getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';

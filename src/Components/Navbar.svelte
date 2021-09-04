@@ -36,12 +36,11 @@
   import Message from './Message.svelte';
 
   let bWidth;
+  let prevBWidth;
   let isDisplayingNavbar = false;
   let isDisplayingMessages = false;
   let hasUnread = false;
   let btnHeight;
-
-  $: if (bWidth > 640) isDisplayingNavbar = true;
 
   const db = getDatabase();
   const messages = writable();
@@ -74,6 +73,9 @@
       }
       if (!found) hasUnread = false;
     } else hasUnread = false;
+
+    if (bWidth < 640 && prevBWidth > 640) isDisplayingNavbar = true;
+    prevBWidth = bWidth;
   }
 
   const readMessage = async (e) => {
