@@ -66,7 +66,7 @@
   let navHeight = 0;
 
   onMount(() => {
-    navHeight = document.getElementsByTagName('nav')[0].offsetHeight;
+    navHeight = document.getElementsByTagName('nav')[0]?.offsetHeight ?? 56;
   });
 
   user.subscribe((u) => {

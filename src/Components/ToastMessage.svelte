@@ -50,7 +50,7 @@
   }
 </script>
 
-<div class="toast relative bg-blue-300 w-96 border border-black">
+<div class="toast relative bg-blue-300 max-w-xs sm:max-w-sm w-96 border border-black">
   <div class="flex flex-row-reverse justify-between pb-2">
     <div class="text-blue-400 mr-2 mt-1 whitespace-nowrap">
       <button
