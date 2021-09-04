@@ -85,7 +85,7 @@
     DisplayDialogue({
       header: $messages[key].title,
       headerStyles: 'text-center text-3xl mb-4',
-      onSubmit: () => CloseDialogue(),
+      onSubmit: CloseDialogue,
       submitBtnText: 'Close',
       fields: [
         // @ts-ignore

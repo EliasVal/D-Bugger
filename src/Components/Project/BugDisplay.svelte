@@ -93,7 +93,7 @@
         value="View"
         on:click={() =>
           DisplayDialogue({
-            onSubmit: () => updateDescription,
+            onSubmit: updateDescription,
             submitBtnText: 'Confirm',
             fields: [
               {

@@ -101,7 +101,7 @@
   const displayDeleteBug = (e) => {
     DisplayDialogue({
       header: 'Are you sure you want to delete this bug?',
-      onSubmit: () => deleteBug(e),
+      onSubmit: deleteBug,
       submitBtnText: 'Confirm',
       buttons: [
         {
@@ -132,7 +132,7 @@
       DisplayDialogue({
         header: 'Something Went Wrong!',
         submitBtnText: 'Okay!',
-        onSubmit: () => CloseDialogue,
+        onSubmit: CloseDialogue,
       });
       return;
     });
@@ -143,7 +143,7 @@
   // Creating Bug
   const displayCreateBug = () => {
     DisplayDialogue({
-      onSubmit: () => createBug,
+      onSubmit: createBug,
       submitBtnText: 'Create',
       fields: createBugFields,
       buttons: [

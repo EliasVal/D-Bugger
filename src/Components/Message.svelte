@@ -62,7 +62,7 @@
         DisplayDialogue({
           header: 'Project Invitation',
           headerStyles: 'text-xl text-center',
-          onSubmit: () => acceptInvite(),
+          onSubmit: acceptInvite,
           submitBtnText: 'Accept',
           fields: [
             // @ts-ignore

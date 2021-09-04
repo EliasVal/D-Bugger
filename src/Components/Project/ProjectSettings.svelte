@@ -227,7 +227,7 @@
               submitBtnStyles:
                 'border border-red-600 text-black p-1.5 rounded-sm hover:cursor-pointer hover:bg-red-600 hover:text-white mr-2 transition-colors',
               submitBtnText: 'Delete Project',
-              onSubmit: () => deleteProject,
+              onSubmit: deleteProject,
               buttons: [
                 {
                   title: 'Cancel',
