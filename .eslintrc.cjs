@@ -23,5 +23,6 @@ module.exports = {
     '@typescript-eslint/no-empty-function': 'off',
     'no-case-declarations': 'off',
     'css-unused-selector': 'off',
+    '@typescript-eslint/ban-types': 'off',
   },
 };

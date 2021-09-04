@@ -10,7 +10,7 @@
     signInWithEmailAndPassword,
   } from '@ts/FirebaseImports';
   import { Circle } from 'svelte-loading-spinners';
-  import { base } from '$app/paths';
+  import { base } from '@ts/stores';
 
   let isSigningIn = false;
   const signIn = (e) => {
@@ -72,7 +72,7 @@
           value="Submit"
         />
         <h4 class="self-center">
-          Don't have an account? <a href="{base}/signup" class="wavy-underline">
+          Don't have an account? <a href="{base}signup" class="wavy-underline">
             <strong>Sign up</strong>
           </a>
         </h4>

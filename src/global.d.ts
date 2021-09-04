@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 /// <reference types="@sveltejs/kit" />
 
 export interface DialogueField {
@@ -38,7 +39,7 @@ export interface DialogueFieldSelectOption {
 export interface DialogueValues {
   fields?: DialogueField[];
   buttons?: DialogueButton[];
-  onSubmit: () => void;
+  onSubmit: Function;
   submitBtnText: string;
   submitBtnStyles?: string;
   header?: string;

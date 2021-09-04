@@ -1,7 +1,7 @@
 <script>
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { base } from '$app/paths';
+  import { base } from '@ts/stores';
 
   import { icon } from '@fortawesome/fontawesome-svg-core';
   import {
@@ -168,7 +168,7 @@
             <button
               title="User profile"
               class="px-2 py-1"
-              on:click={() => goto(`${base}/user/${$user.uid}`)}
+              on:click={() => goto(`${base}user/${$user.uid}`)}
             >
               {#if img}
                 <img
@@ -180,17 +180,6 @@
               {:else}
                 {@html icon(faUser).html}
               {/if}
-              <!-- {#await getDownloadURL(storageRef(getStorage(), `${$user.uid}/profilePicture`))}
-              {:then url}
-                <img
-                  style="height: 20px;"
-                  class="profileImg rounded-full"
-                  src={url ?? '/user.svg'}
-                  alt=""
-                />
-              {:catch}
-                {@html icon(faUser).html}
-              {/await} -->
             </button>
             <div class="relative inline-block">
               <button
@@ -256,7 +245,7 @@
         </div>
         {#if !$user}
           <button
-            on:click={() => goto(`${base}/login`)}
+            on:click={() => goto(`${base}login`)}
             class="bg-green-500 rounded-sm px-2 py-1 text-white hover:bg-green-800 transition-colors"
             title="Sign in"
           >
@@ -267,5 +256,3 @@
     </nav>
   {/if}
 {/if}
-
-<style global></style>

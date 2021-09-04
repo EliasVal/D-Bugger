@@ -13,8 +13,8 @@
 
   let bugIdToDisplay;
 
-  let bugs: Bugs = $project.bugs;
-  $: bugs = $project.bugs;
+  let bugs: Bugs = $project?.bugs;
+  $: bugs = $project?.bugs;
 
   const dispatch = createEventDispatcher();
 

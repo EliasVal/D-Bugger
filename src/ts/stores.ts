@@ -1,8 +1,10 @@
 import { getAuth, onAuthStateChanged } from './FirebaseImports';
 import { browser } from '$app/env';
-import { Writable, writable } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { DisplayToast } from './utils';
 import type { User } from '@firebase/auth';
+import type { Writable } from 'svelte/store';
+import { base as tmpBase } from '$app/paths';
 
 const uUpdate = () => {
   onAuthStateChanged(getAuth(), (u) => {
@@ -26,3 +28,4 @@ export const isDisplayingLoading = writable(false);
 export const isDisplayingBug = writable(false);
 export const Toasts = writable([]);
 export const isDisplayingProjectSettings = writable(false);
+export const base = tmpBase ? tmpBase + '/' : '/';

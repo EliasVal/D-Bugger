@@ -1,6 +1,6 @@
 <script>
   import { goto } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@ts/stores';
   import { page } from '$app/stores';
 
   import {
@@ -30,7 +30,7 @@
     if (u && !u.emailVerified) {
       DisplayToast({
         title: 'Please verify your account',
-        desc: `Check your E-Mail's inbox to verify your account.<br>Haven't received an E-Mail? <button onclick="window.location.pathname = '${base}/sendEmail'"><u>Click Here</u></button>`,
+        desc: `Check your E-Mail's inbox to verify your account.<br>Haven't received an E-Mail? <button onclick="window.location.pathname = '${base}sendEmail'"><u>Click Here</u></button>`,
         duration: 20000,
       });
     }

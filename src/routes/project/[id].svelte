@@ -1,11 +1,7 @@
-<script context="module">
-  export const ssr = true;
-</script>
-
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { base } from '$app/paths';
+  import { base } from '@ts/stores';
 
   import { get, getDatabase, onValue, push, ref, remove, set, update } from '@ts/FirebaseImports';
   import { isDisplayingBug, isDisplayingProjectSettings, project, user } from '@ts/stores';

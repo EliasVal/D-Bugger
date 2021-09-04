@@ -28,7 +28,7 @@
       {#if header != null}
         <h1 class={headerStyles ?? ''}>{header}</h1>
       {/if}
-      <form on:submit|preventDefault={() => onSubmit()}>
+      <form on:submit|preventDefault={onSubmit}>
         {#if fields}
           {#each fields as field}
             <DialogueFieldComponent {field} />

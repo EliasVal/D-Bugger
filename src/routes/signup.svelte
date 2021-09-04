@@ -15,7 +15,7 @@
     updateProfile,
   } from '@ts/FirebaseImports';
   import { Circle } from 'svelte-loading-spinners';
-  import { base } from '$app/paths';
+  import { base } from '@ts/stores';
 
   let isSigningUp = false;
   const signIn = (e: Event) => {
@@ -102,7 +102,7 @@
           value="Submit"
         />
         <h4 class="self-center">
-          Already have an account? <a href="{base}/login" class="wavy-underline">
+          Already have an account? <a href="{base}login" class="wavy-underline">
             <strong>Log-in</strong>
           </a>
         </h4>

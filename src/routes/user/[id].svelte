@@ -20,7 +20,7 @@
   } from '@ts/FirebaseImports';
   import { DisplayToast } from '@ts/utils';
   import { goto } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@ts/stores';
 
   let section: 'general' | 'settings' = 'general';
 

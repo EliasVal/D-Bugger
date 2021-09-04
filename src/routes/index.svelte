@@ -1,9 +1,9 @@
 <script lang="ts">
   // Types
   import { goto } from '$app/navigation';
-  import { base } from '$app/paths';
+  import { base } from '@ts/stores';
 
-  import { get, getDatabase, onValue, push, ref, remove, set } from '@ts/FirebaseImports';
+  import { get, getDatabase, onValue, push, ref, remove } from '@ts/FirebaseImports';
   import { user } from '@ts/stores';
   import {
     CloseDialogue,
@@ -41,20 +41,6 @@
 
   let showProjects = true;
 
-  const displayCreateProjectDialogue = () => {
-    DisplayDialogue({
-      fields,
-      onSubmit: () => createProject,
-      submitBtnText: 'Create',
-      buttons: [
-        {
-          title: 'Cancel',
-          onClick: CloseDialogue,
-          stylingClasses: 'bg-transparent',
-        },
-      ],
-    });
-  };
   const createProject = async (event: Event) => {
     if (event.target[0].value?.length < 3) {
       DisplayToast({ title: 'This field cannot be empty!', duration: 4000 });
@@ -71,13 +57,8 @@
       },
     });
 
-    let userProjects = await get(ref(db, `/users/${$user.uid}/projects`));
-    userProjects = (await userProjects.val()) ?? [];
-
-    // @ts-ignore
-    userProjects.push(proj.key);
-    await set(ref(db, `/users/${$user.uid}/projects`), userProjects);
-    goto(`${base}/project/${proj.key}`);
+    await push(ref(db, `users/${$user.uid}/projects`), proj.key);
+    goto(`${base}project/${proj.key}`);
     CloseLoading();
   };
 
@@ -129,7 +110,19 @@
         {/if}
         <div
           class="projectCard border rounded-md border-gray-900 border-dotted w-48 h-28 p-2 flex flex-col justify-between hover:cursor-pointer"
-          on:click={() => displayCreateProjectDialogue()}
+          on:click={() =>
+            DisplayDialogue({
+              fields,
+              onSubmit: createProject,
+              submitBtnText: 'Create',
+              buttons: [
+                {
+                  title: 'Cancel',
+                  onClick: CloseDialogue,
+                  stylingClasses: 'bg-transparent',
+                },
+              ],
+            })}
         >
           <h1>+ Create Project</h1>
         </div>
