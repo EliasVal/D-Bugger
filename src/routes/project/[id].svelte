@@ -34,6 +34,12 @@
       id: 'bugTitle',
     },
     {
+      type: 'editor',
+      placeholder: 'Enter description...',
+      name: 'Bug Description',
+      id: 'bugDesc',
+    },
+    {
       type: 'choice',
       placeholder: '',
       name: 'Severity',
@@ -158,10 +164,11 @@
     CloseDialogue();
     const bug: Bug = {
       id: '...',
-      title: e.target[0].value,
+      title: e.target.querySelector('#bugTitle').value,
       details: {
-        severity: e.target[1].value,
-        status: e.target[2].value,
+        severity: e.target.querySelector('#bugSeverity').value,
+        status: e.target.querySelector('#bugStatus').value,
+        description: e.target.querySelector('textarea').value,
       },
     };
 

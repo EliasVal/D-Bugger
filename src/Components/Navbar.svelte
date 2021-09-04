@@ -148,17 +148,16 @@
     {@html icon(faBars).html}
   </button>
 {/if}
-<svelte:head>
-  {#if bWidth < 640}
-    <style></style>
-  {/if}
-</svelte:head>
 
 {#if !$page.path.match(/(login)|(signup)/gim)}
   {#if bWidth > 640 || isDisplayingNavbar}
     <nav
       class="p-3 bg-black text-white fixed z-10 top-0 bottom-0 sm:bottom-auto sm:right-0 sm:left-0 text-xl sm:text-base"
-      transition:fly|local={{ x: bWidth < 640 && -75, y: bWidth > 640 && -75, duration: 1000 }}
+      transition:fly|local={{
+        x: bWidth < 640 ? -75 : 0,
+        y: bWidth > 640 ? -75 : 0,
+        duration: 1000,
+      }}
     >
       <div
         class="flex flex-col sm:flex-row justify-between items-center"

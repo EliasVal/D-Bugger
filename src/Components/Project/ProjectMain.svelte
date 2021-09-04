@@ -91,7 +91,7 @@
   };
 </script>
 
-<div class="h-full flex justify-between">
+<div class="h-full flex justify-between pt-10 sm:pt-0">
   <div class="flex-grow mx-5 mt-5">
     {#if bugs && Object.entries(bugs).length > 0}
       {#key bugs}

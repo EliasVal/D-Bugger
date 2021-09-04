@@ -59,7 +59,6 @@
   };
 
   const updateDescription = (e) => {
-    console.log(e);
     $bug.details.description = e.target.querySelector('textarea').value;
     CloseDialogue();
   };
