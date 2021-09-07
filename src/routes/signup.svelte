@@ -16,18 +16,25 @@
   } from '@ts/FirebaseImports';
   import { Circle } from 'svelte-loading-spinners';
   import { base } from '@ts/stores';
+  import { DisplayToast } from '@ts/utils';
 
   let isSigningUp = false;
   const signIn = (e: Event) => {
-    e.preventDefault();
-
-    isSigningUp = true;
-
     if (!e.target[0].value || e.target[0].value.length < 3) {
-      alert('You must enter a username that is atleast 3 characters long!');
-      isSigningUp = false;
+      DisplayToast({
+        title: 'You must enter a username that is atleast 3 characters long!',
+        duration: 4000,
+      });
+      return;
+    } else if (!e.target[1].value) {
+      DisplayToast({ title: 'Please enter your E-Mail!', duration: 4000 });
+      return;
+    } else if (!e.target[2].value) {
+      DisplayToast({ title: 'Please enter your password!', duration: 4000 });
       return;
     }
+
+    isSigningUp = true;
 
     const auth = getAuth();
     setPersistence(auth, browserLocalPersistence).then(() => {
@@ -47,14 +54,29 @@
           // Redirect to index
           window.location.pathname = base;
         })
-        .catch((err: Error) => {
-          // @ts-ignore
-          switch (err.code) {
-            case 'auth/user-not-found':
-              alert("This user doesn't exist!");
+        .catch((e) => {
+          switch (e.code.substring(5)) {
+            case 'email-already-exists':
+            case 'email-already-in-use':
+              DisplayToast({ title: 'This user already exists!', duration: 4000 });
+              break;
+            case 'too-many-requests':
+              DisplayToast({
+                title: "Due to unusual activity, you've been timed out. Please try again later.",
+                duration: 4000,
+              });
+              break;
+            case 'internal-error':
+              DisplayToast({ title: 'Something went wrong!', duration: 4000 });
+              break;
+            case 'invalid-email':
+              DisplayToast({ title: 'Invalid E-Mail entered!', duration: 4000 });
+              break;
+            case 'weak-password':
+              DisplayToast({ title: 'Your password is too weak!', duration: 4000 });
               break;
             default:
-              alert(err.message);
+              DisplayToast({ title: e.message, duration: 4000 });
               break;
           }
           isSigningUp = false;
@@ -69,7 +91,10 @@
 <div class="bg-main w-full h-full flex items-center justify-around">
   <div class="bg-white px-4 py-10 w-max flex flex-col rounded-md shadow-2xl">
     <h4 class="text-center mb-auto font-light text-4xl">D-Bugger | Sign-up</h4>
-    <form on:submit={signIn} class="flex flex-col gap-5 mx-2 justify-center h-full pt-10">
+    <form
+      on:submit|preventDefault={signIn}
+      class="flex flex-col gap-5 mx-2 justify-center h-full pt-10"
+    >
       <div class="mt-auto">
         <label for="username">Username: </label><br />
         <input

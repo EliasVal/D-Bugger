@@ -11,10 +11,17 @@
   } from '@ts/FirebaseImports';
   import { Circle } from 'svelte-loading-spinners';
   import { base } from '@ts/stores';
+  import { DisplayToast } from '@ts/utils';
 
   let isSigningIn = false;
   const signIn = (e) => {
-    e.preventDefault();
+    if (!e.target[0].value) {
+      DisplayToast({ title: 'Please enter your E-Mail!', duration: 4000 });
+      return;
+    } else if (!e.target[1].value) {
+      DisplayToast({ title: 'Please enter your password!', duration: 4000 });
+      return;
+    }
 
     isSigningIn = true;
 
@@ -25,15 +32,30 @@
           window.location.pathname = base;
         })
         .catch((e) => {
-          // @ts-ignore
-          switch (e.code) {
-            case 'auth/user-not-found':
-              alert("This user doesn't exist!");
+          switch (e.code.substring(5)) {
+            case 'user-not-found':
+              DisplayToast({ title: 'This user does not exist!', duration: 4000 });
+              break;
+            case 'invalid-email':
+              DisplayToast({ title: 'Invalid E-Mail entered!', duration: 4000 });
+              break;
+            case 'too-many-requests':
+              DisplayToast({
+                title: "Due to unusual activity, you've been timed out. Please try again later.",
+                duration: 4000,
+              });
+              break;
+            case 'wrong-password':
+              DisplayToast({ title: 'Incorrect password entered!', duration: 4000 });
+              break;
+            case 'internal-error':
+              DisplayToast({ title: 'Something went wrong!', duration: 4000 });
               break;
             default:
-              alert(e.message);
+              DisplayToast({ title: e.message, duration: 4000 });
               break;
           }
+
           isSigningIn = false;
         });
     });
@@ -47,7 +69,10 @@
   <div class="bg-white px-4 py-10 w-max flex flex-col rounded-md shadow-2xl">
     <h1 class="text-center mb-auto font-light text-4xl">D-Bugger | Log-in</h1>
 
-    <form on:submit={signIn} class="flex flex-col gap-5 mx-2 justify-center h-full pt-10">
+    <form
+      on:submit|preventDefault={signIn}
+      class="flex flex-col gap-5 mx-2 justify-center h-full pt-10"
+    >
       <div class=" mt-auto">
         <label for="email">E-Mail: </label><br />
         <input

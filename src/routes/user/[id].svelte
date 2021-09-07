@@ -14,12 +14,16 @@
     updateProfile,
     set,
     updateEmail,
+    updatePassword,
+    EmailAuthProvider,
+    reauthenticateWithCredential,
   } from '@ts/FirebaseImports';
   import { DisplayToast } from '@ts/utils';
   import { goto } from '$app/navigation';
   import { base } from '@ts/stores';
+  import { Stretch } from 'svelte-loading-spinners';
 
-  let section: 'general' | 'settings' = 'general';
+  let section: 'general' | 'security' = 'security';
 
   const uploadProfilePic = (e) => {
     uploadBytes(
@@ -67,6 +71,40 @@
       DisplayToast({ title: 'Something went wrong!', duration: 5000 });
     }
   };
+
+  let currPass;
+  let newPass;
+  let confirmNewPass;
+  let isChangingPass = false;
+
+  const updatePass = async (e) => {
+    isChangingPass = true;
+    try {
+      if (newPass != confirmNewPass) throw new Error('Passwords do not match!');
+      const cred = EmailAuthProvider.credential($user.email, currPass);
+      await reauthenticateWithCredential($user, cred);
+      await updatePassword($user, newPass);
+      DisplayToast({ title: 'Password updated successfully!', duration: 4000 });
+
+      currPass = null;
+      newPass = null;
+      confirmNewPass = null;
+    } catch (e) {
+      switch (e.code?.substring(5)) {
+        case 'wrong-password':
+          DisplayToast({ title: 'Incorrect Password Entered!', duration: 4000 });
+          break;
+        case 'weak-password':
+          DisplayToast({ title: 'New password is too weak!', duration: 4000 });
+          break;
+        default:
+          DisplayToast({ title: e.message, duration: 4000 });
+          break;
+      }
+    } finally {
+      isChangingPass = false;
+    }
+  };
 </script>
 
 <div
@@ -77,12 +115,10 @@
       <ul>
         <li class="text-xl pr-10">User Account</li>
         <li class="hover:cursor-pointer">
-          <button>General & Details</button>
+          <button on:click={() => (section = 'general')}>General & Details</button>
         </li>
         <li class="hover:cursor-pointer">
-          <button on:click={() => DisplayToast({ title: 'Work in Progress.', duration: 2000 })}>
-            Security
-          </button>
+          <button on:click={() => (section = 'security')}> Security </button>
         </li>
         <li class="hover:cursor-pointer text-red-600 pl-1 py-1">
           <button
@@ -201,6 +237,60 @@
               {/if}
             </div>
           </div>
+        </div>
+      {/if}
+    </div>
+  {:else if section == 'security' && $user?.uid == $page.params.id}
+    <div>
+      <h3 class="text-2xl mb-10">Account Security:</h3>
+      {#if isChangingPass}
+        <div class="w-fit m-auto">
+          <Stretch color="#000000" size="40" />
+        </div>
+      {:else}
+        <div>
+          <h4 class="text-xl mb-9">Update Password:</h4>
+          <form class="md:ml-10" on:submit|preventDefault={updatePass}>
+            <div class="flex flex-col gap-3">
+              <div>
+                <label for="username">Current Password:</label><br />
+                <input
+                  class="border border-black rounded-sm pl-1 outline-none font-mono w-full md:w-52 mt-1 mb-2"
+                  type="password"
+                  name="currPass"
+                  id="currPass"
+                  bind:value={currPass}
+                />
+              </div>
+              <div>
+                <label for="username">New Password:</label><br />
+                <input
+                  class="border border-black rounded-sm pl-1 outline-none font-mono w-full md:w-52 mt-1 mb-2"
+                  type="password"
+                  name="newPass"
+                  id="newPass"
+                  bind:value={newPass}
+                />
+              </div>
+              <div>
+                <label for="username">Confirm new Password:</label><br />
+                <input
+                  class="border border-black rounded-sm pl-1 outline-none font-mono w-full md:w-52 mt-1 mb-2"
+                  type="password"
+                  name="confirmNewPass"
+                  id="confirmNewPass"
+                  bind:value={confirmNewPass}
+                />
+              </div>
+            </div>
+            {#if currPass && newPass && confirmNewPass}
+              <input
+                class="border border-black rounded-sm pl-1 outline-none w-full md:w-52 hover:cursor-pointer bg-transparent hover:bg-black hover:text-white transition-colors"
+                type="submit"
+                value="Update Password"
+              />
+            {/if}
+          </form>
         </div>
       {/if}
     </div>

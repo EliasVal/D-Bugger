@@ -17,7 +17,7 @@
 </script>
 
 <div
-  class="dialogue w-full bg-gray-900 bg-opacity-90 flex justify-center items-center sticky h-screen bottom-0 z-50"
+  class="dialogue w-full bg-gray-900 bg-opacity-90 flex justify-center items-center fixed h-screen top-0 z-50"
 >
   <div
     class="w-2/3 md:w-5/12 bg-gray-50 rounded-md"

@@ -1,16 +1,6 @@
 import type { DialogueValues } from 'src/global';
 import { dialogueValues, isDisplayingDialogue, isDisplayingLoading, Toasts } from './stores';
 
-export const MakeId = (length: number): string => {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
-
 export const SplitAndCapitalise = (text: string): string => {
   const capitalised = text.replace(/([A-Z])/g, ' $1').trim();
   return capitalised.charAt(0).toUpperCase() + capitalised.substring(1);
@@ -36,6 +26,6 @@ export const DisplayToast = (params: Record<string, unknown>): void => {
   unsubscribe();
 
   const temp = [{ ...params, id: Date.now() }, ...toasts];
-  //if (temp.length > 5) temp.pop();
+  if (temp.length > 7) temp.pop();
   Toasts.set(temp);
 };

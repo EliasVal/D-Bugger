@@ -6,6 +6,7 @@ import type { User } from '@firebase/auth';
 import type { Writable } from 'svelte/store';
 import type { Bug } from 'src/global';
 import { base as tmpBase } from '$app/paths';
+import { page } from '$app/stores';
 
 const uUpdate = () => {
   onAuthStateChanged(getAuth(), (u) => {
@@ -13,7 +14,10 @@ const uUpdate = () => {
       user.update(() => getAuth().currentUser);
     } else {
       user.update(() => null);
-      DisplayToast({ title: 'Log in to view your projects.', duration: 15000 });
+
+      if (!window.location.pathname.match(/(login)|(signup)/gim)) {
+        DisplayToast({ title: 'Log in to view your projects.', duration: 15000 });
+      }
     }
   });
 };

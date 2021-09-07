@@ -2,12 +2,10 @@
   import { sendEmailVerification } from '@ts/FirebaseImports';
   import { user } from '@ts/stores';
 
-  const send = async () => {
-    if (!$user?.emailVerified) {
+  user.subscribe(async (u) => {
+    if (u && !u.emailVerified) {
       await sendEmailVerification($user);
+      window.history.back();
     }
-    window.history.back();
-  };
-
-  send();
+  });
 </script>
