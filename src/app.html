@@ -8,9 +8,9 @@
     <meta name="robots" content="index, follow" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="language" content="English" />
-    <link rel="manifest" crossorigin="use-credentials" href="./manifest.json" />
-    <link rel="icon" href="./icon.svg" />
-    <link rel="apple-touch-icon" href="./icon-app.svg" />
+    <link rel="manifest" crossorigin="use-credentials" href="/manifest.json" />
+    <link rel="icon" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/icon-app.svg" />
 
     <!-- Primary Meta Tags -->
     <title>D-Bugger</title>
@@ -51,7 +51,7 @@
     <div id="svelte">%svelte.body%</div>
     <script>
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./service-worker.js');
+        navigator.serviceWorker.register('/service-worker.js');
       }
     </script>
   </body>
