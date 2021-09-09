@@ -149,7 +149,7 @@
   </button>
 {/if}
 
-{#if !$page.path.match(/(login)|(signup)/gim)}
+{#if !$page.path.match(/(login)|(signup)$/gim)}
   {#if bWidth > 640 || isDisplayingNavbar}
     <nav
       class="p-3 bg-black text-white fixed z-10 top-0 bottom-0 sm:bottom-auto sm:right-0 sm:left-0 text-xl sm:text-base"
@@ -246,7 +246,7 @@
         </div>
         {#if !$user}
           <button
-            on:click={() => goto(`${base}login`)}
+            on:click={() => goto(`${base}auth/login`)}
             class="bg-green-500 rounded-sm px-2 py-1 text-white hover:bg-green-800 transition-colors"
             title="Sign in"
           >

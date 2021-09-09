@@ -2,63 +2,42 @@
   export const prerender = true;
 </script>
 
-<script lang="ts">
+<script>
   import {
     browserLocalPersistence,
-    createUserWithEmailAndPassword,
     getAuth,
-    getDatabase,
-    ref,
-    sendEmailVerification,
-    set,
     setPersistence,
-    updateProfile,
+    signInWithEmailAndPassword,
   } from '@ts/FirebaseImports';
   import { Circle } from 'svelte-loading-spinners';
   import { base } from '@ts/stores';
   import { DisplayToast } from '@ts/utils';
 
-  let isSigningUp = false;
-  const signIn = (e: Event) => {
-    if (!e.target[0].value || e.target[0].value.length < 3) {
-      DisplayToast({
-        title: 'You must enter a username that is atleast 3 characters long!',
-        duration: 4000,
-      });
-      return;
-    } else if (!e.target[1].value) {
+  let isSigningIn = false;
+  const signIn = (e) => {
+    if (!e.target[0].value) {
       DisplayToast({ title: 'Please enter your E-Mail!', duration: 4000 });
       return;
-    } else if (!e.target[2].value) {
+    } else if (!e.target[1].value) {
       DisplayToast({ title: 'Please enter your password!', duration: 4000 });
       return;
     }
 
-    isSigningUp = true;
+    isSigningIn = true;
 
     const auth = getAuth();
     setPersistence(auth, browserLocalPersistence).then(() => {
-      createUserWithEmailAndPassword(auth, e.target[1].value, e.target[2].value)
-        .then(async () => {
-          // Set username in user's profile
-          await updateProfile(auth.currentUser, {
-            displayName: e.target[0].value,
-          });
-          // Set username in user's DB
-          await set(ref(getDatabase(), `users/${auth.currentUser.uid}`), {
-            displayName: e.target[0].value,
-          });
-
-          await sendEmailVerification(auth.currentUser);
-
-          // Redirect to index
+      signInWithEmailAndPassword(auth, e.target[0].value, e.target[1].value)
+        .then(() => {
           window.location.pathname = base;
         })
         .catch((e) => {
           switch (e.code.substring(5)) {
-            case 'email-already-exists':
-            case 'email-already-in-use':
-              DisplayToast({ title: 'This user already exists!', duration: 4000 });
+            case 'user-not-found':
+              DisplayToast({ title: 'This user does not exist!', duration: 4000 });
+              break;
+            case 'invalid-email':
+              DisplayToast({ title: 'Invalid E-Mail entered!', duration: 4000 });
               break;
             case 'too-many-requests':
               DisplayToast({
@@ -66,45 +45,35 @@
                 duration: 4000,
               });
               break;
+            case 'wrong-password':
+              DisplayToast({ title: 'Incorrect password entered!', duration: 4000 });
+              break;
             case 'internal-error':
               DisplayToast({ title: 'Something went wrong!', duration: 4000 });
-              break;
-            case 'invalid-email':
-              DisplayToast({ title: 'Invalid E-Mail entered!', duration: 4000 });
-              break;
-            case 'weak-password':
-              DisplayToast({ title: 'Your password is too weak!', duration: 4000 });
               break;
             default:
               DisplayToast({ title: e.message, duration: 4000 });
               break;
           }
-          isSigningUp = false;
+
+          isSigningIn = false;
         });
     });
   };
 </script>
 
 <svelte:head>
-  <meta name="title" content="D-Bugger | Sign up" />
+  <meta name="title" content="D-Bugger | Log in" />
 </svelte:head>
 <div class="bg-main w-full h-full flex items-center justify-around">
   <div class="bg-white px-4 py-10 w-max flex flex-col rounded-md shadow-2xl">
-    <h4 class="text-center mb-auto font-light text-4xl">D-Bugger | Sign-up</h4>
+    <h1 class="text-center mb-auto font-light text-4xl">D-Bugger | Log-in</h1>
+
     <form
       on:submit|preventDefault={signIn}
       class="flex flex-col gap-5 mx-2 justify-center h-full pt-10"
     >
-      <div class="mt-auto">
-        <label for="username">Username: </label><br />
-        <input
-          id="username"
-          class="p-1 outline-none rounded font-mono w-full border border-black"
-          type="text"
-          maxlength="18"
-        />
-      </div>
-      <div>
+      <div class=" mt-auto">
         <label for="email">E-Mail: </label><br />
         <input
           id="email"
@@ -120,15 +89,24 @@
           type="password"
         />
       </div>
-      {#if !isSigningUp}
+
+      {#if !isSigningIn}
         <input
           class="self-center p-1.5 rounded-sm hover:cursor-pointer bg-black text-white mt-auto"
           type="submit"
           value="Submit"
         />
+
         <h4 class="self-center">
-          Already have an account? <a href="{base}login" class="wavy-underline">
-            <strong>Log-in</strong>
+          <a href="{base}auth/resetPassword" class="wavy-underline">
+            <strong>Forgot Password?</strong>
+          </a>
+        </h4>
+
+        <h4 class="self-center">
+          Don't have an account?
+          <a href="{base}auth/signup" class="wavy-underline">
+            <strong>Sign up</strong>
           </a>
         </h4>
       {:else}

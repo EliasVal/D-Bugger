@@ -8,11 +8,6 @@
 #
 .gcloudignore
 #!include:.gitignore
-# If you would like to upload your .git directory, .gitignore file or files
-# from your .gitignore file, remove the corresponding line
-# below:
-.gitignore
-# Node.js dependencies:
 node_modules/
 build/
 .vscode/

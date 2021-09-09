@@ -20,23 +20,13 @@
   import Navbar from '/src/Components/Navbar.svelte';
   import ToastMessage from '/src/Components/ToastMessage.svelte';
 
-  let pathIsLoginOrSignup;
-
-  $: {
-    pathIsLoginOrSignup = $page.path.includes('login') || $page.path.includes('signup');
-  }
-
   user.subscribe((u) => {
     if (u && !u.emailVerified) {
       DisplayToast({
         title: 'Please verify your account',
-        desc: `Check your E-Mail's inbox to verify your account.<br>Haven't received an E-Mail? <button onclick="window.location.pathname = '${base}sendEmail'"><u>Click Here</u></button><br>Wrong E-Mail? You can change it in your profile page, accessed in the navbar.`,
+        desc: `Check your E-Mail's inbox to verify your account.<br>Haven't received an E-Mail? <button onclick="window.location.pathname = '${base}auth/sendEmail'"><u>Click Here</u></button><br>Wrong E-Mail? You can change it in your profile page, accessed in the navbar.`,
         duration: 20000,
       });
-    }
-    if (u && pathIsLoginOrSignup) {
-      DisplayToast({ title: "You're already logged in.", duration: 5000 });
-      goto(base);
     }
   });
 
@@ -47,10 +37,8 @@
   };
 </script>
 
-{#if !pathIsLoginOrSignup}
-  <Navbar />
-{/if}
-<div class="{!pathIsLoginOrSignup && 'sm:pt-14'} h-full">
+<Navbar />
+<div id="slot" class="h-full sm:pt-14">
   <slot />
 </div>
 {#if $isDisplayingDialogue}

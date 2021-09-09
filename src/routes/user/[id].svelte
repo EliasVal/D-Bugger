@@ -23,7 +23,7 @@
   import { base } from '@ts/stores';
   import { Stretch } from 'svelte-loading-spinners';
 
-  let section: 'general' | 'security' = 'security';
+  let section: 'general' | 'security' = 'general';
 
   const uploadProfilePic = (e) => {
     uploadBytes(
