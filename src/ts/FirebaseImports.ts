@@ -30,6 +30,12 @@ export {
   orderByChild,
   equalTo,
   query,
+  onChildAdded,
+  onChildRemoved,
+  onChildChanged,
+  startAt,
+  limitToFirst,
+  orderByKey,
 } from 'firebase/database';
 
 // Even though the name says token, it is totally harmless to leave the firebase token in the client code as it not the admin token.

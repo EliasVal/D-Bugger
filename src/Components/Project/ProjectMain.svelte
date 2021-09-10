@@ -5,11 +5,13 @@
 
   import type { Bugs } from 'src/global';
 
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import { fly } from 'svelte/transition';
 
   import BugDisplay from './BugDisplay.svelte';
   import BugTable from './BugTable.svelte';
+
+  export let bugsLength = 0;
 
   let bugIdToDisplay;
 
@@ -20,7 +22,6 @@
 
   const displayBug = (e) => {
     const id = e.detail.id;
-    console.log(id);
     // Check if data about the bug was modified and not saved.
     if (
       $bug &&
@@ -100,12 +101,29 @@
     {:else}
       <h2>There are no bugs! Great job!</h2>
     {/if}
-    <button
-      class="border border-black rounded-sm px-1 py-0.5 hover:text-white hover:bg-black transition-colors mt-5"
-      on:click={() => dispatch('createBug')}
-    >
-      + Add Bug
-    </button>
+    <div class="py-5 flex justify-between items-center">
+      <button
+        class="border border-black rounded-sm px-1 py-0.5 hover:text-white hover:bg-black transition-colors"
+        on:click={() => dispatch('createBug')}
+      >
+        + Add Bug
+      </button>
+      {#if bugsLength && bugsLength > 0}
+        <div class="flex items-center gap-2">
+          <h3>Page:</h3>
+          <select
+            class="border border-black px-1 py-0.5 rounded-sm outline-none hover:cursor-pointer"
+            on:change={(e) => dispatch('changePage', { index: e.target.value })}
+          >
+            {#each new Array(Math.ceil(bugsLength / 25)) as page, i}
+              <option value={i}>
+                {i + 1}
+              </option>
+            {/each}
+          </select>
+        </div>
+      {/if}
+    </div>
   </div>
 
   {#if $isDisplayingBug}

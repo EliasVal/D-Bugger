@@ -38,7 +38,7 @@
 
     DisplayLoading();
     hljs = (await import('highlight.js/lib/common')).default;
-    sanitizeHtml = (await import('sanitize-html')).default;
+    sanitizeHtml = await import('sanitize-html/index');
     converter = new (await import('showdown')).Converter();
     icon = (await import('@fortawesome/fontawesome-svg-core')).icon;
     finishedLoading = true;

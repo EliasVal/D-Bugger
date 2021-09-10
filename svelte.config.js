@@ -1,5 +1,4 @@
 import preprocess from 'svelte-preprocess';
-//import adapter from '@sveltejs/adapter-static';
 import adapter from '@sveltejs/adapter-node';
 import { resolve } from 'path';
 
@@ -12,11 +11,7 @@ const config = {
   kit: {
     // hydrate the <div id="svelte"> element in src/app.html
     target: '#svelte',
-    adapter: adapter(), //adapter({ fallback: 'index.html' }),
-    // paths: {
-    //   base: '/D-Bugger',
-    //   assets: '/D-Bugger',
-    // },
+    adapter: adapter(),
     files: {
       serviceWorker: 'src/service-worker.ts',
     },

@@ -17,9 +17,10 @@ export interface DialogueField {
 export interface Project {
   bugs: Bugs;
   details: {
-    users: string[];
+    members: string[];
     owner: string;
     name: string;
+    pending: string[];
     visibility: 'private' | 'public';
   };
   [key: string]: unknown;

@@ -233,7 +233,7 @@
             <button class="text-xl" title="Home" on:click={() => goto(base)}>
               {@html icon(faHome).html}
             </button>
-            {#if $user?.uid == $project?.details.owner && $user?.uid != null}
+            {#if $user?.uid == $project?.details?.owner && $user?.uid != null}
               <button
                 class="text-xl"
                 title="Project Settings"

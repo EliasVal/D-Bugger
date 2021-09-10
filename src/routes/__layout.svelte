@@ -1,7 +1,5 @@
 <script>
-  import { goto } from '$app/navigation';
   import { base } from '@ts/stores';
-  import { page } from '$app/stores';
 
   import {
     dialogueValues,
@@ -48,10 +46,14 @@
   <Loading />
 {/if}
 
-<div class="fixed bottom-0 z-30">
-  <div class="absolute bottom-0 left-0 m-3 flex flex-col gap-3">
+<div class="absolute top-0 right-0 sm:left-0 sm:bottom-0 sm:top-auto z-30 p-3">
+  <div class="flex flex-col gap-3">
     {#each $Toasts as toast (toast.id)}
-      <div in:slide out:fly={{ x: -500 }} animate:flip={{ duration: 500 }}>
+      <div
+        in:slide
+        out:fly={{ x: window.innerWidth > 640 ? -500 : 500 }}
+        animate:flip={{ duration: 500 }}
+      >
         <ToastMessage {toast} on:removeToast={removeToast} />
       </div>
     {/each}
@@ -62,6 +64,7 @@
   :global(html, body, #svelte) {
     scroll-behavior: smooth;
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
   @tailwind base;

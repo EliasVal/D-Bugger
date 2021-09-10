@@ -1,10 +1,28 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { base } from '@ts/stores';
+  import type { Query } from '@firebase/database';
 
-  import { get, getDatabase, onValue, push, ref, remove, set, update } from '@ts/FirebaseImports';
-  import { isDisplayingBug, isDisplayingProjectSettings, project, user } from '@ts/stores';
+  import {
+    get,
+    getDatabase,
+    limitToFirst,
+    onChildAdded,
+    onChildChanged,
+    onChildRemoved,
+    onValue,
+    orderByKey,
+    push,
+    query,
+    ref,
+    remove,
+    set,
+    startAt,
+    update,
+  } from '@ts/FirebaseImports';
+
+  import { base, isDisplayingBug, isDisplayingProjectSettings, project, user } from '@ts/stores';
+
   import {
     CloseDialogue,
     CloseLoading,
@@ -16,8 +34,8 @@
   import type { Bug, DialogueField } from 'src/global';
 
   import { onMount } from 'svelte';
-  import { fade } from 'svelte/transition';
 
+  import { fade } from 'svelte/transition';
   import Loading from '/src/Components/Loading.svelte';
   import ProjectMain from '/src/Components/Project/ProjectMain.svelte';
   import ProjectSettings from '/src/Components/Project/ProjectSettings.svelte';
@@ -93,14 +111,80 @@
     $isDisplayingProjectSettings = false;
     $isDisplayingBug = false;
   });
+
+  let bugsLength;
+  let pageKeys = [null];
+  let pageIndex = 0;
   user.subscribe((u) => {
+    let listening = false;
     onValue(ref(db, `projects/${slug}`), async (snapshot) => {
       const val = await snapshot.val();
       if (u && !u.emailVerified && (val.details.owner == u.uid || u.uid in val.details.members))
         goto(base);
-      project.set({ ...val, id: slug });
+      // project.set({ ...val, id: slug });
+
+      // @ts-ignore
+      if (!$project) $project = { bugs: {}, details: {} };
+      $project.details = await snapshot.child('/details').val();
+      $project.id = slug;
+
+      let count = 0;
+      // @ts-ignore
+      snapshot.child('/bugs').forEach((bug) => {
+        if (count % 25 == 0 && count != 0) {
+          pageKeys.push(bug.val().id);
+        }
+        count++;
+      });
+      bugsLength = snapshot.child('/bugs').size;
+
+      if (!listening) {
+        updateListeners(query(ref(db, `projects/${slug}/bugs`), startAt(null), limitToFirst(25)));
+      }
     });
   });
+
+  let listeners = [];
+  const updateListeners = (queryRef: Query) => {
+    // Unsubscribe all the listeners
+    for (let i = 0; i < listeners.length; i++) {
+      listeners[i]();
+    }
+    // Empty the listners array
+    listeners = [];
+
+    // Empty the bugs array
+    $project.bugs = {};
+
+    // Subscribe to new listeners.
+    listeners[listeners.length] = onChildAdded(queryRef, async (data) => {
+      if (pageKeys[pageIndex] != data.key) {
+        $project.bugs[data.key] = await data.val();
+      }
+    });
+    listeners[listeners.length] = onChildChanged(queryRef, async (data) => {
+      $project.bugs[data.key] = await data.val();
+    });
+    listeners[listeners.length] = onChildRemoved(queryRef, async (data) => {
+      delete $project.bugs[data.key];
+    });
+  };
+
+  const changePage = (e) => {
+    DisplayLoading();
+    pageIndex = e.detail.index;
+    updateListeners(
+      pageIndex > 0
+        ? query(
+            ref(db, `projects/${slug}/bugs`),
+            orderByKey(),
+            startAt(pageKeys[pageIndex]),
+            limitToFirst(25),
+          )
+        : query(ref(db, `projects/${slug}/bugs`), startAt(pageKeys[pageIndex]), limitToFirst(25)),
+    );
+    CloseLoading();
+  };
 
   const displayDeleteBug = (e) => {
     DisplayDialogue({
@@ -218,7 +302,7 @@
   </style>
 </svelte:head>
 
-{#if $project}
+{#if $project?.id}
   {#if !$isDisplayingProjectSettings}
     {#if $user == 'loading'}
       <div class="bg-gray-900 fixed w-full h-full" out:fade>
@@ -229,6 +313,8 @@
         on:deleteBug={displayDeleteBug}
         on:createBug={displayCreateBug}
         on:saveBugChanges={saveBugChanges}
+        on:changePage={changePage}
+        {bugsLength}
       />
     {/if}
   {:else}
