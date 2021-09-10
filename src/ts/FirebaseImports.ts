@@ -14,6 +14,10 @@ export {
   updatePassword,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  confirmPasswordReset,
+  verifyPasswordResetCode,
+  applyActionCode,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 
 export { getDownloadURL, getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';

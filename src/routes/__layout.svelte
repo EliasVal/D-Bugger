@@ -46,7 +46,7 @@
   <Loading />
 {/if}
 
-<div class="absolute top-0 right-0 sm:left-0 sm:bottom-0 sm:top-auto z-30 p-3">
+<div class="fixed top-0 right-0 sm:left-0 sm:bottom-0 sm:top-auto z-30 p-3">
   <div class="flex flex-col gap-3">
     {#each $Toasts as toast (toast.id)}
       <div

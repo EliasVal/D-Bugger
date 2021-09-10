@@ -3,8 +3,7 @@
 
   import { Circle } from 'svelte-loading-spinners';
 
-  import { getAuth } from '@ts/FirebaseImports';
-  import { sendPasswordResetEmail } from '@firebase/auth';
+  import { getAuth, sendPasswordResetEmail } from '@ts/FirebaseImports';
   import { DisplayToast } from '@ts/utils';
 
   const sendEmail = (e) => {
