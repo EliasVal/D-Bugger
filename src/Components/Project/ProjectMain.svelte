@@ -5,7 +5,7 @@
 
   import type { Bugs } from 'src/global';
 
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
 
   import BugDisplay from './BugDisplay.svelte';

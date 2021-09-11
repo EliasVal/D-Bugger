@@ -1,6 +1,11 @@
 <script>
-  import { getAuth, signInWithEmailAndPassword } from '@ts/FirebaseImports';
-  import { confirmPasswordReset, verifyPasswordResetCode, applyActionCode } from 'firebase/auth';
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    confirmPasswordReset,
+    verifyPasswordResetCode,
+    applyActionCode,
+  } from '@ts/FirebaseImports';
   import { page } from '$app/stores';
   import { Stretch } from 'svelte-loading-spinners';
   import { slide } from 'svelte/transition';

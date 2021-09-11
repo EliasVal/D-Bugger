@@ -20,7 +20,7 @@ export {
   sendPasswordResetEmail,
 } from 'firebase/auth';
 
-export { getDownloadURL, getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';
+export { getDownloadURL, getStorage, ref as storageRef, uploadString } from 'firebase/storage';
 
 export {
   ref,

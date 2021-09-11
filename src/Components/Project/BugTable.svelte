@@ -1,9 +1,11 @@
 <script lang="ts">
+  import { sortingType as sortingTypeWritable } from '@ts/stores';
+
   import { DisplayToast, SplitAndCapitalise } from '@ts/utils';
 
   import type { Bugs } from 'src/global';
 
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
 
   export let bugs: Bugs;
 
@@ -28,13 +30,13 @@
     },
   };
 
-  let lastSortMethod = 'id';
+  let sortingType = 'id';
   const sortBy = (val: string, elm: HTMLElement) => {
     // Check if array has already been sorted for this property, if so reverse it, if not, sort it.
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
 
     let temp = [...Object.entries(bugs)];
-    if (lastSortMethod == val) {
+    if (sortingType == val) {
       temp = temp.reverse();
     } else {
       temp = temp.sort((a, b) => {
@@ -60,7 +62,7 @@
         }
         return sorting;
       });
-      document.getElementById(lastSortMethod).classList.remove('sortedDown', 'sortedUp');
+      document.getElementById(sortingType).classList.remove('sortedDown', 'sortedUp');
     }
 
     bugs = Object.fromEntries(temp);
@@ -74,8 +76,13 @@
       elm.classList.add('sortedUp');
     }
 
-    lastSortMethod = val;
+    sortingType = val;
+    $sortingTypeWritable = val;
   };
+
+  onMount(() => {
+    sortBy($sortingTypeWritable, document.getElementById($sortingTypeWritable));
+  });
 </script>
 
 <div>

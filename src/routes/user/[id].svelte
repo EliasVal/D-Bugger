@@ -10,7 +10,7 @@
     getDownloadURL,
     getStorage,
     storageRef,
-    uploadBytes,
+    uploadString,
     updateProfile,
     set,
     updateEmail,
@@ -18,18 +18,48 @@
     EmailAuthProvider,
     reauthenticateWithCredential,
   } from '@ts/FirebaseImports';
-  import { DisplayToast } from '@ts/utils';
+  import { CloseLoading, DisplayLoading, DisplayToast } from '@ts/utils';
   import { goto } from '$app/navigation';
   import { base } from '@ts/stores';
   import { Stretch } from 'svelte-loading-spinners';
+  import piexif from 'piexifjs';
 
   let section: 'general' | 'security' = 'general';
 
   const uploadProfilePic = (e) => {
-    uploadBytes(
-      storageRef(getStorage(), `${$user.uid}/profilePicture`),
-      e.target.files[0],
-    ).then(() => location.reload());
+    const file: File = e.target.files[0];
+    // Ensure file is smaller than 5mb
+    if (file.size > 5 * 1024 * 1024 * 512) {
+      DisplayToast({ title: 'The chosen image must be less than 5 MB in size!', duration: 5000 });
+      return;
+    }
+    DisplayLoading();
+    const fileReader = new FileReader();
+    fileReader.addEventListener('load', () => {
+      const canvas = document.createElement('canvas');
+      let image = new Image();
+
+      image.onload = () => {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        canvas.getContext('2d').drawImage(image, 0, 0);
+
+        const strippedExifImage = piexif.remove(canvas.toDataURL('image/jpeg'));
+        uploadString(
+          storageRef(getStorage(), `${$user.uid}/profilePicture`),
+          strippedExifImage,
+          'data_url',
+        ).then(() => {
+          CloseLoading();
+          location.reload();
+        });
+      };
+
+      // @ts-ignore
+      image.src = fileReader.result;
+    });
+
+    fileReader.readAsDataURL(file);
   };
 
   let tempEmail;
@@ -77,7 +107,7 @@
   let confirmNewPass;
   let isChangingPass = false;
 
-  const updatePass = async (e) => {
+  const updatePass = async () => {
     isChangingPass = true;
     try {
       if (newPass != confirmNewPass) throw new Error('Passwords do not match!');

@@ -31,5 +31,6 @@ export const dialogueValues = writable(null);
 export const isDisplayingLoading = writable(false);
 export const isDisplayingBug = writable(false);
 export const Toasts = writable([]);
+export const sortingType = writable('id');
 export const isDisplayingProjectSettings = writable(false);
 export const base = tmpBase ? tmpBase + '/' : '/';
