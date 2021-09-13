@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import type { Query } from '@firebase/database';
+  import type { Query, QueryConstraint } from '@firebase/database';
 
   import {
     get,
@@ -19,9 +19,18 @@
     set,
     startAt,
     update,
+    equalTo,
+    orderByChild,
   } from '@ts/FirebaseImports';
 
-  import { base, isDisplayingBug, isDisplayingProjectSettings, project, user } from '@ts/stores';
+  import {
+    base,
+    isDisplayingBug,
+    isDisplayingProjectSettings,
+    project,
+    searchQuery,
+    user,
+  } from '@ts/stores';
 
   import {
     CloseDialogue,
@@ -33,10 +42,8 @@
 
   import type { Bug, DialogueField } from 'src/global';
 
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
 
-  import { fade } from 'svelte/transition';
-  import Loading from '/src/Components/Loading.svelte';
   import ProjectMain from '/src/Components/Project/ProjectMain.svelte';
   import ProjectSettings from '/src/Components/Project/ProjectSettings.svelte';
 
@@ -112,16 +119,30 @@
     $isDisplayingBug = false;
   });
 
+  onDestroy(() => {
+    // Unsubscribe all listeners
+    for (const ls of listeners) {
+      ls();
+    }
+    for (const unsubscriber of unsubscribers) {
+      unsubscriber();
+    }
+  });
+
   let bugsLength;
   let pageKeys = [null];
   let pageIndex = 0;
-  user.subscribe((u) => {
+  let unsubscribers = [];
+
+  let showingSearchResults = false;
+
+  unsubscribers[unsubscribers.length] = user.subscribe((u) => {
     let listening = false;
-    onValue(ref(db, `projects/${slug}`), async (snapshot) => {
+    DisplayLoading();
+    unsubscribers[unsubscribers.length] = onValue(ref(db, `projects/${slug}`), async (snapshot) => {
       const val = await snapshot.val();
       if (u && !u.emailVerified && (val.details.owner == u.uid || u.uid in val.details.members))
         goto(base);
-      // project.set({ ...val, id: slug });
 
       // @ts-ignore
       if (!$project) $project = { bugs: {}, details: {} };
@@ -140,9 +161,24 @@
 
       if (!listening) {
         updateListeners(query(ref(db, `projects/${slug}/bugs`), startAt(null), limitToFirst(25)));
+        listening = true;
+        CloseLoading();
       }
     });
   });
+
+  let queries;
+  let searchQueryConstraints: QueryConstraint[];
+  const search = (e) => {
+    queries = e.detail.query;
+    let priorityKey = 'id' in queries ? 'id' : Object.keys(queries)[0];
+    let orderString = priorityKey.match(/(id)|(title)/) ? priorityKey : `details/${priorityKey}`;
+    showingSearchResults = true;
+
+    searchQueryConstraints = [orderByChild(orderString), equalTo(queries[priorityKey])];
+
+    updateListeners(query(ref(db, `projects/${slug}/bugs`), ...searchQueryConstraints));
+  };
 
   let listeners = [];
   const updateListeners = (queryRef: Query) => {
@@ -159,14 +195,35 @@
     // Subscribe to new listeners.
     listeners[listeners.length] = onChildAdded(queryRef, async (data) => {
       if (pageKeys[pageIndex] != data.key) {
-        $project.bugs[data.key] = await data.val();
+        let val = await data.val();
+        if (showingSearchResults && !('id' in queries)) {
+          let toAdd = true;
+          console.log(queries);
+          for (let [key, value] of Object.entries(queries)) {
+            console.log(val.details[key]);
+            console.log(value);
+            console.log(key.match(/title/));
+            if (key.match(/title/)) {
+              if (val[key] != value) {
+                toAdd = false;
+                break;
+              }
+            } else if (val.details[key] != value) {
+              toAdd = false;
+              break;
+            }
+          }
+          if (toAdd) $project.bugs[data.key] = val;
+        } else {
+          $project.bugs[data.key] = val;
+        }
       }
     });
     listeners[listeners.length] = onChildChanged(queryRef, async (data) => {
-      $project.bugs[data.key] = await data.val();
+      if (data.key in $project.bugs) $project.bugs[data.key] = await data.val();
     });
     listeners[listeners.length] = onChildRemoved(queryRef, async (data) => {
-      delete $project.bugs[data.key];
+      if (data.key in $project.bugs) delete $project.bugs[data.key];
     });
   };
 
@@ -202,7 +259,6 @@
 
   const deleteBug = async (e) => {
     CloseDialogue();
-    console.log(e.detail);
     const id = e.detail.id;
 
     DisplayLoading();
@@ -304,19 +360,20 @@
 
 {#if $project?.id}
   {#if !$isDisplayingProjectSettings}
-    {#if $user == 'loading'}
-      <div class="bg-gray-900 fixed w-full h-full" out:fade>
-        <Loading />
-      </div>
-    {:else}
-      <ProjectMain
-        on:deleteBug={displayDeleteBug}
-        on:createBug={displayCreateBug}
-        on:saveBugChanges={saveBugChanges}
-        on:changePage={changePage}
-        {bugsLength}
-      />
-    {/if}
+    <ProjectMain
+      on:deleteBug={displayDeleteBug}
+      on:createBug={displayCreateBug}
+      on:saveBugChanges={saveBugChanges}
+      on:changePage={changePage}
+      on:search={search}
+      on:clearSearch={() => {
+        $searchQuery = null;
+        showingSearchResults = false;
+        updateListeners(query(ref(db, `projects/${slug}/bugs`), startAt(null), limitToFirst(25)));
+      }}
+      {bugsLength}
+      {showingSearchResults}
+    />
   {:else}
     <ProjectSettings on:deleteProject={deleteProject} />
   {/if}

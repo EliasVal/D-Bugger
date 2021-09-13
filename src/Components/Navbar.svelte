@@ -225,7 +225,9 @@
           class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 absolute top-1/2 -translate-y-1/2 sm:left-1/2 sm:-translate-x-1/2 "
         >
           {#if $page.path == '/'}
-            <a href="#projects" title="Projects">{@html icon(faTasks).html}</a>
+            {#if $user}
+              <a href="#projects" title="Projects">{@html icon(faTasks).html}</a>
+            {/if}
             <a href="#about" title="About">{@html icon(faBook).html}</a>
             <a href="#roadmap" title="Roadmap">{@html icon(faRoute).html}</a>
           {:else}

@@ -24,7 +24,7 @@
   {:else if field.type == 'editor'}
     <TextEditor {field} />
   {:else if field.type == 'paragraph'}
-    <p class={field.stylingClasses}>{field.body}</p>
+    <p class={field.stylingClasses}>{@html field.body}</p>
   {:else}
     <input
       class={field.stylingClasses

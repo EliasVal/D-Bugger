@@ -10,8 +10,10 @@
 
   import BugDisplay from './BugDisplay.svelte';
   import BugTable from './BugTable.svelte';
+  import Search from './Search.svelte';
 
   export let bugsLength = 0;
+  export let showingSearchResults = false;
 
   let bugIdToDisplay;
 
@@ -94,12 +96,19 @@
 
 <div class="h-full flex justify-between pt-10 sm:pt-0">
   <div class="flex-grow mx-5 mt-5">
+    {#if bugsLength > 0}
+      <Search on:search on:clearSearch />
+    {/if}
     {#if bugs && Object.entries(bugs).length > 0}
       {#key bugs}
         <BugTable {bugs} on:displayBug={displayBug} />
       {/key}
     {:else}
-      <h2>There are no bugs! Great job!</h2>
+      <h2>
+        {showingSearchResults
+          ? 'No Bugs found. Maybe try a different query?'
+          : 'There are no bugs! Great job!'}
+      </h2>
     {/if}
     <div class="py-5 flex justify-between items-center">
       <button
@@ -108,7 +117,7 @@
       >
         + Add Bug
       </button>
-      {#if bugsLength && bugsLength > 0}
+      {#if bugsLength && bugsLength > 0 && !showingSearchResults}
         <div class="flex items-center gap-2">
           <h3>Page:</h3>
           <select
@@ -139,15 +148,3 @@
     </div>
   {/if}
 </div>
-
-<style>
-  /*.projectMain {
-		height: calc(100% - 4rem);
-	}
-
-	@media only screen and (max-width: 640px) {
-		.bugDisplay {
-			height: calc(100% - 4rem);
-		}
-	}*/
-</style>

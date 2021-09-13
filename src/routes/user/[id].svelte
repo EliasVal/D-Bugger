@@ -34,15 +34,52 @@
       return;
     }
     DisplayLoading();
+
     const fileReader = new FileReader();
+
     fileReader.addEventListener('load', () => {
       const canvas = document.createElement('canvas');
       let image = new Image();
 
       image.onload = () => {
-        canvas.width = image.width;
-        canvas.height = image.height;
-        canvas.getContext('2d').drawImage(image, 0, 0);
+        // Clamp canvas width and height to be smaller than 512px.
+        canvas.width = Math.min(Math.max(image.width, 1), 512);
+        canvas.height = Math.min(Math.max(image.height, 1), 512);
+
+        let ctx = canvas.getContext('2d');
+
+        // Fill canvas with solid color
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Check image width & height for the proper scaling
+        if (image.width > 512 && image.width > image.height) {
+          ctx.drawImage(
+            image,
+            0,
+            // Center the image
+            (canvas.height - image.height / (image.width / 512)) / 2,
+            512,
+            // Scale the image down properly
+            image.height / (image.width / 512),
+          );
+        } else if (image.height > 512 && image.height > image.width) {
+          ctx.drawImage(
+            image,
+            // Center the image
+            (canvas.width - image.width / (image.height / 512)) / 2,
+            0,
+            // Scale the image down properly
+            image.width / (image.height / 512),
+            512,
+          );
+          // If height and width are equal but are bigger than 512px just scale both axes equally
+        } else if (image.width > 512 && image.height > 512) {
+          ctx.drawImage(image, 0, 0, 512, 512);
+          // If image isn't bigger on any axis.
+        } else {
+          ctx.drawImage(image, 0, 0);
+        }
 
         const strippedExifImage = piexif.remove(canvas.toDataURL('image/jpeg'));
         uploadString(
@@ -56,9 +93,11 @@
       };
 
       // @ts-ignore
+      // Load image
       image.src = fileReader.result;
     });
 
+    // read submitted file as base64
     fileReader.readAsDataURL(file);
   };
 

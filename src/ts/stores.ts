@@ -33,4 +33,5 @@ export const isDisplayingBug = writable(false);
 export const Toasts = writable([]);
 export const sortingType = writable('id');
 export const isDisplayingProjectSettings = writable(false);
+export const searchQuery = writable('');
 export const base = tmpBase ? tmpBase + '/' : '/';

@@ -211,8 +211,8 @@
         bind:value={$bug.details.status}
       >
         <option value="fixed">Fixed</option>
-        <option value="beingfixed">Being Fixed</option>
-        <option value="onhold">On Hold</option>
+        <option value="beingFixed">Being Fixed</option>
+        <option value="onHold">On Hold</option>
         <option value="abandoned">Abandoned</option>
       </select>
     </div>
