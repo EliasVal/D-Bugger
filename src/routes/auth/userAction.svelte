@@ -33,17 +33,15 @@
           case 'expired-action-code':
             DisplayToast({
               title: 'Expired Password reset E-Mail. Please try resetting your password again.',
-              duration: 4000,
             });
             break;
           case 'invalid-action-code':
             DisplayToast({
               title: 'Invalid Password reset E-Mail. Please try resetting your password again.',
-              duration: 4000,
             });
             break;
           case 'weak-password':
-            DisplayToast({ title: 'Password too weak.', duration: 4000 });
+            DisplayToast({ title: 'Password too weak.' });
             break;
         }
         isChangingPass = false;

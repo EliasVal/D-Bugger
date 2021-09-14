@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { DialogueButton, DialogueField } from 'src/global';
 
-  import { fly } from 'svelte/transition';
+  import { fly, blur } from 'svelte/transition';
 
   import DialogueFieldComponent from './DialogueField.svelte';
 
@@ -16,12 +16,11 @@
   export let submitBtnStyles: string | null = null;
 </script>
 
-<div
-  class="dialogue w-full bg-gray-900 bg-opacity-90 flex justify-center items-center fixed h-screen top-0 z-50"
->
+<div class="dialogue w-full flex justify-center items-center fixed h-screen top-0 z-50">
+  <div class="fixed inset-0 bg-gray-900 bg-opacity-90" transition:blur={{ duration: 300 }} />
   <div
-    class="w-2/3 md:w-5/12 bg-gray-50 rounded-md"
-    in:fly={{ y: 250, delay: 400, duration: 400 }}
+    class="w-2/3 md:w-5/12 bg-gray-50 rounded-md z-50"
+    in:fly={{ y: 250, delay: 200, duration: 500 }}
     out:fly={{ y: -250, duration: 500 }}
   >
     <div class="m-5">

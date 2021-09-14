@@ -12,10 +12,10 @@
   let isSigningIn = false;
   const signIn = (e) => {
     if (!e.target[0].value) {
-      DisplayToast({ title: 'Please enter your E-Mail!', duration: 4000 });
+      DisplayToast({ title: 'Please enter your E-Mail!' });
       return;
     } else if (!e.target[1].value) {
-      DisplayToast({ title: 'Please enter your password!', duration: 4000 });
+      DisplayToast({ title: 'Please enter your password!' });
       return;
     }
 
@@ -30,25 +30,24 @@
         .catch((e) => {
           switch (e.code.substring(5)) {
             case 'user-not-found':
-              DisplayToast({ title: 'This user does not exist!', duration: 4000 });
+              DisplayToast({ title: 'This user does not exist!' });
               break;
             case 'invalid-email':
-              DisplayToast({ title: 'Invalid E-Mail entered!', duration: 4000 });
+              DisplayToast({ title: 'Invalid E-Mail entered!' });
               break;
             case 'too-many-requests':
               DisplayToast({
                 title: "Due to unusual activity, you've been timed out. Please try again later.",
-                duration: 4000,
               });
               break;
             case 'wrong-password':
-              DisplayToast({ title: 'Incorrect password entered!', duration: 4000 });
+              DisplayToast({ title: 'Incorrect password entered!' });
               break;
             case 'internal-error':
-              DisplayToast({ title: 'Something went wrong!', duration: 4000 });
+              DisplayToast({ title: 'Something went wrong!' });
               break;
             default:
-              DisplayToast({ title: e.message, duration: 4000 });
+              DisplayToast({ title: e.message });
               break;
           }
 

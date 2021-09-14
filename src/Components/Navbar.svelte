@@ -1,9 +1,9 @@
 <script>
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { base } from '@ts/stores';
+  import { base, imageCache } from '@ts/stores';
 
-  import { icon } from '@fortawesome/fontawesome-svg-core';
+  import { icon } from '@ts/Singletons';
   import {
     faBars,
     faBook,
@@ -56,8 +56,9 @@
         messages.set(await snapshot.val());
       });
 
-      // @ts-ignore
-      img = await getDownloadURL(storageRef(getStorage(), `${u.uid}/profilePicture`)).catch();
+      $imageCache = await getDownloadURL(storageRef(getStorage(), `${u.uid}/profilePicture`)).catch(
+        null,
+      );
     }
   });
 
@@ -156,7 +157,7 @@
       transition:fly|local={{
         x: bWidth < 640 ? -75 : 0,
         y: bWidth > 640 ? -75 : 0,
-        duration: 1000,
+        duration: 750,
       }}
     >
       <div
@@ -175,7 +176,7 @@
                 <img
                   style="height: 20px;"
                   class="profileImg rounded-full"
-                  src={img ?? '/user.svg'}
+                  src={$imageCache ?? '/user.svg'}
                   alt=""
                 />
               {:else}

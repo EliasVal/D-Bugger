@@ -22,18 +22,14 @@
   import { goto } from '$app/navigation';
   import { base } from '@ts/stores';
   import { Stretch } from 'svelte-loading-spinners';
-  import piexif from 'piexifjs';
 
   let section: 'general' | 'security' = 'general';
 
-  const uploadProfilePic = (e) => {
+  const uploadProfilePic = async (e) => {
     const file: File = e.target.files[0];
-    // Ensure file is smaller than 5mb
-    if (file.size > 5 * 1024 * 1024 * 512) {
-      DisplayToast({ title: 'The chosen image must be less than 5 MB in size!', duration: 5000 });
-      return;
-    }
     DisplayLoading();
+
+    const piexif = await import('piexifjs');
 
     const fileReader = new FileReader();
 
@@ -81,15 +77,28 @@
           ctx.drawImage(image, 0, 0);
         }
 
-        const strippedExifImage = piexif.remove(canvas.toDataURL('image/jpeg'));
-        uploadString(
-          storageRef(getStorage(), `${$user.uid}/profilePicture`),
-          strippedExifImage,
-          'data_url',
-        ).then(() => {
-          CloseLoading();
-          location.reload();
-        });
+        const resultImg: string = piexif.remove(canvas.toDataURL('image/jpeg'));
+        const imageFileSize =
+          resultImg.length * 0.75 -
+          (resultImg.endsWith('==') ? 2 : resultImg.endsWith('=') ? 1 : 0);
+
+        // Ensure that image size is smaller than 5.5MB
+        if (imageFileSize > 1024 * 1024 * 512 * 5) {
+          DisplayToast({
+            title: 'The chosen image must be less than 5 MB in size!',
+            duration: 5000,
+          });
+          return;
+        } else {
+          uploadString(
+            storageRef(getStorage(), `${$user.uid}/profilePicture`),
+            resultImg,
+            'data_url',
+          ).then(() => {
+            CloseLoading();
+            location.reload();
+          });
+        }
       };
 
       // @ts-ignore
@@ -153,7 +162,7 @@
       const cred = EmailAuthProvider.credential($user.email, currPass);
       await reauthenticateWithCredential($user, cred);
       await updatePassword($user, newPass);
-      DisplayToast({ title: 'Password updated successfully!', duration: 4000 });
+      DisplayToast({ title: 'Password updated successfully!' });
 
       currPass = null;
       newPass = null;
@@ -161,13 +170,13 @@
     } catch (e) {
       switch (e.code?.substring(5)) {
         case 'wrong-password':
-          DisplayToast({ title: 'Incorrect Password Entered!', duration: 4000 });
+          DisplayToast({ title: 'Incorrect Password Entered!' });
           break;
         case 'weak-password':
-          DisplayToast({ title: 'New password is too weak!', duration: 4000 });
+          DisplayToast({ title: 'New password is too weak!' });
           break;
         default:
-          DisplayToast({ title: e.message, duration: 4000 });
+          DisplayToast({ title: e.message });
           break;
       }
     } finally {
@@ -242,8 +251,8 @@
                     on:click={() => {
                       navigator.clipboard
                         .writeText($page.params.id)
-                        .then(() => DisplayToast({ title: 'Copied To Clipboard!', duration: 4000 }))
-                        .catch(() => DisplayToast({ title: 'Failed to copy.', duration: 4000 }));
+                        .then(() => DisplayToast({ title: 'Copied To Clipboard!' }))
+                        .catch(() => DisplayToast({ title: 'Failed to copy.' }));
                     }}
                     class="text-gray-400 hover:cursor-pointer copyToClipboard"
                   >

@@ -43,7 +43,7 @@
 
   const createProject = async (event: Event) => {
     if (event.target[0].value?.length < 3) {
-      DisplayToast({ title: 'This field cannot be empty!', duration: 4000 });
+      DisplayToast({ title: 'This field cannot be empty!' });
       return;
     }
 

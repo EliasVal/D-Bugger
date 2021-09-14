@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { icon } from '@fortawesome/fontawesome-svg-core';
+  import { icon } from '@ts/Singletons';
   import { faEnvelope, faEnvelopeOpen, faTimes } from '@fortawesome/free-solid-svg-icons';
   import { createEventDispatcher } from 'svelte';
   import { push, update, ref, getDatabase, getAuth, remove } from '@ts/FirebaseImports';

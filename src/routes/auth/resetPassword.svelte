@@ -10,16 +10,16 @@
     isSendingEmail = true;
     sendPasswordResetEmail(getAuth(), e.target[0].value)
       .then(() => {
-        DisplayToast({ title: 'E-Mail sent successfully!', duration: 4000 });
+        DisplayToast({ title: 'E-Mail sent successfully!' });
         isSendingEmail = false;
       })
       .catch((e) => {
         switch (e.code.substring(5)) {
           case 'invalid-email':
-            DisplayToast({ title: 'Invalid E-Mail Entered!', duration: 4000 });
+            DisplayToast({ title: 'Invalid E-Mail Entered!' });
             break;
           case 'user-not-found':
-            DisplayToast({ title: "A user with this E-Mail doesn't exist!", duration: 4000 });
+            DisplayToast({ title: "A user with this E-Mail doesn't exist!" });
             break;
         }
         isSendingEmail = false;

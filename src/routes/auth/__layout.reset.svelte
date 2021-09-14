@@ -3,38 +3,17 @@
   import { base } from '$app/paths';
   import { page } from '$app/stores';
 
-  import { Toasts, user } from '@ts/stores';
+  import { user } from '@ts/stores';
   import { DisplayToast } from '@ts/utils';
-
-  import { flip } from 'svelte/animate';
-  import { fly, slide } from 'svelte/transition';
-  import ToastMessage from '/src/Components/ToastMessage.svelte';
-
-  const removeToast = (e) => {
-    const id = e.detail.id;
-
-    Toasts.set($Toasts.filter((toast) => toast.id !== id));
-  };
+  import ToastContainer from '/src/Components/Toasts/ToastContainer.svelte';
 
   user.subscribe((u) => {
     if (u && $page.path.match(/auth\/((login)|(signup)|(resetPassword))$/gim)) {
-      DisplayToast({ title: "You're already logged in.", duration: 4000 });
+      DisplayToast({ title: "You're already logged in." });
       goto(base);
     }
   });
 </script>
 
 <slot />
-<div class="absolute top-0 right-0 sm:left-0 sm:bottom-0 sm:top-auto z-30 p-3">
-  <div class="flex flex-col gap-3">
-    {#each $Toasts as toast (toast.id)}
-      <div
-        in:slide
-        out:fly={{ x: window.innerWidth > 640 ? -500 : 500 }}
-        animate:flip={{ duration: 500 }}
-      >
-        <ToastMessage {toast} on:removeToast={removeToast} />
-      </div>
-    {/each}
-  </div>
-</div>
+<ToastContainer />

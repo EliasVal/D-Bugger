@@ -62,3 +62,9 @@ export interface Bug {
 export interface Bugs {
   [key: string]: Bug;
 }
+
+export interface Toast {
+  title: string;
+  description?: string;
+  duration?: number;
+}

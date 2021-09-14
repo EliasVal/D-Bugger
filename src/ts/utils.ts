@@ -1,4 +1,4 @@
-import type { DialogueValues } from 'src/global';
+import type { DialogueValues, Toast } from 'src/global';
 import { dialogueValues, isDisplayingDialogue, isDisplayingLoading, Toasts } from './stores';
 
 export const SplitAndCapitalise = (text: string): string => {
@@ -17,7 +17,8 @@ export const DisplayLoading = (): void => isDisplayingLoading.set(true);
 
 export const CloseLoading = (): void => isDisplayingLoading.set(false);
 
-export const DisplayToast = (params: Record<string, unknown>): void => {
+export const DisplayToast = (params: Toast): void => {
+  if (!('duration' in params)) params.duration = 4000;
   let toasts;
 
   const unsubscribe = Toasts.subscribe((t) => {

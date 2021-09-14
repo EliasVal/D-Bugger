@@ -223,7 +223,7 @@
         value="Save Changes"
       />
       <input
-        class="text-black text-sm border border-red-600 px-2 py-1 rounded-sm hover:cursor-pointer hover:bg-red-600 hover:text-white transition-colors"
+        class="text-black text-sm border bg-transparent border-red-600 px-2 py-1 rounded-sm hover:cursor-pointer hover:bg-red-600 hover:text-white transition-colors"
         type="button"
         value="Delete Bug"
         on:click={() => {

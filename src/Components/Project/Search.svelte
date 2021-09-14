@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { icon } from '@fortawesome/fontawesome-svg-core';
+  import { icon } from '@ts/Singletons';
   import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
   import { searchQuery } from '@ts/stores';
   import { CloseDialogue, DisplayDialogue, DisplayToast } from '@ts/utils';
@@ -32,9 +32,10 @@
   };
 </script>
 
-<div class="flex items-center gap-4 mb-3 text-lg">
+<form on:submit|preventDefault={search} class="flex items-center gap-4 mb-3 text-lg">
   <div class="flex items-center gap-3 flex-grow">
     <button
+      type="button"
       on:click={() =>
         DisplayDialogue({
           onSubmit: CloseDialogue,
@@ -55,12 +56,17 @@
     <input
       type="text"
       placeholder="Search Bugs..."
-      class="font-mono border border-black px-1 py-0.5 rounded-sm outline-none flex-grow"
+      class="font-mono border border-black px-1 py-0.5 rounded-sm outline-none flex-grow hover:cursor-pointer"
       bind:value={$searchQuery}
     />
   </div>
   <div class="flex items-center gap-3">
-    <button class="bg-black text-white px-1.5 py-0.5 rounded-sm" on:click={search}>Search</button>
-    <button class="text-base underline" on:click={() => dispatch('clearSearch')}>Clear</button>
+    <input type="submit" value="Search" class="bg-black text-white px-1.5 py-0.5 rounded-sm" />
+    <input
+      type="button"
+      value="Clear"
+      class="text-base underline bg-transparent hover:cursor-pointer"
+      on:click={() => dispatch('clearSearch')}
+    />
   </div>
-</div>
+</form>

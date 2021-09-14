@@ -1,38 +1,23 @@
 <script>
   import { base } from '@ts/stores';
 
-  import {
-    dialogueValues,
-    isDisplayingDialogue,
-    isDisplayingLoading,
-    Toasts,
-    user,
-  } from '@ts/stores';
+  import { dialogueValues, isDisplayingDialogue, isDisplayingLoading, user } from '@ts/stores';
   import { DisplayToast } from '@ts/utils';
-
-  import { flip } from 'svelte/animate';
-  import { fly, slide } from 'svelte/transition';
 
   import Dialogue from '/src/Components/Dialogue/Dialogue.svelte';
   import Loading from '/src/Components/Loading.svelte';
   import Navbar from '/src/Components/Navbar.svelte';
-  import ToastMessage from '/src/Components/ToastMessage.svelte';
+  import ToastContainer from '/src/Components/Toasts/ToastContainer.svelte';
 
   user.subscribe((u) => {
     if (u && !u.emailVerified) {
       DisplayToast({
         title: 'Please verify your account',
-        desc: `Check your E-Mail's inbox to verify your account.<br>Haven't received an E-Mail? <button onclick="window.location.pathname = '${base}auth/sendEmail'"><u>Click Here</u></button><br>Wrong E-Mail? You can change it in your profile page, accessed in the navbar.`,
+        description: `Check your E-Mail's inbox to verify your account.<br>Haven't received an E-Mail? <button onclick="window.location.pathname = '${base}auth/sendEmail'"><u>Click Here</u></button><br>Wrong E-Mail? You can change it in your profile page, accessed in the navbar.`,
         duration: 20000,
       });
     }
   });
-
-  const removeToast = (e) => {
-    const id = e.detail.id;
-
-    Toasts.set($Toasts.filter((toast) => toast.id !== id));
-  };
 </script>
 
 <Navbar />
@@ -46,19 +31,7 @@
   <Loading />
 {/if}
 
-<div class="fixed top-0 right-0 sm:left-0 sm:bottom-0 sm:top-auto z-30 p-3">
-  <div class="flex flex-col gap-3">
-    {#each $Toasts as toast (toast.id)}
-      <div
-        in:slide
-        out:fly={{ x: window.innerWidth > 640 ? -500 : 500 }}
-        animate:flip={{ duration: 500 }}
-      >
-        <ToastMessage {toast} on:removeToast={removeToast} />
-      </div>
-    {/each}
-  </div>
-</div>
+<ToastContainer />
 
 <style>
   :global(html, body, #svelte) {

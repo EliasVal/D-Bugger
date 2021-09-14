@@ -1,8 +1,8 @@
 <script lang="ts">
   const people = [
     {
-      name: 'JustMe#8491',
-      help: 'Design',
+      name: 'kclejeune (Github)',
+      help: 'Deployment to Google Cloud',
     },
     {
       name: 'Mlocik97#8200',
@@ -17,7 +17,15 @@
       help: 'Help With Other Problems & Such',
     },
     {
+      name: 'JustMeDev (Github)',
+      help: 'Feedback',
+    },
+    {
       name: 'AngeI#9333',
+      help: 'Feedback',
+    },
+    {
+      name: 'ᴛʀᴀꜱʜ ᴍᴀɴ#8888',
       help: 'Feedback',
     },
     {
