@@ -41,10 +41,10 @@
   let isDisplayingMessages = false;
   let hasUnread = false;
   let btnHeight;
+  let callNavUpdate = {};
 
   const db = getDatabase();
   const messages = writable();
-  let img;
 
   onMount(() => {
     bWidth = window.innerWidth;
@@ -56,9 +56,7 @@
         messages.set(await snapshot.val());
       });
 
-      $imageCache = await getDownloadURL(storageRef(getStorage(), `${u.uid}/profilePicture`)).catch(
-        null,
-      );
+      $imageCache = await getDownloadURL(storageRef(getStorage(), `${u.uid}/profilePicture`));
     }
   });
 
@@ -75,7 +73,10 @@
       if (!found) hasUnread = false;
     } else hasUnread = false;
 
-    if (bWidth < 640 && prevBWidth > 640) isDisplayingNavbar = true;
+    if (bWidth < 640 && prevBWidth > 640) {
+      isDisplayingNavbar = true;
+      callNavUpdate = {};
+    }
     prevBWidth = bWidth;
   }
 
@@ -151,112 +152,114 @@
 {/if}
 
 {#if !$page.path.match(/(login)|(signup)$/gim)}
-  {#if bWidth > 640 || isDisplayingNavbar}
-    <nav
-      class="p-3 bg-black text-white fixed z-10 top-0 bottom-0 sm:bottom-auto sm:right-0 sm:left-0 text-xl sm:text-base"
-      transition:fly|local={{
-        x: bWidth < 640 ? -75 : 0,
-        y: bWidth > 640 ? -75 : 0,
-        duration: 750,
-      }}
-    >
-      <div
-        class="flex flex-col sm:flex-row justify-between items-center"
-        style="margin-top: {bWidth < 640 ? btnHeight + 10 : 0}px;
-			height: calc(100% - {bWidth < 640 ? btnHeight + 10 : 0}px)"
+  {#key callNavUpdate}
+    {#if bWidth > 640 || isDisplayingNavbar}
+      <nav
+        class="p-3 bg-black text-white fixed z-10 top-0 bottom-0 sm:bottom-auto sm:right-0 sm:left-0 text-xl sm:text-base"
+        transition:fly|local={{
+          x: bWidth < 640 ? -75 : 0,
+          y: bWidth > 640 ? -75 : 0,
+          duration: 750,
+        }}
       >
-        {#if $user}
-          <div class="flex items-center {bWidth < 640 && 'flex flex-col justify-center'}">
-            <button
-              title="User profile"
-              class="px-2 py-1"
-              on:click={() => goto(`${base}user/${$user.uid}`)}
-            >
-              {#if img}
-                <img
-                  style="height: 20px;"
-                  class="profileImg rounded-full"
-                  src={$imageCache ?? '/user.svg'}
-                  alt=""
-                />
-              {:else}
-                {@html icon(faUser).html}
-              {/if}
-            </button>
-            <div class="relative inline-block">
-              <button
-                title="Inbox {hasUnread ? '• Unread Messages' : ''}"
-                class="px-2 py-1 {hasUnread ? 'unreadMessages' : ''}"
-                on:click={() => (isDisplayingMessages = !isDisplayingMessages)}
-              >
-                {@html icon(faEnvelope).html}
-              </button>
-              {#if isDisplayingMessages}
-                <div class="inbox w-80 absolute top-6" transition:fly={{ y: 20, duration: 750 }}>
-                  <div
-                    class="text-black bg-gray-200 border-t-4 border-b-4
-                    {bWidth < 640 && 'border-r-4 border-l-4'} border-gray-400"
-                  >
-                    {#if $messages}
-                      {#each Object.entries($messages) as [key, val]}
-                        <Message
-                          {...val}
-                          {key}
-                          hasContent={'content' in val}
-                          on:readMessage={readMessage}
-                          on:markAsRead={markAsRead}
-                          on:markAsUnread={markAsUnread}
-                          on:deleteMessage={deleteMessageDialogue}
-                        />
-                      {/each}
-                    {:else}
-                      <div>
-                        <h2 class="py-4 text-center">Your inbox is empty!</h2>
-                      </div>
-                    {/if}
-                  </div>
-                </div>
-              {/if}
-            </div>
-          </div>
-        {:else}
-          <span />
-        {/if}
         <div
-          class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 absolute top-1/2 -translate-y-1/2 sm:left-1/2 sm:-translate-x-1/2 "
+          class="flex flex-col sm:flex-row justify-between items-center"
+          style="margin-top: {bWidth < 640 ? btnHeight + 10 : 0}px;
+			height: calc(100% - {bWidth < 640 ? btnHeight + 10 : 0}px)"
         >
-          {#if $page.path == '/'}
-            {#if $user}
-              <a href="#projects" title="Projects">{@html icon(faTasks).html}</a>
-            {/if}
-            <a href="#about" title="About">{@html icon(faBook).html}</a>
-            <a href="#roadmap" title="Roadmap">{@html icon(faRoute).html}</a>
-          {:else}
-            <!--The style tag is magic numbers that make the buttons even. No I don't know either.-->
-            <button class="text-xl" title="Home" on:click={() => goto(base)}>
-              {@html icon(faHome).html}
-            </button>
-            {#if $user?.uid == $project?.details?.owner && $user?.uid != null}
+          {#if $user}
+            <div class="flex items-center {bWidth < 640 && 'flex flex-col justify-center'}">
               <button
-                class="text-xl"
-                title="Project Settings"
-                on:click={() => ($isDisplayingProjectSettings = !$isDisplayingProjectSettings)}
+                title="User profile"
+                class="px-2 py-1"
+                on:click={() => goto(`${base}user/${$user.uid}`)}
               >
-                {@html icon(faCog).html}
+                {#if $imageCache}
+                  <img
+                    style="height: 20px;"
+                    class="profileImg rounded-full"
+                    src={$imageCache ?? '/user.svg'}
+                    alt=""
+                  />
+                {:else}
+                  {@html icon(faUser).html}
+                {/if}
               </button>
+              <div class="relative inline-block">
+                <button
+                  title="Inbox {hasUnread ? '• Unread Messages' : ''}"
+                  class="px-2 py-1 {hasUnread ? 'unreadMessages' : ''}"
+                  on:click={() => (isDisplayingMessages = !isDisplayingMessages)}
+                >
+                  {@html icon(faEnvelope).html}
+                </button>
+                {#if isDisplayingMessages}
+                  <div class="inbox w-80 absolute top-6" transition:fly={{ y: 20, duration: 750 }}>
+                    <div
+                      class="text-black bg-gray-200 border-t-4 border-b-4
+                    {bWidth < 640 && 'border-r-4 border-l-4'} border-gray-400"
+                    >
+                      {#if $messages}
+                        {#each Object.entries($messages) as [key, val]}
+                          <Message
+                            {...val}
+                            {key}
+                            hasContent={'content' in val}
+                            on:readMessage={readMessage}
+                            on:markAsRead={markAsRead}
+                            on:markAsUnread={markAsUnread}
+                            on:deleteMessage={deleteMessageDialogue}
+                          />
+                        {/each}
+                      {:else}
+                        <div>
+                          <h2 class="py-4 text-center">Your inbox is empty!</h2>
+                        </div>
+                      {/if}
+                    </div>
+                  </div>
+                {/if}
+              </div>
+            </div>
+          {:else}
+            <span />
+          {/if}
+          <div
+            class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 absolute top-1/2 -translate-y-1/2 sm:left-1/2 sm:-translate-x-1/2 "
+          >
+            {#if $page.path == '/'}
+              {#if $user}
+                <a href="#projects" title="Projects">{@html icon(faTasks).html}</a>
+              {/if}
+              <a href="#about" title="About">{@html icon(faBook).html}</a>
+              <a href="#roadmap" title="Roadmap">{@html icon(faRoute).html}</a>
+            {:else}
+              <!--The style tag is magic numbers that make the buttons even. No I don't know either.-->
+              <button class="text-xl" title="Home" on:click={() => goto(base)}>
+                {@html icon(faHome).html}
+              </button>
+              {#if $user?.uid == $project?.details?.owner && $user?.uid != null && $page.path.match(/^\/?project\/.+$/)}
+                <button
+                  class="text-xl"
+                  title="Project Settings"
+                  on:click={() => ($isDisplayingProjectSettings = !$isDisplayingProjectSettings)}
+                >
+                  {@html icon(faCog).html}
+                </button>
+              {/if}
             {/if}
+          </div>
+          {#if !$user}
+            <button
+              on:click={() => goto(`${base}auth/login`)}
+              class="bg-green-500 rounded-sm px-2 py-1 text-white hover:bg-green-800 transition-colors"
+              title="Sign in"
+            >
+              {@html icon(faSignInAlt).html}
+            </button>
           {/if}
         </div>
-        {#if !$user}
-          <button
-            on:click={() => goto(`${base}auth/login`)}
-            class="bg-green-500 rounded-sm px-2 py-1 text-white hover:bg-green-800 transition-colors"
-            title="Sign in"
-          >
-            {@html icon(faSignInAlt).html}
-          </button>
-        {/if}
-      </div>
-    </nav>
-  {/if}
+      </nav>
+    {/if}
+  {/key}
 {/if}

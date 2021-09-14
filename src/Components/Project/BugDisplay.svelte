@@ -234,13 +234,13 @@
       />
     </div>
     {#if w < 640}
-      <button
-        class=" sticky border border-black px-2 py-1 hover:text-white hover:bg-black mb-8"
+      <input
+        value="Close"
+        type="button"
+        class="sticky border border-black px-2 py-1 hover:text-white hover:bg-black mb-8 hover:cursor-pointer"
         on:click={() => dispatch('closeBug')}
         transition:fly={{ y: 50, duration: 500 }}
-      >
-        Close
-      </button>
+      />
     {/if}
   </form>
 </div>

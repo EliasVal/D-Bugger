@@ -29,7 +29,7 @@ if (browser) uUpdate();
 export const user: Writable<User> = writable();
 export const bug: Writable<Bug> = writable(null);
 export const project: Writable<Project> = writable(null);
-export const imageCache: Writable<String> = writable(null);
+export const imageCache: Writable<string> = writable(null);
 export const isDisplayingDialogue = writable(false);
 export const dialogueValues = writable(null);
 export const isDisplayingLoading = writable(false);

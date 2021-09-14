@@ -56,7 +56,7 @@
     <input
       type="text"
       placeholder="Search Bugs..."
-      class="font-mono border border-black px-1 py-0.5 rounded-sm outline-none flex-grow hover:cursor-pointer"
+      class="font-mono border border-black px-1 py-0.5 rounded-sm outline-none flex-grow"
       bind:value={$searchQuery}
     />
   </div>
