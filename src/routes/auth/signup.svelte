@@ -15,7 +15,7 @@
   import { DisplayToast } from '@ts/utils';
 
   let isSigningUp = false;
-  const signIn = (e: Event) => {
+  const signIn = async (e: Event) => {
     if (!e.target[0].value || e.target[0].value.length < 3) {
       DisplayToast({
         title: 'You must enter a username that is atleast 3 characters long!',
@@ -30,6 +30,22 @@
     }
 
     isSigningUp = true;
+    let cleanUsername = e.target[0].value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    let res = await fetch('/endpoints/server/usercheck', {
+      method: 'post',
+      headers: {
+        username: cleanUsername,
+      },
+    });
+    let isOffensiveName = (await res.json()).isOffensive;
+
+    if (isOffensiveName) {
+      DisplayToast({
+        title: 'Your username was deemed offensive. Please use a different username.',
+      });
+      isSigningUp = false;
+      return;
+    }
 
     const auth = getAuth();
     setPersistence(auth, browserLocalPersistence).then(() => {

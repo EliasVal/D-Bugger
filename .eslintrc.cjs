@@ -24,5 +24,6 @@ module.exports = {
     'no-case-declarations': 'off',
     'css-unused-selector': 'off',
     '@typescript-eslint/ban-types': 'off',
+    'no-async-promise-executor': 'off',
   },
 };

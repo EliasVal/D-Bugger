@@ -16,11 +16,11 @@
   import type { DialogueField } from 'src/global';
 
   import { onMount } from 'svelte';
+  import { Circle } from 'svelte-loading-spinners';
 
   export let field: DialogueField;
 
   let hljs;
-  let sanitizeHtml;
   let converter;
   let icon;
 
@@ -38,7 +38,6 @@
 
     DisplayLoading();
     hljs = (await import('highlight.js/lib/common')).default;
-    sanitizeHtml = await import('sanitize-html/index');
     converter = new (await import('showdown')).Converter();
     icon = (await import('@fortawesome/fontawesome-svg-core')).icon;
     finishedLoading = true;
@@ -119,32 +118,31 @@
     elm.focus();
   }
   const highlightCode = (code) => {
-    if (code == undefined) return '';
-    // iterate through each codeblock
-    code = code.replace(/<pre><code>.*<\/code><\/pre>/gms, (match) => {
-      // Remove pre and code tags from string
-      match = match.replace(/(<pre><code>)|(<\/code><\/pre>)/gms, '');
-      // Unescape HTML Entities
-      match = new DOMParser().parseFromString(match, 'text/html').documentElement.textContent;
-      // Add pre and code tags back, along with wrapping / scrolling
-      let highlighted = `<pre style="${
-        wrapCodeBlocks ? 'overflow-x: scroll' : 'white-space: pre-wrap'
-      }"><code>${hljs.highlightAuto(match).value}</pre></code>`;
+    return new Promise(async (resolve, reject) => {
+      if (code == undefined) return '';
+      // iterate through each codeblock
+      code = await code.replace(/<pre><code>.*<\/code><\/pre>/gms, (match) => {
+        // Remove pre and code tags from string
+        match = match.replace(/(<pre><code>)|(<\/code><\/pre>)/gms, '');
+        // Unescape HTML Entities
+        match = new DOMParser().parseFromString(match, 'text/html').documentElement.textContent;
+        // Add pre and code tags back, along with wrapping / scrolling
+        let highlighted = `<pre style="${
+          wrapCodeBlocks ? 'overflow-x: scroll' : 'white-space: pre-wrap'
+        }"><code>${hljs.highlightAuto(match).value}</pre></code>`;
 
-      return highlighted;
-    });
+        return highlighted;
+      });
 
-    // Sanitize HTML.
-    // ! READ THE README.MD
-    code = sanitizeHtml(code, {
-      allowedTags: ['pre', 'span', 'code', 'a', 'i', 'b', 'strong', 'em', 'p'],
-      allowedAttributes: {
-        pre: ['style'],
-        a: ['href'],
-        span: ['class'],
-      },
+      const res = await fetch('/endpoints/server/cleanhtml', {
+        method: 'post',
+        headers: {
+          content: encodeURI(code),
+        },
+      });
+
+      resolve(decodeURI((await res.json()).content));
     });
-    return code;
   };
 </script>
 
@@ -203,7 +201,11 @@
           </span>
           <br />
           {#key wrapCodeBlocks}
-            {@html highlightCode(converter.makeHtml(text))}
+            {#await highlightCode(converter.makeHtml(text))}
+              <Circle size="10" color="black" />
+            {:then content}
+              {@html content}
+            {/await}
           {/key}
         </p>
       </div>

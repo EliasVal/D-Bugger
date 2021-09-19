@@ -138,6 +138,22 @@
     const oldUsername = $user.displayName;
     const newUsername = e.target[0].value;
 
+    let cleanUsername = e.target[0].value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    let res = await fetch('/endpoints/server/usercheck', {
+      method: 'post',
+      headers: {
+        username: cleanUsername,
+      },
+    });
+    let isOffensiveName = (await res.json()).isOffensive;
+
+    if (isOffensiveName) {
+      DisplayToast({
+        title: 'Your username was deemed offensive. Please use a different username.',
+      });
+      return;
+    }
+
     try {
       await updateProfile($user, { displayName: newUsername });
       await set(ref(getDatabase(), `users/${$user.uid}/displayName`), newUsername);
