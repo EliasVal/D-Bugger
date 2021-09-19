@@ -1,0 +1,20 @@
+{
+  "name": "notif-sender-dbugger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EliasVal/D-Bugger.git"
+  },
+  "author": "EliasVal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EliasVal/D-Bugger/issues"
+  },
+  "homepage": "https://github.com/EliasVal/D-Bugger#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "firebase-admin": "^9.11.1"
+  }
+}
