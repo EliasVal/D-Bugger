@@ -54,7 +54,7 @@
   </div>
 
   <div
-    class="message select-none {!read && 'message-unread'}
+    class="message select-none {read != true && 'message-unread'}
     {(hasContent || type == 'invite') && 'message-moreContent hover:cursor-pointer'}"
     on:click={() => {
       if (hasContent) dispatch('readMessage', { key });

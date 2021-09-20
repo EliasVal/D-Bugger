@@ -18,7 +18,7 @@
 
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import { fly } from 'svelte/transition';
+  import { fly, slide } from 'svelte/transition';
 
   import {
     getDatabase,
@@ -64,7 +64,7 @@
     if ($messages) {
       let found = false;
       for (let val of Object.values($messages)) {
-        if (!val.read) {
+        if (val.read != true) {
           found = true;
           hasUnread = true;
           break;
@@ -194,28 +194,35 @@
                   {@html icon(faEnvelope).html}
                 </button>
                 {#if isDisplayingMessages}
-                  <div class="inbox w-80 absolute top-6" transition:fly={{ y: 20, duration: 750 }}>
+                  <!-- transition:fly={{ y: 20, duration: 750 }}> -->
+                  <div
+                    class="inbox w-80 absolute top-6"
+                    in:fly={{ y: 20, duration: 500 }}
+                    out:fly={{ y: 20, duration: 500, delay: 750 }}
+                  >
                     <div
                       class="text-black bg-gray-200 border-t-4 border-b-4
                     {bWidth < 640 && 'border-r-4 border-l-4'} border-gray-400"
                     >
-                      {#if $messages}
-                        {#each Object.entries($messages) as [key, val]}
-                          <Message
-                            {...val}
-                            {key}
-                            hasContent={'content' in val}
-                            on:readMessage={readMessage}
-                            on:markAsRead={markAsRead}
-                            on:markAsUnread={markAsUnread}
-                            on:deleteMessage={deleteMessageDialogue}
-                          />
-                        {/each}
-                      {:else}
-                        <div>
-                          <h2 class="py-4 text-center">Your inbox is empty!</h2>
-                        </div>
-                      {/if}
+                      <div in:slide={{ duration: 750, delay: 250 }} out:slide={{ duration: 750 }}>
+                        {#if $messages}
+                          {#each Object.entries($messages) as [key, val]}
+                            <Message
+                              {...val}
+                              {key}
+                              hasContent={'content' in val}
+                              on:readMessage={readMessage}
+                              on:markAsRead={markAsRead}
+                              on:markAsUnread={markAsUnread}
+                              on:deleteMessage={deleteMessageDialogue}
+                            />
+                          {/each}
+                        {:else}
+                          <div>
+                            <h2 class="py-4 text-center">Your inbox is empty!</h2>
+                          </div>
+                        {/if}
+                      </div>
                     </div>
                   </div>
                 {/if}
@@ -263,3 +270,47 @@
     {/if}
   {/key}
 {/if}
+
+<style global>
+  /* .inbox::before {
+    content: '\25B2';
+    color: 
+  } */
+  .inbox::before {
+    content: '\25B2';
+    display: block;
+    @apply text-3xl text-gray-400 ml-1;
+    line-height: 0.8;
+  }
+
+  .message {
+    @apply border-t-2 border-b-2 border-gray-300 p-2;
+  }
+  .message-moreContent::after {
+    content: 'Read more';
+    position: absolute;
+    @apply text-xs text-gray-400 right-2 bottom-1;
+  }
+
+  .unreadMessages {
+    position: relative;
+  }
+  .unreadMessages::before {
+    content: '';
+    position: absolute;
+    background-color: red;
+    padding: 0.215rem;
+    border-radius: 50%;
+    right: 15%;
+    top: 20%;
+  }
+  .message-unread h2::after {
+    content: '';
+    background-color: red;
+    padding: 0.215rem;
+    border-radius: 50%;
+    display: inline-block;
+    margin-bottom: 0.125rem;
+    margin-left: 0.275rem;
+  }
+</style>
