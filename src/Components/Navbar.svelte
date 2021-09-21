@@ -143,9 +143,11 @@
 
 {#if bWidth < 640}
   <button
-    class="navBtn bg-black fixed z-20 text-white border top-3 left-3 border-gray-300 px-2 py-0.5 rounded-md text-xl"
+    class="navBtn bg-black fixed z-20 text-white box-content border top-3 left-3 px-2 py-0.5 rounded-md text-xl
+    {isDisplayingNavbar ? 'border-gray-300' : 'border-black'}"
     on:click={() => (isDisplayingNavbar = !isDisplayingNavbar)}
     bind:offsetHeight={btnHeight}
+    title="{isDisplayingNavbar ? 'Hide' : 'Show'} Navigation Bar"
   >
     {@html icon(faBars).html}
   </button>
@@ -165,7 +167,7 @@
         <div
           class="flex flex-col sm:flex-row justify-between items-center"
           style="margin-top: {bWidth < 640 ? btnHeight + 10 : 0}px;
-			height: calc(100% - {bWidth < 640 ? btnHeight + 10 : 0}px)"
+          height: calc(100% - {bWidth < 640 ? btnHeight + 10 : 0}px)"
         >
           {#if $user}
             <div class="flex items-center {bWidth < 640 && 'flex flex-col justify-center'}">
@@ -189,22 +191,24 @@
                 <button
                   title="Inbox {hasUnread ? '• Unread Messages' : ''}"
                   class="px-2 py-1 {hasUnread ? 'unreadMessages' : ''}"
+                  style="z-index: 11;"
                   on:click={() => (isDisplayingMessages = !isDisplayingMessages)}
                 >
                   {@html icon(faEnvelope).html}
                 </button>
                 {#if isDisplayingMessages}
-                  <!-- transition:fly={{ y: 20, duration: 750 }}> -->
                   <div
-                    class="inbox w-80 absolute top-6"
-                    in:fly={{ y: 20, duration: 500 }}
-                    out:fly={{ y: 20, duration: 500, delay: 750 }}
+                    class="inbox mt-1 w-80 z-10 absolute top-6 ml-2 sm:ml-1.5"
+                    in:fly|local={{ y: 20, duration: 500 }}
+                    out:fly|local={{ y: 20, duration: 500, delay: 750 }}
                   >
-                    <div
-                      class="text-black bg-gray-200 border-t-4 border-b-4
-                    {bWidth < 640 && 'border-r-4 border-l-4'} border-gray-400"
-                    >
-                      <div in:slide={{ duration: 750, delay: 250 }} out:slide={{ duration: 750 }}>
+                    <div class="text-black bg-gray-200 border-t-4 border-b-4 border-gray-400">
+                      <div
+                        in:slide|local={{ duration: 750, delay: 250 }}
+                        out:slide|local={{ duration: 750 }}
+                        class="messageContainer"
+                        style="max-height: 300px; overflow-y: scroll;"
+                      >
                         {#if $messages}
                           {#each Object.entries($messages) as [key, val]}
                             <Message
@@ -272,20 +276,49 @@
 {/if}
 
 <style global>
-  /* .inbox::before {
-    content: '\25B2';
-    color: 
-  } */
   .inbox::before {
     content: '\25B2';
     display: block;
-    @apply text-3xl text-gray-400 ml-1;
-    line-height: 0.8;
+    line-height: 0.8 !important;
+    @apply text-2xl text-gray-400;
   }
 
   .message {
     @apply border-t-2 border-b-2 border-gray-300 p-2;
   }
+
+  .inbox > div > div div:first-of-type .message {
+    @apply border-t-0;
+  }
+
+  .inbox > div > div div:last-of-type .message {
+    @apply border-b-0;
+  }
+
+  .inbox > div > div div:nth-of-type(odd) .message {
+    @apply border-0;
+  }
+
+  /* width */
+  .messageContainer::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  /* Track */
+  .messageContainer::-webkit-scrollbar-track {
+    background: rgb(201, 200, 200);
+  }
+
+  /* Handle */
+  .messageContainer::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  /* Handle on hover */
+  .messageContainer::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
   .message-moreContent::after {
     content: 'Read more';
     position: absolute;
@@ -312,5 +345,11 @@
     display: inline-block;
     margin-bottom: 0.125rem;
     margin-left: 0.275rem;
+  }
+
+  .navBtn,
+  nav,
+  nav * {
+    -webkit-tap-highlight-color: transparent;
   }
 </style>
