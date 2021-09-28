@@ -6,8 +6,6 @@ export {
   browserLocalPersistence,
   signInWithEmailAndPassword,
   setPersistence,
-  createUserWithEmailAndPassword,
-  updateProfile,
   sendEmailVerification,
   signOut,
   updateEmail,
