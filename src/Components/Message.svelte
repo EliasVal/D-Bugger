@@ -4,15 +4,17 @@
   import { createEventDispatcher } from 'svelte';
   import { push, update, ref, getDatabase, getAuth, remove } from '@ts/FirebaseImports';
   import { CloseDialogue, DisplayDialogue, DisplayLoading, CloseLoading } from '@ts/utils';
+  import { slide, fade } from 'svelte/transition';
 
+  export let index;
   export let key: string;
   export let title: string;
   export let description: string;
   export let read: boolean;
   export let hasContent: boolean;
   export let type: 'invite' | 'message';
-  export let sender: string;
-  export let projectId: string;
+  export let sender: string = null;
+  export let projectId: string = null;
 
   const dispatch = createEventDispatcher();
   const db = getDatabase();
@@ -34,7 +36,11 @@
   };
 </script>
 
-<div class="relative">
+<div
+  class="relative"
+  in:slide={{ duration: 500, delay: 300 + 75 * (index == 0 ? 1 : index) }}
+  out:fade
+>
   <div class="absolute text-gray-300 right-2 top-0.5 flex gap-2">
     {#if type != 'invite'}
       <button

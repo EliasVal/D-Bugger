@@ -39,8 +39,12 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@tensorflow/tfjs-node": "^3.9.0",
+    "dotenv": "^10.0.0",
     "firebase": "^9.0.2",
+    "firebase-admin": "^9.11.1",
     "highlight.js": "^11.2.0",
+    "nsfwjs": "^2.4.1",
     "piexifjs": "^1.0.6",
     "sanitize-html": "^2.5.0",
     "showdown": "^1.9.1"

@@ -18,7 +18,7 @@
 
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import { fly, slide } from 'svelte/transition';
+  import { fly, slide, fade } from 'svelte/transition';
 
   import {
     getDatabase,
@@ -204,16 +204,16 @@
                   >
                     <div class="text-black bg-gray-200 border-t-4 border-b-4 border-gray-400">
                       <div
-                        in:slide|local={{ duration: 750, delay: 250 }}
-                        out:slide|local={{ duration: 750 }}
                         class="messageContainer"
                         style="max-height: 300px; overflow-y: scroll;"
+                        out:slide={{ duration: 750 }}
                       >
                         {#if $messages}
-                          {#each Object.entries($messages) as [key, val]}
+                          {#each Object.entries($messages) as [key, val], i}
                             <Message
                               {...val}
                               {key}
+                              index={i}
                               hasContent={'content' in val}
                               on:readMessage={readMessage}
                               on:markAsRead={markAsRead}
@@ -222,7 +222,7 @@
                             />
                           {/each}
                         {:else}
-                          <div>
+                          <div in:slide={{ duration: 500, delay: 350 }} out:fade>
                             <h2 class="py-4 text-center">Your inbox is empty!</h2>
                           </div>
                         {/if}
@@ -262,7 +262,7 @@
           </div>
           {#if !$user}
             <button
-              on:click={() => goto(`${base}auth/login`)}
+              on:click={() => (window.location.pathname = `${base}auth/login`)}
               class="bg-green-500 rounded-sm px-2 py-1 text-white hover:bg-green-800 transition-colors"
               title="Sign in"
             >

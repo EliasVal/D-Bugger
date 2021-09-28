@@ -10,9 +10,6 @@
     getDownloadURL,
     getStorage,
     storageRef,
-    uploadString,
-    updateProfile,
-    set,
     updateEmail,
     updatePassword,
     EmailAuthProvider,
@@ -37,7 +34,14 @@
       const canvas = document.createElement('canvas');
       let image = new Image();
 
-      image.onload = () => {
+      image.onload = async () => {
+        // Save original image Base64 string for better precision when checking for NSFW
+        canvas.height = image.height;
+        canvas.width = image.width;
+        canvas.getContext('2d').drawImage(image, 0, 0);
+
+        const originalImgB64 = canvas.toDataURL();
+
         // Clamp canvas width and height to be smaller than 512px.
         canvas.width = Math.min(Math.max(image.width, 1), 512);
         canvas.height = Math.min(Math.max(image.height, 1), 512);
@@ -78,6 +82,7 @@
         }
 
         const resultImg: string = piexif.remove(canvas.toDataURL('image/jpeg'));
+
         const imageFileSize =
           resultImg.length * 0.75 -
           (resultImg.endsWith('==') ? 2 : resultImg.endsWith('=') ? 1 : 0);
@@ -90,14 +95,23 @@
           });
           return;
         } else {
-          uploadString(
-            storageRef(getStorage(), `${$user.uid}/profilePicture`),
-            resultImg,
-            'data_url',
-          ).then(() => {
-            CloseLoading();
+          // Send original image to check for NSFW & Resized image to update if no NSFW was found
+          const res = await fetch('/endpoints/server/updatePfp', {
+            method: 'POST',
+            body: JSON.stringify({
+              originalImgB64: encodeURI(originalImgB64),
+              resizedImgB64: encodeURI(resultImg),
+              token: await $user.getIdToken(),
+            }),
+          }).catch();
+
+          const jsonRes = await res.json();
+          CloseLoading();
+          DisplayToast({ title: jsonRes.message });
+
+          if (res.status == 200) {
             location.reload();
-          });
+          }
         }
       };
 
@@ -115,12 +129,12 @@
 
   let unsub = user.subscribe((u) => {
     if (u) {
-      tempEmail = u?.email;
-      tempUsername = u?.displayName;
+      tempEmail = u.email;
+      tempUsername = u.displayName;
     }
   });
 
-  $: unsub && tempUsername && unsub();
+  $: unsub && tempEmail && unsub();
 
   let imageInput;
 
@@ -135,35 +149,26 @@
 
   let triggerUpdate = {};
   const updateUsername = async (e) => {
-    const oldUsername = $user.displayName;
     const newUsername = e.target[0].value;
 
-    let cleanUsername = e.target[0].value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    let res = await fetch('/endpoints/server/usercheck', {
+    DisplayLoading();
+    let res = await fetch('/endpoints/server/updateUsername', {
       method: 'post',
-      headers: {
-        username: cleanUsername,
-      },
+      body: JSON.stringify({
+        oldUsername: encodeURI($user.displayName),
+        newUsername: encodeURI(newUsername),
+        token: encodeURI(await $user.getIdToken()),
+      }),
     });
-    let isOffensiveName = (await res.json()).isOffensive;
 
-    if (isOffensiveName) {
-      DisplayToast({
-        title: 'Your username was deemed offensive. Please use a different username.',
-      });
-      return;
-    }
-
-    try {
-      await updateProfile($user, { displayName: newUsername });
-      await set(ref(getDatabase(), `users/${$user.uid}/displayName`), newUsername);
-      DisplayToast({ title: 'Username Updated Successfully!', duration: 5000 });
+    const jsonRes = await res.json();
+    if (res.status == 200) {
       triggerUpdate = {};
-    } catch {
-      await updateProfile($user, { displayName: oldUsername });
-      await set(ref(getDatabase(), `users/${$user.uid}/displayName`), oldUsername);
-      DisplayToast({ title: 'Something went wrong!', duration: 5000 });
+      tempUsername = newUsername;
+      await $user.reload();
     }
+    CloseLoading();
+    DisplayToast({ title: jsonRes.message, duration: 5000 });
   };
 
   let currPass;
@@ -304,10 +309,10 @@
             </form>
             <div>
               <h4>
-                Email Address status: <span
-                  class={$user?.emailVerified ? 'text-green-500' : 'text-red-700'}
-                  >{$user?.emailVerified ? 'verified' : 'not verified'}</span
-                >
+                Email Address status:
+                <span class={$user?.emailVerified ? 'text-green-500' : 'text-red-700'}>
+                  {$user?.emailVerified ? 'Verified' : 'Not verified'}
+                </span>
               </h4>
               {#if !$user?.emailVerified}
                 <form on:submit|preventDefault={changeEmail}>
