@@ -5,7 +5,7 @@ const readline = require("readline").createInterface({
 const admin = require("firebase-admin");
 
 // Change this if you want to test the message in your Dev Database
-const test = false;
+const dev = false;
 
 require("dotenv").config();
 
