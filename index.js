@@ -4,11 +4,20 @@ const readline = require("readline").createInterface({
 });
 const admin = require("firebase-admin");
 
+// Change this if you want to test the message in your Dev Database
+const test = false;
+
 require("dotenv").config();
 
 admin.initializeApp({
-  credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_KEY)),
-  databaseURL: process.env.DB_URL,
+  credential: admin.credential.cert(
+    JSON.parse(
+      dev ? process.env["DEV_FIREBASE_KEY"] : process.env["FIREBASE_KEY"]
+    )
+  ),
+  databaseURL: dev
+    ? "https://dbugger-dev-default-rtdb.europe-west1.firebasedatabase.app"
+    : "https://debugger-33265-default-rtdb.firebaseio.com",
 });
 
 let failedUsers = [];
@@ -73,11 +82,22 @@ function sendMessageToUser(UID) {
         read: "false",
         // -------------------
 
-        title: "Update!",
-        description: "New update is out!",
+        title: "D-Bugger v0.1.1",
+        description: "Future of D-Bugger, Security, Profiles and More!",
         // Supporst Markdown
         content:
-          "This is a test message for an update we're more than happy to announce! come on in!",
+          "A new version of D-Bugger is out!<br>" +
+          "<i>What's new?</i><br><br>" +
+          "<strong>UI:</strong><br>" +
+          "- Tweaked the animations of the Inbox in & out<br>" +
+          "- Improved mobile UI<br><br>" +
+          "<strong>User Profiles:</strong><br>" +
+          "- Usernames and Profile Pictures will now be scanned for profanity and offensive content.<br>" +
+          "- You can now report users for containing offensive content or profanity in their Profile Picture and/or username<br><br>" +
+          "<strong>Security:</strong><br>" +
+          "- Moved Updating Profile Pictures, Updating usernames, Sign-up and html sanitization to the server side.<br><br>" +
+          "<strong><i>What's to come in the next update?</i></strong><br>" +
+          "We're aiming to bring more stuff to the projects side of things, which means that you should expect some new stuff to play with and try in your project!",
       })
       .then(() => {
         console.log(`\x1b[32mMessage sent successfully to ${UID}!\x1b[0m`);
