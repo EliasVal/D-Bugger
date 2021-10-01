@@ -25,7 +25,7 @@
   >
     <div class="m-5">
       {#if header != null}
-        <h1 class={headerStyles ?? ''}>{header}</h1>
+        <h1 class={headerStyles}>{header}</h1>
       {/if}
       <form on:submit|preventDefault={onSubmit}>
         {#if fields}
@@ -45,8 +45,7 @@
               <input
                 type="button"
                 value={button.title}
-                class="hover:cursor-pointer p-1.5 mr-2 rounded-sm bg-transparent {button.stylingClasses ??
-                  ''}"
+                class="hover:cursor-pointer p-1.5 mr-2 rounded-sm bg-transparent {button.stylingClasses}"
                 on:click={() => button.onClick()}
               />
             {/each}

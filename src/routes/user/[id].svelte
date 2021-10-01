@@ -15,10 +15,18 @@
     EmailAuthProvider,
     reauthenticateWithCredential,
   } from '@ts/FirebaseImports';
-  import { CloseLoading, DisplayLoading, DisplayToast } from '@ts/utils';
+  import {
+    CloseDialogue,
+    CloseLoading,
+    DisplayDialogue,
+    DisplayLoading,
+    DisplayToast,
+  } from '@ts/utils';
   import { goto } from '$app/navigation';
   import { base } from '@ts/stores';
   import { Stretch } from 'svelte-loading-spinners';
+  import { icon } from '@ts/Singletons';
+  import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
   let section: 'general' | 'security' = 'general';
 
@@ -204,6 +212,27 @@
       isChangingPass = false;
     }
   };
+
+  const reportUser = async (e) => {
+    if (!$user) {
+      DisplayToast({ title: 'You must be logged in to perform this action!' });
+    }
+    DisplayLoading();
+    CloseDialogue();
+    const res = await fetch(`/endpoints/server/reportUser`, {
+      method: 'POST',
+      body: JSON.stringify({
+        target: encodeURI($page.params.id),
+        reportTopic: e.target[0].value,
+        reportDetails: e.target[1].value,
+        token: encodeURI(await $user.getIdToken()),
+      }),
+    });
+
+    const jsonRes = await res.json();
+    DisplayToast({ title: jsonRes.message });
+    CloseLoading();
+  };
 </script>
 
 <div
@@ -275,10 +304,52 @@
                         .then(() => DisplayToast({ title: 'Copied To Clipboard!' }))
                         .catch(() => DisplayToast({ title: 'Failed to copy.' }));
                     }}
-                    class="text-gray-400 hover:cursor-pointer copyToClipboard"
+                    class="text-gray-400 hover:cursor-pointer copyToClipboard before:transition-opacity before:opacity-0 hover:before:opacity-100"
                   >
                     {$page.params.id}
                   </h4>
+                {/if}
+                {#if $user?.uid != $page.params.id}
+                  <button
+                    class="text-red-700 mt-1 hover:cursor-pointer"
+                    on:click={() => {
+                      DisplayDialogue({
+                        onSubmit: reportUser,
+                        submitBtnText: 'Submit',
+                        fields: [
+                          {
+                            type: 'choice',
+                            options: [
+                              {
+                                text: 'Offensive and/or Explicit Profile Picture',
+                                value: 'pfp',
+                              },
+                              {
+                                text: 'Offensive and/or Explicit Username',
+                                value: 'username',
+                              },
+                            ],
+                            name: 'Please select the issue',
+                            id: 'reportTopic',
+                          },
+                          {
+                            type: 'text',
+                            name: 'Describe the issue (Optional)',
+                            id: 'reportDetails',
+                          },
+                        ],
+                        buttons: [
+                          {
+                            title: 'Cancel',
+                            onClick: CloseDialogue,
+                          },
+                        ],
+                      });
+                    }}
+                  >
+                    {@html icon(faExclamationTriangle).html}
+                    Report user
+                  </button>
                 {/if}
               {/await}
             {/await}
@@ -422,24 +493,21 @@
     position: relative;
   }
 
-  .copyToClipboard:hover::before {
-    opacity: 1;
-  }
-
   .copyToClipboard::before {
-    opacity: 0;
     content: 'Copy to clipboard';
     position: absolute;
     top: -160%;
-    left: 50%;
+    left: -999rem;
     transform: translateX(-50%);
     white-space: nowrap;
     border-radius: 0.175rem;
     color: white;
     background-color: black;
     padding: 0.5rem;
+  }
 
-    transition: 0.35s;
+  .copyToClipboard:hover::before {
+    left: 50%;
   }
 
   .imageTooltip {

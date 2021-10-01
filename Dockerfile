@@ -1,5 +1,7 @@
 FROM node:current-bullseye-slim AS build
-# RUN apt-get update || : && apt-get install python -y
+
+# Update Packages, Namely Python.
+# Python is required for @tensorflow/tfjs-node
 RUN apt-get update && \ 
     apt-get install -y build-essential \
     wget \
@@ -7,11 +9,11 @@ RUN apt-get update && \
     make \
     gcc \ 
     libc6-dev 
+
 WORKDIR /app
 COPY . .
 
-# RUN npm install @tensorflow/tfjs-node --ignore-scripts
-# RUN npm rebuild @tensorflow/tfjs-node --build-from-source
+# Install, build and install packages for production
 RUN npm ci
 RUN npm run build
 RUN npm ci --production --no-audit
