@@ -51,9 +51,8 @@
   });
   user.subscribe(async (u) => {
     if (u) {
-      // @ts-ignore
       onValue(ref(db, `users/${u.uid}/inbox`), async (snapshot) => {
-        messages.set(await snapshot.val());
+        messages.set(Object.fromEntries(Object.entries(await snapshot.val()).reverse()));
       });
 
       $imageCache = await getDownloadURL(storageRef(getStorage(), `${u.uid}/profilePicture`));
