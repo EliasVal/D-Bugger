@@ -52,7 +52,7 @@
   user.subscribe(async (u) => {
     if (u) {
       onValue(ref(db, `users/${u.uid}/inbox`), async (snapshot) => {
-        messages.set(Object.fromEntries(Object.entries(await snapshot.val()).reverse()));
+        messages.set(Object.fromEntries(Object.entries((await snapshot.val()) ?? {}).reverse()));
       });
 
       $imageCache = await getDownloadURL(storageRef(getStorage(), `${u.uid}/profilePicture`));
@@ -94,7 +94,7 @@
         // @ts-ignore
         {
           type: 'paragraph',
-          body: $messages[key].content,
+          body: $messages[key].content ?? $messages[key].description,
         },
       ],
     });
@@ -207,13 +207,12 @@
                         style="max-height: 300px; overflow-y: scroll;"
                         out:slide={{ duration: 750 }}
                       >
-                        {#if $messages}
+                        {#if Object.keys($messages ?? {})?.length > 0}
                           {#each Object.entries($messages) as [key, val], i}
                             <Message
                               {...val}
                               {key}
                               index={i}
-                              hasContent={'content' in val}
                               on:readMessage={readMessage}
                               on:markAsRead={markAsRead}
                               on:markAsUnread={markAsUnread}
@@ -282,10 +281,6 @@
     @apply text-2xl text-gray-400;
   }
 
-  .message {
-    @apply border-t-2 border-b-2 border-gray-300 p-2;
-  }
-
   .inbox > div > div div:first-of-type .message {
     @apply border-t-0;
   }
@@ -318,12 +313,6 @@
     background: #555;
   }
 
-  .message-moreContent::after {
-    content: 'Read more';
-    position: absolute;
-    @apply text-xs text-gray-400 right-2 bottom-1;
-  }
-
   .unreadMessages {
     position: relative;
   }
@@ -335,15 +324,6 @@
     border-radius: 50%;
     right: 15%;
     top: 20%;
-  }
-  .message-unread h2::after {
-    content: '';
-    background-color: red;
-    padding: 0.215rem;
-    border-radius: 50%;
-    display: inline-block;
-    margin-bottom: 0.125rem;
-    margin-left: 0.275rem;
   }
 
   .navBtn,

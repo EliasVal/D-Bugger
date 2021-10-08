@@ -6,15 +6,12 @@ const dev = process.env['NODE_ENV'] == 'development';
 const client = new SecretManagerServiceClient();
 
 async function accessSecretVersion() {
-  if (dev) {
-    config();
-  } else {
-    await client.accessSecretVersion({
-      name: `projects/678619391168/secrets/${
-        dev ? 'DEV_FIREBASE_KEY' : 'FIREBASE_KEY'
-      }/versions/latest`,
-    });
-  }
+  config();
+  await client.accessSecretVersion({
+    name: `projects/678619391168/secrets/${
+      dev ? 'DEV_FIREBASE_KEY' : 'FIREBASE_KEY'
+    }/versions/latest`,
+  });
 
   if (admin.apps.length == 0) {
     admin.initializeApp({

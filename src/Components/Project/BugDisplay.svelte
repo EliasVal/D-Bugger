@@ -153,7 +153,7 @@
             class="border rounded-sm border-black px-1 py-0.5 font-mono outline-none"
             type="text"
             placeholder="Enter platform..."
-            id="assignedTo"
+            id="platform"
             bind:value={platform}
           />
           <input

@@ -326,16 +326,16 @@
     // Delete project from DB
     await remove(ref(db, `projects/${slug}`));
 
-    // @ts-ignore
     // Get user's projects
     let userProjects = await get(ref(db, `users/${$user.uid}/projects`));
 
+    // @ts-ignore
     // Await value
-    userProjects = await userProjects.val();
+    userProjects = Object.entries(await userProjects.val());
 
     // @ts-ignore
     // Remove deleted project's ID
-    userProjects = userProjects.filter((proj) => proj != slug);
+    userProjects = Object.fromEntries(userProjects.filter((proj) => proj[1] != slug));
 
     // @ts-ignore
     // Push changes

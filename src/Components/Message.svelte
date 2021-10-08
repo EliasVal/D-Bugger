@@ -11,7 +11,6 @@
   export let title: string;
   export let description: string;
   export let read: boolean;
-  export let hasContent: boolean;
   export let type: 'invite' | 'message';
   export let sender: string = null;
   export let projectId: string = null;
@@ -26,7 +25,7 @@
 
     // Update these at the same time so it wont look weird for the owner
     let newDt = {};
-    newDt[`members/${auth.currentUser.uid}`] = true;
+    newDt[`members/${auth.currentUser.uid}`] = auth.currentUser.displayName;
     newDt[`pending/${auth.currentUser.uid}`] = null;
     await update(ref(db, `projects/${projectId}/details/`), newDt);
 
@@ -60,11 +59,9 @@
   </div>
 
   <div
-    class="message select-none {read != true && 'message-unread'}
-    {(hasContent || type == 'invite') && 'message-moreContent hover:cursor-pointer'}"
+    class="message select-none hover:cursor-pointer {read != true && 'message-unread'}"
     on:click={() => {
-      if (hasContent) dispatch('readMessage', { key });
-      else if (type == 'invite')
+      if (type == 'invite') {
         DisplayDialogue({
           header: 'Project Invitation',
           headerStyles: 'text-xl text-center',
@@ -95,6 +92,7 @@
             },
           ],
         });
+      } else dispatch('readMessage', { key });
     }}
   >
     {#if type == 'invite'}
@@ -106,3 +104,18 @@
     {/if}
   </div>
 </div>
+
+<style>
+  .message {
+    @apply border-t-2 border-b-2 border-gray-300 p-2;
+  }
+  .message-unread h2::after {
+    content: '';
+    background-color: red;
+    padding: 0.215rem;
+    border-radius: 50%;
+    display: inline-block;
+    margin-bottom: 0.125rem;
+    margin-left: 0.275rem;
+  }
+</style>
