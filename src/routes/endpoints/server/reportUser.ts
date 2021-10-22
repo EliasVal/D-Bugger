@@ -1,4 +1,4 @@
-import { auth, database } from '@ts/server/FirebaseImports';
+import fb from '@ts/server/FirebaseImports';
 
 export const post = (request) => {
   const body = JSON.parse(request.body);
@@ -14,13 +14,14 @@ export const post = (request) => {
     const target = decodeURI(body.target);
 
     // Check if user exists
-    const snapshot = await database().ref(`users/${target}`).get();
+    const snapshot = await fb.database().ref(`users/${target}`).get();
     if (!snapshot.exists()) {
       resolve({ status: 406, body: { message: 'This user does not exist!' } });
       return;
     }
 
-    const decodedToken = await auth()
+    const decodedToken = await fb
+      .auth()
       .verifyIdToken(decodeURI(body.token))
       .catch(() =>
         resolve({ status: 401, body: { message: "You're not allowed to perform this action!" } }),
@@ -32,12 +33,15 @@ export const post = (request) => {
         return;
       }
 
-      const reportsSnapshot = await database().ref(`reports/${target}/${decodedToken.uid}`).get();
+      const reportsSnapshot = await fb
+        .database()
+        .ref(`reports/${target}/${decodedToken.uid}`)
+        .get();
       if (reportsSnapshot.exists()) {
         resolve({ status: 406, body: { message: 'You already reported this user!' } });
         return;
       } else {
-        database()
+        fb.database()
           .ref(`reports/${target}/${decodedToken.uid}`)
           .set({
             topic: body.reportTopic,

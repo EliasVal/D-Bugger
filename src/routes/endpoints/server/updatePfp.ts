@@ -1,6 +1,6 @@
 import { node } from '@tensorflow/tfjs-node';
 import { load } from 'nsfwjs';
-import { auth, storage } from '@ts/server/FirebaseImports';
+import fb from '@ts/server/FirebaseImports';
 
 export const post = (request) => {
   const body = JSON.parse(request.body);
@@ -39,7 +39,8 @@ export const post = (request) => {
       return;
     }
 
-    const decodedToken = await auth()
+    const decodedToken = await fb
+      .auth()
       .verifyIdToken(decodeURI(body.token))
       .catch(() =>
         resolve({ status: 401, body: { message: "You're not allowed to perform this action!" } }),
@@ -52,7 +53,7 @@ export const post = (request) => {
         'base64',
       );
 
-      storage()
+      fb.storage()
         .bucket()
         .file(`${decodedToken.uid}/profilePicture`)
         .save(

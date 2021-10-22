@@ -1,4 +1,4 @@
-import { auth, database } from '@ts/server/FirebaseImports';
+import fb from '@ts/server/FirebaseImports';
 
 export const post = (request) => {
   return new Promise((resolve) => {
@@ -50,7 +50,7 @@ export const post = (request) => {
       return;
     }
 
-    auth()
+    fb.auth()
       .createUser({
         email: decodeURI(body.email),
         emailVerified: false,
@@ -58,7 +58,7 @@ export const post = (request) => {
         displayName: body.username,
       })
       .then(async (user) => {
-        await database().ref(`users/${user.uid}/displayName`).set(body.username);
+        await fb.database().ref(`users/${user.uid}/displayName`).set(body.username);
         resolve({ status: 200, body: { message: 'User created successfully!' } });
       })
       .catch((e) => {

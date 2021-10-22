@@ -24,10 +24,8 @@ async function accessSecretVersion() {
       storageBucket: dev ? 'dbugger-dev.appspot.com' : 'debugger-33265.appspot.com',
     });
   }
+
+  return { database: admin.database, auth: admin.auth, storage: admin.storage };
 }
 
-accessSecretVersion();
-
-export const auth = admin.auth;
-export const storage = admin.storage;
-export const database = admin.database;
+export default await accessSecretVersion();

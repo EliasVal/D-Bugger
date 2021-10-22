@@ -1,5 +1,5 @@
 <script>
-  import { get, getAuth, getDatabase, push, ref, remove, set, update } from '@ts/FirebaseImports';
+  import { get, getAuth, getDatabase, ref, remove, set, update } from '@ts/FirebaseImports';
   import { isDisplayingProjectSettings, project } from '@ts/stores';
   import {
     CloseDialogue,

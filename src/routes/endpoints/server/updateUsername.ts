@@ -1,4 +1,4 @@
-import { auth, database } from '@ts/server/FirebaseImports';
+import fb from '@ts/server/FirebaseImports';
 
 // Dont cancel me on twitter for this, I'm trying to keep the usernames clean.
 // Feel free to copy this into your own project.
@@ -10,7 +10,7 @@ export const post = (request) => {
     const body = JSON.parse(request.body);
     const newUsername = decodeURI(body.newUsername);
     const cleanusername = newUsername.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    auth()
+    fb.auth()
       .verifyIdToken(decodeURI(body.token))
       .then(async (decodedToken) => {
         if (cleanusername.match(badWordRegex)) {
@@ -23,10 +23,10 @@ export const post = (request) => {
           });
           return;
         }
-        await auth().updateUser(decodedToken.uid, {
+        await fb.auth().updateUser(decodedToken.uid, {
           displayName: newUsername,
         });
-        await database().ref(`users/${decodedToken.uid}/displayName`).set(newUsername);
+        await fb.database().ref(`users/${decodedToken.uid}/displayName`).set(newUsername);
         resolve({
           status: 200,
           body: {
