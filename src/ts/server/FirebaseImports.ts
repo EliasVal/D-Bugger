@@ -28,4 +28,4 @@ async function accessSecretVersion() {
   return { database: admin.database, auth: admin.auth, storage: admin.storage };
 }
 
-export default await accessSecretVersion();
+export default accessSecretVersion();

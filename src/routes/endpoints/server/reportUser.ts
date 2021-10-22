@@ -1,8 +1,9 @@
-import fb from '@ts/server/FirebaseImports';
-
 export const post = (request) => {
   const body = JSON.parse(request.body);
   return new Promise(async (resolve) => {
+    // Import FB because cannot use top-level await
+    const fb = await (await import('@ts/server/FirebaseImports')).default;
+
     if (body.reportTopic.match(/^pfp|username$/)?.length == 0) {
       resolve({ status: 406, body: { message: 'Missing Report Topic!' } });
       return;

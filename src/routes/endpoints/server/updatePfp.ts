@@ -1,10 +1,12 @@
 import { node } from '@tensorflow/tfjs-node';
 import { load } from 'nsfwjs';
-import fb from '@ts/server/FirebaseImports';
 
 export const post = (request) => {
   const body = JSON.parse(request.body);
   return new Promise(async (resolve) => {
+    // Import FB because cannot use top-level await
+    const fb = await (await import('@ts/server/FirebaseImports')).default;
+
     const model = await load();
 
     const image = node.decodeImage(
