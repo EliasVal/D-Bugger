@@ -15,10 +15,9 @@ const config = {
     files: {
       serviceWorker: 'src/service-worker.ts',
     },
-    ssr: false,
     vite: {
       build: {
-        chunkSizeWarningLimit: 1000,
+        brotliSize: false,
       },
       resolve: {
         alias: {
