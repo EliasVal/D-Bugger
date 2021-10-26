@@ -27,6 +27,7 @@
   import { Stretch } from 'svelte-loading-spinners';
   import { icon } from '@ts/Singletons';
   import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+  import SEO from '../../Components/SEO.svelte';
 
   let section: 'general' | 'security' = 'general';
 
@@ -235,6 +236,7 @@
   };
 </script>
 
+<SEO title="D-Bugger | User Profile" url="https://dbugger.me/user/{$page.params.id}" />
 <div
   class="flex ml-0 mt-10 flex-col items-center md:items-start gap-10 md:gap-20 md:flex-row md:ml-10"
 >

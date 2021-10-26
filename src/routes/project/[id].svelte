@@ -46,6 +46,7 @@
 
   import ProjectMain from '/src/Components/Project/ProjectMain.svelte';
   import ProjectSettings from '/src/Components/Project/ProjectSettings.svelte';
+  import SEO from '../../Components/SEO.svelte';
 
   const slug = $page.params.id;
 
@@ -346,8 +347,13 @@
   };
 </script>
 
+<SEO
+  title="D-Bugger | {$project?.details?.name == null
+    ? 'Loading Project...'
+    : $project.details.name}"
+  url="https://dbugger.me/project/{$project?.id || ''}"
+/>
 <svelte:head>
-  <title>D-Bugger | {$project?.details?.name == null ? 'Loading' : $project.details.name}</title>
   <style>
     body,
     html,

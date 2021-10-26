@@ -23,6 +23,7 @@
   import Roadmap from '../Components/Home/Roadmap.svelte';
   import Thanks from '../Components/Home/Thanks.svelte';
   import ProjectCard from '../Components/ProjectCard.svelte';
+  import SEO from '../Components/SEO.svelte';
 
   const db = getDatabase();
 
@@ -95,6 +96,9 @@
     } else if (!u) showProjects = false;
   });
 </script>
+
+<!-- META TAGS -->
+<SEO />
 
 {#if showProjects}
   <div style="min-height: calc(100vh - {navHeight}px" id="projects" class="my-10">

@@ -156,7 +156,7 @@
   {#key callNavUpdate}
     {#if bWidth > 640 || isDisplayingNavbar}
       <nav
-        class="p-3 bg-black text-white fixed z-10 top-0 bottom-0 sm:bottom-auto sm:right-0 sm:left-0 text-xl sm:text-base"
+        class="p-3 bg-black fixed sm:sticky text-white z-10 top-0 bottom-0 sm:bottom-auto sm:right-0 sm:left-0 text-xl sm:text-base"
         transition:fly|local={{
           x: bWidth < 640 ? -75 : 0,
           y: bWidth > 640 ? -75 : 0,
