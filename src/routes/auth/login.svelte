@@ -1,3 +1,7 @@
+<script context="module">
+  export const ssr = true;
+</script>
+
 <script>
   import {
     browserLocalPersistence,
