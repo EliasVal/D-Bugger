@@ -30,11 +30,13 @@
     setPersistence(auth, browserLocalPersistence).then(async () => {
       const res = await fetch('/endpoints/server/createUser', {
         method: 'POST',
-        body: JSON.stringify({
-          username: encodeURI(e.target[0].value),
-          email: encodeURI(e.target[1].value),
-          password: encodeURI(e.target[2].value),
-        }),
+        body: encodeURI(
+          JSON.stringify({
+            username: encodeURI(e.target[0].value),
+            email: encodeURI(e.target[1].value),
+            password: encodeURI(e.target[2].value),
+          }),
+        ),
       });
 
       const jsonRes = await res.json();

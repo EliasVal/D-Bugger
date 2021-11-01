@@ -9,7 +9,6 @@
 
   user.subscribe((u) => {
     if (u && $page.path.match(/auth\/((login)|(signup)|(resetPassword))$/gim)) {
-      DisplayToast({ title: "You're already logged in." });
       goto(base);
     }
   });

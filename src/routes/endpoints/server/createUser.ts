@@ -1,8 +1,7 @@
-import fb from '@ts/server/FirebaseImports';
-
 export const post = (request) => {
-  return new Promise((resolve) => {
-    const body = JSON.parse(request.body);
+  return new Promise(async (resolve) => {
+    const body = JSON.parse(decodeURI(request.body));
+    const fb = await (await import('@ts/server/FirebaseImports')).default;
 
     body.username = decodeURI(body.username)
       .normalize('NFD')
