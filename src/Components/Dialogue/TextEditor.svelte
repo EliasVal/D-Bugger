@@ -118,7 +118,7 @@
     elm.focus();
   }
   const highlightCode = (code) => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       if (code == undefined) return '';
       // iterate through each codeblock
       code = await code.replace(/<pre><code>.*<\/code><\/pre>/gms, (match) => {

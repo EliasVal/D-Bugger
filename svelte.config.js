@@ -1,5 +1,7 @@
 import preprocess from 'svelte-preprocess';
-import adapter from '@sveltejs/adapter-node';
+import nodeAdapter from '@sveltejs/adapter-node';
+import staticAdapter from '@sveltejs/adapter-static';
+import multiAdapter from '@macfja/svelte-multi-adapter';
 import { resolve } from 'path';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -11,14 +13,25 @@ const config = {
   kit: {
     // hydrate the <div id="svelte"> element in src/app.html
     target: '#svelte',
-    adapter: adapter(),
+    adapter: multiAdapter([staticAdapter(), nodeAdapter()]),
+    ssr: false,
     files: {
       serviceWorker: 'src/service-worker.ts',
     },
     vite: {
       build: {
         brotliSize: false,
+        minify: 'terser',
+        terserOptions: {
+          compress: {
+            drop_console: true,
+          },
+          format: {
+            comments: false,
+          },
+        },
       },
+
       resolve: {
         alias: {
           '@ts': resolve('./src/ts'),

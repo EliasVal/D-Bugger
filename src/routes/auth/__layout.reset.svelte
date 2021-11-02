@@ -4,7 +4,6 @@
   import { page } from '$app/stores';
 
   import { user } from '@ts/stores';
-  import { DisplayToast } from '@ts/utils';
   import ToastContainer from '/src/Components/Toasts/ToastContainer.svelte';
 
   user.subscribe((u) => {

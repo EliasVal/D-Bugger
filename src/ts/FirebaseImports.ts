@@ -65,7 +65,6 @@ const appToken = dev
       measurementId: 'G-SPZSDNP61E',
     };
 
-// Code
 if (getApps()?.length == 0) {
   initializeApp(appToken);
 }

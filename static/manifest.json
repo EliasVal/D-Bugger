@@ -1,17 +1,17 @@
 {
-	"short_name": "D-Bugger",
-	"name": "D-Bugger",
-	"description": "Log the bugs in your apps, coordiante with your team to give the end user the best experience.",
-	"icons": [
-		{
-			"src": "icon-app.svg",
-			"sizes": "any",
-			"type": "image/svg+xml",
-			"purpose": "any maskable"
-		}
-	],
-	"start_url": ".",
-	"display": "standalone",
-	"theme_color": "#D61204",
-	"background_color": "#ffffff"
+  "short_name": "D-Bugger",
+  "name": "D-Bugger",
+  "description": "Log the bugs in your apps, coordiante with your team to give the end user the best experience.",
+  "icons": [
+    {
+      "src": "/resources/images/icon-app.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#D61204",
+  "background_color": "#ffffff"
 }
