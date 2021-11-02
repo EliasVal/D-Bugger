@@ -1,5 +1,10 @@
-import { dev } from '$app/env';
+import { dev, browser } from '$app/env';
 import { getApps, initializeApp } from 'firebase/app';
+import xhr2 from 'xhr2';
+
+if (browser) window.XMLHttpRequest = xhr2;
+else global.XMLHttpRequest = xhr2;
+
 export {
   getAuth,
   onAuthStateChanged,

@@ -14,7 +14,6 @@ const config = {
     // hydrate the <div id="svelte"> element in src/app.html
     target: '#svelte',
     adapter: multiAdapter([staticAdapter(), nodeAdapter()]),
-    ssr: false,
     files: {
       serviceWorker: 'src/service-worker.ts',
     },
