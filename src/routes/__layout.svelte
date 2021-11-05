@@ -21,7 +21,7 @@
 </script>
 
 <Navbar />
-<div id="slot" class="h-full">
+<div id="slot" class="min-h-full">
   <slot />
 </div>
 {#if $isDisplayingDialogue}

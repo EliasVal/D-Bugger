@@ -65,7 +65,7 @@
 </script>
 
 <svelte:window bind:innerWidth={w} />
-<div>
+<div class="sticky top-20">
   <h1 class="underline text-2xl text-center mb-5">Bug Details:</h1>
   <form
     class="flex flex-col gap-5 items-center"

@@ -273,7 +273,7 @@
           class="{$user?.uid == $page.params.id && 'hover:cursor-pointer imageTooltip'} w-fit"
         >
           {#await getDownloadURL(storageRef(getStorage(), `${$page.params.id}/profilePicture`))}
-            <img class="profileImg" src="/user.svg" alt="" />
+            <img class="profileImg" src="/resources/images/user.svg" alt="" />
           {:then url}
             <img
               style="background-image: url({url}); background-color: white;"
@@ -281,7 +281,7 @@
               alt=""
             />
           {:catch}
-            <img class="profileImg" src="/user.svg" alt="" />
+            <img class="profileImg" src="/resources/images/user.svg" alt="" />
           {/await}
           <input
             type="file"
@@ -310,48 +310,48 @@
                   >
                     {$page.params.id}
                   </h4>
-                {/if}
-                {#if $user?.uid != $page.params.id}
-                  <button
-                    class="text-red-700 mt-1 hover:cursor-pointer"
-                    on:click={() => {
-                      DisplayDialogue({
-                        onSubmit: reportUser,
-                        submitBtnText: 'Submit',
-                        fields: [
-                          {
-                            type: 'choice',
-                            options: [
-                              {
-                                text: 'Offensive and/or Explicit Profile Picture',
-                                value: 'pfp',
-                              },
-                              {
-                                text: 'Offensive and/or Explicit Username',
-                                value: 'username',
-                              },
-                            ],
-                            name: 'Please select the issue',
-                            id: 'reportTopic',
-                          },
-                          {
-                            type: 'text',
-                            name: 'Describe the issue (Optional)',
-                            id: 'reportDetails',
-                          },
-                        ],
-                        buttons: [
-                          {
-                            title: 'Cancel',
-                            onClick: CloseDialogue,
-                          },
-                        ],
-                      });
-                    }}
-                  >
-                    {@html icon(faExclamationTriangle).html}
-                    Report user
-                  </button>
+                  {#if $user?.uid != $page.params.id}
+                    <button
+                      class="text-red-700 mt-1 hover:cursor-pointer"
+                      on:click={() => {
+                        DisplayDialogue({
+                          onSubmit: reportUser,
+                          submitBtnText: 'Submit',
+                          fields: [
+                            {
+                              type: 'choice',
+                              options: [
+                                {
+                                  text: 'Offensive and/or Explicit Profile Picture',
+                                  value: 'pfp',
+                                },
+                                {
+                                  text: 'Offensive and/or Explicit Username',
+                                  value: 'username',
+                                },
+                              ],
+                              name: 'Please select the issue',
+                              id: 'reportTopic',
+                            },
+                            {
+                              type: 'text',
+                              name: 'Describe the issue (Optional)',
+                              id: 'reportDetails',
+                            },
+                          ],
+                          buttons: [
+                            {
+                              title: 'Cancel',
+                              onClick: CloseDialogue,
+                            },
+                          ],
+                        });
+                      }}
+                    >
+                      {@html icon(faExclamationTriangle).html}
+                      Report user
+                    </button>
+                  {/if}
                 {/if}
               {/await}
             {/await}

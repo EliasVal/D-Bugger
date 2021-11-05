@@ -179,7 +179,7 @@
                   <img
                     style="height: 20px;"
                     class="profileImg rounded-full"
-                    src={$imageCache ?? '/resources/user.svg'}
+                    src={$imageCache ?? '/resources/images/user.svg'}
                     alt=""
                   />
                 {:else}

@@ -137,7 +137,7 @@
 
   {#if $isDisplayingBug}
     <div
-      class="bugDisplay fixed top-0 bg-opacity-95 flex-grow bg-white w-full h-full py-5 sm:bg-transparent sm:relative sm:top-auto sm:w-fit transition-all border-l-4 border-gray-200"
+      class="bugDisplay fixed top-0 bg-opacity-95 flex-grow w-full h-full sm:w-fit sm:h-auto bg-white py-5 sm:bg-transparent sm:relative sm:top-auto transition-all border-l-4 border-gray-200"
       transition:fly|local={{ x: 200, duration: 500 }}
     >
       <BugDisplay
