@@ -144,9 +144,9 @@
 
 <hr class="w-full bg-black h-1" />
 
-<Roadmap />
+<!-- <Roadmap />
 
-<hr class="w-full bg-black h-1" />
+<hr class="w-full bg-black h-1" /> -->
 
 <Thanks />
 
