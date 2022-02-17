@@ -51,7 +51,7 @@
     "nsfwjs": "^2.4.1",
     "piexifjs": "^1.0.6",
     "sanitize-html": "^2.6.1",
-    "showdown": "^1.9.1",
+    "showdown": "^2.0.0",
     "xhr2": "^0.2.1"
   }
 }
