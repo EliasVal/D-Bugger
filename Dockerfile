@@ -1,4 +1,4 @@
-FROM node:current-bullseye-slim AS build
+FROM node:20.3.0-slim AS build
 
 # Update Packages, Namely Python.
 # Python is required for @tensorflow/tfjs-node
@@ -18,7 +18,7 @@ RUN npm ci
 RUN npm run build
 RUN npm ci --production --no-audit
 
-FROM node:current-bullseye-slim AS deploy
+FROM node:20.3.0-slim AS deploy
 WORKDIR /app
 COPY --from=build /app .
 
